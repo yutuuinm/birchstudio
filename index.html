@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>白桦官方定制防伪验证</title>
+<title>白桦官方网站</title>
 <link rel="preconnect" href="https://unpkg.com" crossorigin>
 <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
 <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -894,7 +894,7 @@ body::after{
 }
 .btn-view:hover::before{ left: 100%; }
 .empty-tip{text-align:center;color:var(--text-light);font-size:13px;padding:20px;}
-/* 防伪卡片预览弹窗 */
+/* 官方卡片预览弹窗 */
 .preview-modal .modal-box,.preview-box{width:100%;max-width:360px;background:#fff;border-radius:22px;padding:24px 20px;text-align:center;max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch;}
 .preview-stage{padding:8px;background:linear-gradient(135deg,#f6fbf8,#e8f5ef);border-radius:18px;}
 .preview-card{
@@ -1110,8 +1110,8 @@ body::after{
                 </div>
                 <div class="func-card" onclick="showVerifyOptions()">
                     <div class="func-icon">✅</div>
-                    <div class="func-name">防伪验证</div>
-                    <div class="func-desc">扫码或输入验证真伪</div>
+                    <div class="func-name">官方验证</div>
+                    <div class="func-desc">扫码或输入查询真伪</div>
                 </div>
                 <div class="func-card" onclick="openJoinUs()">
                     <div class="func-icon">🤝</div>
@@ -1146,8 +1146,8 @@ body::after{
         <!-- 管理员隐藏入口 -->
         <div class="method admin" id="adminEntry" onclick="openPwdModal()">
             <div class="icon">⚙️</div>
-            <h3>管理员防伪生成后台</h3>
-            <p>单/批量生成防伪码，导出卡片图片</p>
+            <h3>管理员官方生成后台</h3>
+            <p>单/批量生成官方码，导出卡片图片</p>
         </div>
     </div>
 
@@ -1156,7 +1156,7 @@ body::after{
         <button class="back-btn" onclick="backHome()">← 返回首页</button>
         <div class="input-row">
             <span class="ico">🔍</span>
-            <input id="inputId" placeholder="输入防伪ID或完整验证链接" onkeydown="if(event.key==='Enter')submitVerify()">
+            <input id="inputId" placeholder="输入官方ID或完整验证链接" onkeydown="if(event.key==='Enter')submitVerify()">
         </div>
         <button class="btn" onclick="submitVerify()">立即验证</button>
     </div>
@@ -1170,7 +1170,7 @@ body::after{
         <div class="verify-img" id="verifyImgWrap" style="display:none;"></div>
         <div class="verify-history" id="historyWrap" style="display:none;"></div>
         <div class="msg-box" id="msgWrap"></div>
-        <button class="btn btn-light" id="copyResultBtn" onclick="copyResultId()" style="display:none;margin-bottom:10px;">📋 复制防伪ID</button>
+        <button class="btn btn-light" id="copyResultBtn" onclick="copyResultId()" style="display:none;margin-bottom:10px;">📋 复制官方ID</button>
         <button class="btn" id="browseBtn" onclick="openGallery()" style="display:none;margin-bottom:10px;">🛍️ 逛逛臻品橱窗</button>
         <button class="back-bottom" onclick="backHome()">返回首页</button>
     </div>
@@ -1263,9 +1263,9 @@ body::after{
         <div class="admin-home" id="adminHome">
             <button class="back-btn" onclick="backHome()">← 返回验证首页</button>
             <div class="admin-grid">
-                <div class="admin-card" onclick="openAdminSection('secOrders')"><div class="admin-card-cover"><span class="admin-chip">📋</span></div><div class="admin-card-info"><div class="admin-card-name">待处理订单</div><div class="admin-card-desc">处理订单并生成防伪码</div></div></div>
-                <div class="admin-card" onclick="openAdminSection('secSingle')"><div class="admin-card-cover"><span class="admin-chip">🧾</span></div><div class="admin-card-info"><div class="admin-card-name">单个防伪码生成</div><div class="admin-card-desc">生成单个防伪二维码</div></div></div>
-                <div class="admin-card" onclick="openAdminSection('secBatch')"><div class="admin-card-cover"><span class="admin-chip">📦</span></div><div class="admin-card-info"><div class="admin-card-name">批量生成</div><div class="admin-card-desc">批量生成防伪码入库</div></div></div>
+                <div class="admin-card" onclick="openAdminSection('secOrders')"><div class="admin-card-cover"><span class="admin-chip">📋</span></div><div class="admin-card-info"><div class="admin-card-name">待处理订单</div><div class="admin-card-desc">处理订单并生成官方码</div></div></div>
+                <div class="admin-card" onclick="openAdminSection('secSingle')"><div class="admin-card-cover"><span class="admin-chip">🧾</span></div><div class="admin-card-info"><div class="admin-card-name">单个官方码生成</div><div class="admin-card-desc">生成单个官方二维码</div></div></div>
+                <div class="admin-card" onclick="openAdminSection('secBatch')"><div class="admin-card-cover"><span class="admin-chip">📦</span></div><div class="admin-card-info"><div class="admin-card-name">批量生成</div><div class="admin-card-desc">批量生成官方码入库</div></div></div>
                 <div class="admin-card" onclick="openAdminSection('secDb')"><div class="admin-card-cover"><span class="admin-chip">🗂️</span></div><div class="admin-card-info"><div class="admin-card-name">数据库记录管理</div><div class="admin-card-desc">查看、编辑、导出记录</div></div></div>
                 <div class="admin-card" onclick="openAdminSection('secRecycle')"><div class="admin-card-cover"><span class="admin-chip">♻️</span></div><div class="admin-card-info"><div class="admin-card-name">回收站</div><div class="admin-card-desc">恢复或彻底删除记录</div></div></div>
                 <div class="admin-card" onclick="openAdminSection('secUsers')"><div class="admin-card-cover"><span class="admin-chip">👥</span></div><div class="admin-card-info"><div class="admin-card-name">用户管理</div><div class="admin-card-desc">查看账号与重置密码</div></div></div>
@@ -1300,7 +1300,7 @@ body::after{
         <div class="admin-section-page" id="secOrders">
             <button class="back-btn" onclick="backToAdminHome()">← 返回</button>
             <h3 style="margin-bottom:6px;color:var(--text-dark)">📋 待处理订单</h3>
-            <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">客户下单后自动进入此列表；生成防伪码后自动入库并完成订单。</p>
+            <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">客户下单后自动进入此列表；生成官方码后自动入库并完成订单。</p>
             <div style="margin-bottom:12px;">
                 <input id="orderSearch" placeholder="🔍 搜索：订单号 / 订单密码 / 用户名 / 昵称 / 手机号 / 商品名" oninput="renderOrders()" style="width:100%;padding:12px 14px;border:2px solid var(--border-green);border-radius:12px;background:#f6fbf8;font-size:13px;box-sizing:border-box;">
                 <div style="font-size:11px;color:var(--text-light);margin-top:5px;">不输入时只显示待处理订单；输入关键词可查找全部订单（含已发货）。</div>
@@ -1312,7 +1312,7 @@ body::after{
 
         <div class="admin-section-page" id="secSingle">
             <button class="back-btn" onclick="backToAdminHome()">← 返回</button>
-            <h3 style="margin-bottom:16px;color:var(--text-dark)">单个防伪码生成</h3>
+            <h3 style="margin-bottom:16px;color:var(--text-dark)">单个官方码生成</h3>
         <div class="form-item">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
         <label>产品名称 *</label>
@@ -1341,23 +1341,23 @@ body::after{
     <textarea id="genMsg"></textarea>
 </div>
         <div class="form-item">
-            <label>图片文件名（扫码验证时显示，留空则不显示）</label>
+            <label>图片文件名（扫码查询时显示，留空则不显示）</label>
             <input id="genImage" placeholder="例如 product1.jpg / 1.mp4">
             <div style="font-size:12px;color:var(--text-light);margin-top:6px;">图片放在 Remy 文件夹，自动拼上基础地址。</div>
         </div>
-        <button class="btn" onclick="createSingleCode()">生成防伪二维码</button>
+        <button class="btn" onclick="createSingleCode()">生成官方二维码</button>
         <div class="qr-view" id="qrShow">
             <div class="export-stage">
                 <div class="export-card" id="exportCard">
                     <div class="export-product" id="expProduct">品名：-</div>
                     <div class="export-num" id="expNum">专属定制编号：-</div>
-                    <div class="export-code">防伪码：<span id="expCode">-</span></div>
+                    <div class="export-code">官方码：<span id="expCode">-</span></div>
                     <div class="export-qr" id="expQrWrap"></div>
                     <div class="export-msg" id="expMsgWrap" style="display:none;">
                         <div class="export-msg-label">💌 白桦寄语</div>
                         <div class="export-msg-text" id="expMsgText"></div>
                     </div>
-                    <div class="export-tip">手机浏览器扫码核验正品</div>
+                    <div class="export-tip">手机浏览器扫码查询正品</div>
                 </div>
             </div>
             <div class="btn-row" style="grid-template-columns:1fr;">
@@ -1401,7 +1401,7 @@ body::after{
     <textarea id="batchMsg"></textarea>
 </div>
         <div class="form-item">
-            <label>统一图片文件名（扫码验证时显示，留空则不显示）</label>
+            <label>统一图片文件名（扫码查询时显示，留空则不显示）</label>
             <input id="batchImage" placeholder="例如 product1.jpg / 1.mp4">
             <div style="font-size:12px;color:var(--text-light);margin-top:6px;">图片放在 Remy 文件夹，自动拼上基础地址。</div>
         </div>
@@ -1577,7 +1577,7 @@ body::after{
     </div>
 </div>
 
-<!-- 防伪卡片预览弹窗（含导出JPG） -->
+<!-- 官方卡片预览弹窗（含导出JPG） -->
 <div class="modal-mask preview-modal" id="previewModal">
     <div class="preview-box">
         <h3 style="margin-bottom:12px;color:var(--text-dark);">顾客预览</h3>
@@ -1598,10 +1598,10 @@ body::after{
     </div>
 </div>
 
-<!-- 编辑防伪记录弹窗 -->
+<!-- 编辑官方记录弹窗 -->
 <div class="modal-mask" id="editRecordModal">
     <div class="modal-box" style="text-align:left;max-width:420px;">
-        <h3 style="margin-bottom:14px;color:var(--text-dark);">✏️ 编辑防伪记录</h3>
+        <h3 style="margin-bottom:14px;color:var(--text-dark);">✏️ 编辑官方记录</h3>
         <input type="hidden" id="editRecordId" value="">
         <div class="form-item"><label>产品名称</label><input id="editProductName"></div>
         <div class="form-item"><label>专属定制编号</label><input id="editBatchNo"></div>
@@ -1822,14 +1822,14 @@ body::after{
     </div>
 </div>
 
-<!-- 防伪验证方式选择弹窗 -->
+<!-- 官方验证方式选择弹窗 -->
 <div class="modal-mask" id="verifyOptModal">
     <div class="modal-box">
-        <h3>✅ 防伪验证</h3>
+        <h3>✅ 官方验证</h3>
         <p style="margin:12px 0;color:var(--text-light)">请选择验证方式</p>
         <div style="display:flex;flex-direction:column;gap:10px;">
             <button class="btn" onclick="closeVerifyOpts();openScan()">📷 摄像头扫码验证</button>
-            <button class="btn btn-light" onclick="closeVerifyOpts();showInputPanel()">⌨️ 手动输入防伪ID</button>
+            <button class="btn btn-light" onclick="closeVerifyOpts();showInputPanel()">⌨️ 手动输入官方ID</button>
             <button style="padding:12px;border:none;border-radius:10px;background:#e0ede7;color:var(--text-dark);" onclick="closeVerifyOpts()">关闭</button>
         </div>
     </div>
@@ -1925,7 +1925,7 @@ body::after{
 
 <script>
 // ============================================================
-// 白桦官方定制防伪系统 · 前端单页应用
+// 白桦官方定制官方网站 · 前端单页应用
 // 结构：1)Supabase配置 2)变量 3)数据加载 4)提示/返回 5)管理员密码
 //       6)隐藏入口 7)ID/URL生成 8)单条生成 9)批量生成 10)导出
 //       11)记录列表/回收站 13)预览导出 14)验证核心 15)扫码
@@ -1940,7 +1940,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // 图片放 GitHub 仓库 remy/ 文件夹（或任意图床），后台只需录入“图片文件名”。
 // 文件名会自动拼成「基础地址 + 文件名」。若默认分支不是 main，请修改下面的 @main。
 const REMY_BASE_URL = "https://birchstudio.cn/Remy/";
-// 网站部署地址：二维码扫码后跳转到「此地址 + ?verify=防伪ID」直接进入防伪验证
+// 网站部署地址：二维码扫码后跳转到「此地址 + ?verify=官方ID」直接进入官方验证
 const SITE_URL = "https://birchstudio.cn";
 // 品牌定制/购买联系方式（可修改）
 const BRAND_CONTACT = { wechats: ["fftt0227"], note: "白桦水晶定制工作室 · 支持专属定制" };
@@ -2293,7 +2293,7 @@ async function createSingleCode(){
     if(!name) return toast("请填写产品名称");
     if(!currentAdminPwd) return toast("管理员密码已过期，请重新进入后台");
 
-    showLoading('正在生成防伪码...');
+    showLoading('正在生成官方码...');
     try {
         const record = {
             id: generateId(),
@@ -2387,7 +2387,7 @@ async function batchCreateCode(){
     if(!name) return toast("请填写统一产品名称");
     if(!currentAdminPwd) return toast("管理员密码已过期，请重新进入后台");
 
-    showLoading(`正在批量生成 ${num} 个防伪码...`);
+    showLoading(`正在批量生成 ${num} 个官方码...`);
     try {
         const batchExpName = document.getElementById("chkBatchExpName").checked;
         const batchExpBatch = document.getElementById("chkBatchExpBatch").checked;
@@ -2431,7 +2431,7 @@ async function batchCreateCode(){
 
 // ================== 10. 导出卡片 / JSON（保持原样） ==================
 function saveQrImg(){
-    if(!currentQrData) return toast("请先生成防伪二维码");
+    if(!currentQrData) return toast("请先生成官方二维码");
     const r = currentQrData;
     const showName = document.getElementById("chkExpName").checked;
     const showBatch = document.getElementById("chkExpBatch").checked;
@@ -2448,10 +2448,10 @@ function saveQrImg(){
     const card = document.getElementById("exportCard");
     html2canvas(card, { background: "#ffffff", scale: 2, useCORS: true }).then(canvas=>{
         const a = document.createElement("a");
-        const safeName = (r && r.productName) ? r.productName.replace(/[\\\/:*?"<>|]/g,'_') : "白桦防伪";
+        const safeName = (r && r.productName) ? r.productName.replace(/[\\\/:*?"<>|]/g,'_') : "白桦官方";
         const safeBatch = (r && r.batchNo) ? r.batchNo.replace(/[\\\/:*?"<>|]/g,'_') : "";
         const batchPart = safeBatch ? `_${safeBatch}` : "";
-        a.download = `白桦防伪_${safeName}${batchPart}_${r.id}.jpg`;
+        a.download = `白桦官方_${safeName}${batchPart}_${r.id}.jpg`;
         a.href = canvas.toDataURL("image/jpeg", 0.92);
         a.click();
         toast("卡片 JPG 已下载");
@@ -2600,7 +2600,7 @@ function renderOrders(){
                     地址：${escapeHtml(o.address||'—')}${o.note?'<br>备注：'+escapeHtml(o.note):''}
                 </div>
                 ${!shipped ? `<div style="background:#fff;border:1px dashed var(--border-green);border-radius:10px;padding:10px;margin-bottom:10px;">
-                    <div style="font-size:12px;font-weight:700;color:var(--text-dark);margin-bottom:8px;">🧾 生成防伪码（自动入库并完成订单）</div>
+                    <div style="font-size:12px;font-weight:700;color:var(--text-dark);margin-bottom:8px;">🧾 生成官方码（自动入库并完成订单）</div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
                         <input id="ordName_${o.id}" value="${escapeHtml(o.product_name)}" placeholder="产品名称" style="padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;">
                         <input id="ordBatch_${o.id}" value="${escapeHtml(o.order_no)}" placeholder="专属定制编号" style="padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;">
@@ -2608,14 +2608,14 @@ function renderOrders(){
                     <textarea id="ordMsg_${o.id}" rows="2" placeholder="白桦寄语（选填）" style="width:100%;padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;margin-bottom:8px;box-sizing:border-box;">${escapeHtml(o.note||'')}</textarea>
                     <input id="ordImg_${o.id}" placeholder="图片文件名（选填）如 product1.jpg" style="width:100%;padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;margin-bottom:8px;box-sizing:border-box;">
                     <div style="display:flex;gap:8px;">
-                        <button class="btn" style="flex:1;padding:10px 0;font-size:13px;" onclick="completeOrder(${o.id})">✨ 生成防伪码并完成</button>
+                        <button class="btn" style="flex:1;padding:10px 0;font-size:13px;" onclick="completeOrder(${o.id})">✨ 生成官方码并完成</button>
                         <button class="btn btn-light" style="flex:1;padding:10px 0;font-size:13px;" onclick="setOrderTracking(${o.id})">📦 填运单号</button>
                     </div>
                     ${o.tracking_no ? `<div style="font-size:12px;color:var(--green-main);margin-top:6px;">🚚 运单号：${escapeHtml(o.tracking_no)}</div>` : ''}
                 </div>` : `
                 <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dark);margin-bottom:8px;flex-wrap:wrap;">
                     ${o.tracking_no ? `<span style="color:var(--green-main);">🚚 运单号：${escapeHtml(o.tracking_no)}</span><button class="btn-view" style="width:auto;padding:4px 10px;font-size:11px;" onclick="copyTracking('${escapeHtml(o.tracking_no)}')">📋 复制</button>` : '<span style="color:var(--text-light);">暂无运单号</span>'}
-                    ${o.anti_code ? `<span style="color:var(--text-light);">防伪码：${escapeHtml(o.anti_code)}</span>` : ''}
+                    ${o.anti_code ? `<span style="color:var(--text-light);">官方码：${escapeHtml(o.anti_code)}</span>` : ''}
                     <button class="btn btn-light" style="width:auto;padding:4px 10px;font-size:11px;" onclick="setOrderTracking(${o.id})">📦 修改运单号</button>
                 </div>`}
             </div>
@@ -2632,7 +2632,7 @@ async function completeOrder(id){
     const image = (document.getElementById("ordImg_"+id).value || '').trim();
     if(!name) return toast("请填写产品名称");
     const code = generateId();
-    showLoading('正在生成防伪码...');
+    showLoading('正在生成官方码...');
     try {
         const { data, error } = await supabaseClient.rpc('insert_record', {
             p_pwd: currentAdminPwd, p_id: code, p_product_name: name, p_batch_no: batch,
@@ -2644,7 +2644,7 @@ async function completeOrder(id){
         await supabaseClient.rpc('update_order', { p_id: id, p_status: 'shipped', p_anti_code: code, p_pwd: currentAdminPwd });
         await loadData();
         await loadOrders();
-        toast('✅ 防伪码已生成并入库：' + code);
+        toast('✅ 官方码已生成并入库：' + code);
     } finally { hideLoading(); }
 }
 async function setOrderTracking(id){
@@ -2664,7 +2664,7 @@ async function setOrderTracking(id){
     } finally { hideLoading(); }
 }
 async function setTracking(code){
-    // 数据库记录 → 通过防伪码找到关联订单 → 填写运单号；无关联订单时可绑定到指定账户
+    // 数据库记录 → 通过官方码找到关联订单 → 填写运单号；无关联订单时可绑定到指定账户
     if(!currentAdminPwd) return toast("管理员密码已过期");
     const o = orderList.find(x => x.anti_code === code);
     if(o){
@@ -3324,7 +3324,7 @@ async function deleteRecord(id){
     const r = db.records.find(item => item.id === id);
     const timeStr = r && r.createTime ? r.createTime : '未知时间';
     const nameStr = r && r.productName ? r.productName : '未命名产品';
-    if(!confirm('确定要删除该防伪记录吗？\n\n生成时间：'+timeStr+'\n品名：'+nameStr+'\nID：'+id+'\n\n（删除后将移至回收站，可随时恢复）')) return;
+    if(!confirm('确定要删除该官方记录吗？\n\n生成时间：'+timeStr+'\n品名：'+nameStr+'\nID：'+id+'\n\n（删除后将移至回收站，可随时恢复）')) return;
     if(!currentAdminPwd) return toast("管理员密码已过期");
     
     toast("🗑️ 正在删除记录，请稍候...");
@@ -3361,12 +3361,12 @@ function dbPreviewItem(id){
     } else {
         imgWrap.innerHTML = '<div style="color:var(--text-light);font-size:13px;">该记录暂无图片</div>';
     }
-    document.getElementById("dbPreviewName").innerText = (r.productName || '白桦定制') + ' · 白桦官方防伪验证';
+    document.getElementById("dbPreviewName").innerText = (r.productName || '白桦定制') + ' · 白桦官方官方验证';
     const statusEl = document.getElementById("dbPreviewStatus");
     if(r.verifyCount === 0){ statusEl.innerText = '🔒 尚未被查询'; statusEl.style.color = 'var(--text-light)'; }
-    else if(r.verifyCount === 1){ statusEl.innerText = '✅ 正品首次验证'; statusEl.style.color = 'var(--success-green)'; }
+    else if(r.verifyCount === 1){ statusEl.innerText = '✅ 正品首次查询'; statusEl.style.color = 'var(--success-green)'; }
     else { statusEl.innerText = '⚠️ 多次查询提醒'; statusEl.style.color = 'var(--warn-orange)'; }
-    document.getElementById("dbPreviewMeta").innerHTML = (r.batchNo ? '专属编号：'+escapeHtml(r.batchNo)+'<br>' : '') + '防伪ID：'+escapeHtml(r.id) + '<br>累计查询：'+(r.verifyCount||0)+'次';
+    document.getElementById("dbPreviewMeta").innerHTML = (r.batchNo ? '专属编号：'+escapeHtml(r.batchNo)+'<br>' : '') + '官方ID：'+escapeHtml(r.id) + '<br>累计查询：'+(r.verifyCount||0)+'次';
     const msgEl = document.getElementById("dbPreviewMsg");
     if(r.message){
         msgEl.style.display = "block";
@@ -3393,11 +3393,11 @@ function previewRecord(id){
         cpImg.innerHTML = '<div class="verify-media" onclick="openImmersivePreview()">' + (isVideo(src) ? `<video src="${escapeHtml(src)}" muted loop autoplay playsinline></video>` : `<img src="${escapeHtml(src)}" alt="产品图" onerror="this.style.opacity='0.2'">`) + '<div class="verify-media-hint">🔍 点击沉浸浏览</div></div>';
         cpImg.style.display = "block";
     } else { cpImgSrc = ''; cpImg.style.display = "none"; cpImg.innerHTML = ''; }
-    document.getElementById("cpTitle").innerText = (r.productName || '白桦定制') + ' · 白桦官方防伪验证';
+    document.getElementById("cpTitle").innerText = (r.productName || '白桦定制') + ' · 白桦官方官方验证';
     document.getElementById("cpDesc").innerText = "一物一码 · 正品保障";
     let info = `<div class="info-line"><span class="info-label">产品名称</span><span class="info-val">${escapeHtml(r.productName||'-')}</span></div>`;
     if(r.batchNo) info += `<div class="info-line"><span class="info-label">专属定制编号</span><span class="info-val">${escapeHtml(r.batchNo)}</span></div>`;
-    info += `<div class="info-line"><span class="info-label">防伪ID</span><span class="info-val">${escapeHtml(r.id)}</span></div>`;
+    info += `<div class="info-line"><span class="info-label">官方ID</span><span class="info-val">${escapeHtml(r.id)}</span></div>`;
     info += `<div class="info-line"><span class="info-label">累计查询</span><span class="info-val">${r.verifyCount||0}次</span></div>`;
     document.getElementById("cpInfo").innerHTML = info;
     const cpMsg = document.getElementById("cpMsg");
@@ -3425,8 +3425,8 @@ function exportPreviewJpg(){
     html2canvas(card, { background: "#ffffff", scale: 2, useCORS: true }).then(canvas=>{
         const a = document.createElement("a");
         const r = db.records.find(item=>item.id === currentPreviewId);
-        const safeTitle = (r && r.productName) ? r.productName.replace(/[\\\/:*?"<>|]/g,'_') : "白桦防伪";
-        a.download = `白桦防伪_${safeTitle}_${currentPreviewId}.jpg`;
+        const safeTitle = (r && r.productName) ? r.productName.replace(/[\\\/:*?"<>|]/g,'_') : "白桦官方";
+        a.download = `白桦官方_${safeTitle}_${currentPreviewId}.jpg`;
         a.href = canvas.toDataURL("image/jpeg", 0.92);
         a.click();
         toast("JPG 卡片已下载");
@@ -3527,13 +3527,13 @@ function copyResultId(){
 
 async function submitVerify(){
     let input = document.getElementById("inputId").value.trim();
-    if(!input) return toast("请输入防伪ID");
+    if(!input) return toast("请输入官方ID");
     let targetId = extractVerifyId(input);
     currentVerifyId = targetId;
     if(/birchstudio\.cn/i.test(input)){
         if(targetId){
             document.getElementById("inputId").value = targetId;
-            toast("🔗 已识别白桦官方防伪，正在验证...");
+            toast("🔗 已识别白桦官方官方，正在验证...");
             setTimeout(()=>submitVerify(), 600);
             return;
         }
@@ -3568,7 +3568,7 @@ async function submitVerify(){
         circle.className = "circle circle-fake";
         circle.innerText = "❌";
         title.className = "result-title title-fake";
-        title.innerText = "无匹配防伪记录";
+        title.innerText = "无匹配官方记录";
         desc.innerText = "该编号不存在官方数据库，疑似假冒产品";
         infoWrap.innerHTML = `<div class="info-line"><span class="info-label">查询ID</span><span class="info-val">${targetId}</span></div>`;
         document.getElementById("historyWrap").style.display = "none";
@@ -3590,7 +3590,7 @@ async function submitVerify(){
     let html = `<div class="info-line"><span class="info-label">产品名称</span><span class="info-val">${record.product_name}</span></div>`;
     if(record.batch_no) html += `<div class="info-line"><span class="info-label">专属定制编号</span><span class="info-val">${record.batch_no}</span></div>`;
     html += `
-        <div class="info-line"><span class="info-label">防伪ID</span><span class="info-val">${record.id}</span></div>
+        <div class="info-line"><span class="info-label">官方ID</span><span class="info-val">${record.id}</span></div>
         <div class="info-line"><span class="info-label">累计查询</span><span class="info-val">${record.verify_count}次</span></div>
     `;
     infoWrap.innerHTML = html;
@@ -3631,14 +3631,14 @@ async function submitVerify(){
         circle.className = "circle circle-success";
         circle.innerText = "✅";
         title.className = "result-title title-success";
-        title.innerText = "正品首次验证";
+        title.innerText = "正品首次查询";
         desc.innerText = "白桦官方正品，可放心使用";
     }else{
         circle.className = "circle circle-warn";
         circle.innerText = "⚠️";
         title.className = "result-title title-warn";
         title.innerText = "多次查询提醒";
-        desc.innerText = "该防伪码已多次被查询，留意二手/仿冒风险";
+        desc.innerText = "该官方码已多次被查询，留意二手/仿冒风险";
     }
 }
 
@@ -3651,7 +3651,7 @@ function openScan(){
         const targetId = extractVerifyId(res);
         document.getElementById("inputId").value = targetId || res;
         if(/birchstudio\.cn/i.test(res)){
-            toast("🔗 已识别白桦官方防伪，正在验证...");
+            toast("🔗 已识别白桦官方官方，正在验证...");
         }
         submitVerify();
     },()=>{});
@@ -3679,7 +3679,7 @@ document.getElementById("imgFile").onchange = async e=>{
         const targetId = extractVerifyId(res);
         document.getElementById("inputId").value = targetId || res;
         if(/birchstudio\.cn/i.test(res)){
-            toast("🔗 已识别白桦官方防伪，正在验证...");
+            toast("🔗 已识别白桦官方官方，正在验证...");
         }
         submitVerify();
     }else toast("图片未识别到二维码");
@@ -3795,7 +3795,7 @@ window.onload = async function(){
     const autoId = urlParams.get("verify");
     if(autoId){
         document.getElementById("inputId").value = autoId;
-        if(isOnBirchDomain) toast("🔗 白桦官方防伪，正在自动验证...");
+        if(isOnBirchDomain) toast("🔗 白桦官方官方，正在自动验证...");
         await submitVerify();
     }
     
@@ -4017,19 +4017,19 @@ function copyText(text){
     if(navigator.clipboard){navigator.clipboard.writeText(text).then(()=>toast("已复制："+text));}
     else{const ta=document.createElement("textarea");ta.value=text;document.body.appendChild(ta);ta.select();document.execCommand("copy");document.body.removeChild(ta);toast("已复制："+text);}
 }
-/* ---------- 复制选中防伪码 ---------- */
+/* ---------- 复制选中官方码 ---------- */
 function copySelectedIds(){
     const ids = getSelectedIds();
     if(ids.length === 0) return toast("请先勾选要复制的记录");
     const text = ids.join('\n');
     if(navigator.clipboard){
-        navigator.clipboard.writeText(text).then(()=>toast("已复制选中 "+ids.length+" 条防伪码"));
+        navigator.clipboard.writeText(text).then(()=>toast("已复制选中 "+ids.length+" 条官方码"));
     }else{
         const ta = document.createElement("textarea");
         ta.value = text; document.body.appendChild(ta);
         ta.select(); document.execCommand("copy");
         document.body.removeChild(ta);
-        toast("已复制选中 "+ids.length+" 条防伪码");
+        toast("已复制选中 "+ids.length+" 条官方码");
     }
 }
 
@@ -4790,7 +4790,7 @@ function closeWechatModal(){
     document.getElementById("wechatModal").classList.remove("show");
     if(!anyOverlayOpen()) lockScroll(false);
 }
-/* 订单卡片：显示关联防伪码记录的白桦寄语与图片 */
+/* 订单卡片：显示关联官方码记录的白桦寄语与图片 */
 function recordMediaHtml(rec){
     if(!rec) return '';
     let html = '';
@@ -4936,7 +4936,7 @@ function openOrderDetail(i){
         + '<div style="display:flex;justify-content:space-between;">状态 ' + st + '</div>'
         + '<div style="display:flex;justify-content:space-between;">实付 <b style="color:var(--danger-red);">¥' + o.final_price + '</b></div>'
         + (o.tracking_no ? '<div style="display:flex;justify-content:space-between;align-items:center;">🚚 运单号 <span>' + escapeHtml(o.tracking_no) + ' <button class="btn-view" style="width:auto;padding:2px 8px;font-size:11px;" onclick="copyTracking(\'' + escapeHtml(o.tracking_no) + '\')">📋 复制</button></span></div>' : '')
-        + (o.anti_code ? '<div style="display:flex;justify-content:space-between;">防伪码 <span style="color:var(--text-light);">' + escapeHtml(o.anti_code) + '</span></div>' : '')
+        + (o.anti_code ? '<div style="display:flex;justify-content:space-between;">官方码 <span style="color:var(--text-light);">' + escapeHtml(o.anti_code) + '</span></div>' : '')
         + (rec && rec.message ? '<div style="background:#f6fbf8;border:1px dashed var(--border-green);border-radius:10px;padding:8px 10px;margin-top:8px;">💌 白桦寄语：' + escapeHtml(rec.message) + '</div>' : '')
         + '<div style="font-size:11px;color:var(--text-light);margin-top:6px;">下单时间：' + new Date(o.created_at).toLocaleString() + '</div>'
         + '</div>';
@@ -5908,7 +5908,7 @@ async function exportAllCardsZip(){
     }
     toast("正在打包 "+records.length+" 张卡片，请稍候...");
     const zip=new JSZip();
-    const folder=zip.folder("白桦防伪卡片");
+    const folder=zip.folder("白桦官方卡片");
     
     let hw=document.getElementById("batchHiddenWrap");
     if(!hw){
@@ -5924,13 +5924,13 @@ async function exportAllCardsZip(){
     hw.innerHTML=`<div id="batchCardTmpl" style="width:300px;background:#fff;border:1px solid #c8d9c8;border-radius:20px;padding:12px 9px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;box-shadow:0 8px 24px rgba(62,114,89,0.10);">
       <div id="btProd" style="font-size:30px;font-weight:600;color:#3d3229;margin-bottom:2px;"></div>
       <div id="btNum" style="font-size:26px;color:#6b5d4d;margin-bottom:6px;"></div>
-<div style="font-size:24px;color:#6b5d4d;margin:3px auto 6px;word-break:break-all;">防伪码：</div><div style="margin:2px auto 6px;"><span id="btCode" style="font-family:monospace;font-size:26px;color:#4a7c59;font-weight:600;background:#f6fbf8;padding:3px 10px;border-radius:6px;display:block;"></span></div>
+<div style="font-size:24px;color:#6b5d4d;margin:3px auto 6px;word-break:break-all;">官方码：</div><div style="margin:2px auto 6px;"><span id="btCode" style="font-family:monospace;font-size:26px;color:#4a7c59;font-weight:600;background:#f6fbf8;padding:3px 10px;border-radius:6px;display:block;"></span></div>
       <div style="width:150px;height:150px;margin:0 auto 6px;background:#fff;border:1px solid #c8d9c8;border-radius:14px;padding:6px;display:flex;align-items:center;justify-content:center;"><img id="btQr" width="136" height="136" style="display:block;"></div>
       <div id="btMsg" style="display:none;margin:6px auto 0;padding:5px 6px;background:linear-gradient(135deg,#f6fbf8,#e8f5ef);border-radius:8px;text-align:left;">
         <div style="font-size:22px;font-weight:600;color:#4a7c59;margin-bottom:2px;text-align:center;;">💌 白桦寄语</div>
         <div id="btMsgText" style="font-size:24px;color:#3d3229;line-height:1.5;word-break:break-word;white-space:pre-wrap;"></div>
       </div>
-      <div style="margin:6px auto 0;font-size:22px;color:#6b5d4d;opacity:0.85;">手机浏览器扫码核验正品</div>
+      <div style="margin:6px auto 0;font-size:22px;color:#6b5d4d;opacity:0.85;">手机浏览器扫码查询正品</div>
     </div>`;
     
     for(let i=0;i<records.length;i++){
@@ -5959,7 +5959,7 @@ async function exportAllCardsZip(){
     const url=URL.createObjectURL(blob);
     const a=document.createElement("a");
     a.href=url;
-    a.download=`白桦防伪卡片_${db.records.length}张_${new Date().toLocaleDateString()}.zip`;
+    a.download=`白桦官方卡片_${db.records.length}张_${new Date().toLocaleDateString()}.zip`;
     a.click();
     URL.revokeObjectURL(url);
     toast("✅ 成功导出 "+records.length+" 张卡片到ZIP");
