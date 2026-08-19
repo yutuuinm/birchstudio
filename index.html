@@ -806,7 +806,11 @@ body::after{
 }
 .loading-text{font-size:14px;color:var(--text-dark);}
 /* 底部文字 */
-.footer{text-align:center;padding:28px 24px;font-size:12px;color:var(--text-light);opacity:0;animation:footerUp 0.8s var(--spring) 0.6s forwards;}
+.footer{text-align:center;padding:34px 24px 44px;opacity:0;animation:footerUp 0.8s var(--spring) 0.6s forwards;}
+.footer-line{width:52px;height:1px;background:linear-gradient(90deg,transparent,#c9a96e,transparent);margin:0 auto 16px;}
+.footer-brand{font-family:Georgia,'Songti SC',serif;font-size:15px;font-weight:700;color:#a8874a;letter-spacing:4px;}
+.footer-sub{font-size:12px;color:var(--text-light);letter-spacing:2px;margin-top:6px;}
+.footer-copy{font-size:11px;color:var(--text-light);opacity:0.7;margin-top:10px;letter-spacing:1px;}
 .footer:hover{opacity:0.9;}
 @keyframes footerUp{
     from{opacity:0;transform:translateY(20px);}
@@ -1009,6 +1013,24 @@ body::after{
 @keyframes lbInfoL{from{opacity:0;transform:translateX(-44px);}to{opacity:1;transform:translateX(0);}}
 .js-ripple{position:absolute;border-radius:50%;transform:scale(0);animation:jsRipple 0.6s ease-out forwards;pointer-events:none;z-index:5;}
 @keyframes jsRipple{to{transform:scale(1);opacity:0;}}
+/* ===== 手机端精装修 ===== */
+@media (max-width: 520px){
+    .main-wrap{padding:0 12px;}
+    .brand-header h1{font-size:21px;letter-spacing:5px;}
+    .func-card{padding:16px 8px 12px;}
+    .func-card .func-icon{font-size:28px;}
+    .func-card .func-name{font-size:15px;}
+    .func-card .func-desc{font-size:11px;}
+    .btn,.btn-light{padding:14px 16px;}
+    .modal-box{padding:26px 20px;}
+    .lp-title{letter-spacing:3px;}
+    .hero-caption{padding:14px;}
+    .hero-caption .hc-name{font-size:17px;}
+    .lux-picks .lp-item .lp-name{white-space:normal;line-height:1.4;}
+    .home-funcs{gap:4px 8px;}
+    .brand-story .bs-text{font-size:13.5px;}
+    .gallery-item img,.gallery-item video{height:150px;}
+}
 </style>
 </head>
 <body>
@@ -1519,7 +1541,12 @@ body::after{
     </div>
 </div>
 
-<div class="footer">白桦官方定制防伪系统 ©2026</div>
+<div class="footer">
+    <div class="footer-line"></div>
+    <div class="footer-brand">白桦安全系统 · 正品保障</div>
+    <div class="footer-sub">一物一码 · 扫码即验 · 安心之选</div>
+    <div class="footer-copy">© 2026 白桦定制</div>
+</div>
 </div>
 
 <!-- 密码弹窗 -->
@@ -1912,7 +1939,7 @@ const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 // ================== 购买浏览画廊 ==================
 // 图片放 GitHub 仓库 remy/ 文件夹（或任意图床），后台只需录入“图片文件名”。
 // 文件名会自动拼成「基础地址 + 文件名」。若默认分支不是 main，请修改下面的 @main。
-const REMY_BASE_URL = "https://cdn.jsdelivr.net/gh/yutuuinm/birchstudio@main/Remy/";
+const REMY_BASE_URL = "https://cdn.jsdelivr.net/gh/yutuuinm/birchfangwei@main/Remy/";
 // 网站部署地址：二维码扫码后跳转到「此地址 + ?verify=防伪ID」直接进入防伪验证
 const SITE_URL = "https://birchstudio.cn";
 // 品牌定制/购买联系方式（可修改）
