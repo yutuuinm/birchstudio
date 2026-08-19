@@ -1242,12 +1242,12 @@ body::after{
             <button class="back-btn" onclick="backHome()">← 返回验证首页</button>
             <div class="admin-grid">
                 <div class="admin-card" onclick="openAdminSection('secOrders')"><div class="admin-card-cover"><span class="admin-chip">📋</span></div><div class="admin-card-info"><div class="admin-card-name">待处理订单</div><div class="admin-card-desc">处理订单并生成防伪码</div></div></div>
-                <div class="admin-card" onclick="openAdminSection('secUsers')"><div class="admin-card-cover"><span class="admin-chip">👥</span></div><div class="admin-card-info"><div class="admin-card-name">用户管理</div><div class="admin-card-desc">查看账号与重置密码</div></div></div>
-                <div class="admin-card" onclick="openAdminSection('secMail')"><div class="admin-card-cover"><span class="admin-chip">📧</span></div><div class="admin-card-info"><div class="admin-card-name">邮件设置</div><div class="admin-card-desc">设置订单通知收件邮箱</div></div></div>
                 <div class="admin-card" onclick="openAdminSection('secSingle')"><div class="admin-card-cover"><span class="admin-chip">🧾</span></div><div class="admin-card-info"><div class="admin-card-name">单个防伪码生成</div><div class="admin-card-desc">生成单个防伪二维码</div></div></div>
                 <div class="admin-card" onclick="openAdminSection('secBatch')"><div class="admin-card-cover"><span class="admin-chip">📦</span></div><div class="admin-card-info"><div class="admin-card-name">批量生成</div><div class="admin-card-desc">批量生成防伪码入库</div></div></div>
                 <div class="admin-card" onclick="openAdminSection('secDb')"><div class="admin-card-cover"><span class="admin-chip">🗂️</span></div><div class="admin-card-info"><div class="admin-card-name">数据库记录管理</div><div class="admin-card-desc">查看、编辑、导出记录</div></div></div>
                 <div class="admin-card" onclick="openAdminSection('secRecycle')"><div class="admin-card-cover"><span class="admin-chip">♻️</span></div><div class="admin-card-info"><div class="admin-card-name">回收站</div><div class="admin-card-desc">恢复或彻底删除记录</div></div></div>
+                <div class="admin-card" onclick="openAdminSection('secUsers')"><div class="admin-card-cover"><span class="admin-chip">👥</span></div><div class="admin-card-info"><div class="admin-card-name">用户管理</div><div class="admin-card-desc">查看账号与重置密码</div></div></div>
+                <div class="admin-card" onclick="openAdminSection('secMail')"><div class="admin-card-cover"><span class="admin-chip">📧</span></div><div class="admin-card-info"><div class="admin-card-name">邮件设置</div><div class="admin-card-desc">设置订单通知收件邮箱</div></div></div>
                 <div class="admin-card" onclick="openAdminSection('secGallery')"><div class="admin-card-cover"><span class="admin-chip">🛍️</span></div><div class="admin-card-info"><div class="admin-card-name">臻品橱窗管理</div><div class="admin-card-desc">管理首页展示商品</div></div></div>
                 <div class="admin-card" onclick="openAdminSection('secBrand')"><div class="admin-card-cover"><span class="admin-chip">🏛️</span></div><div class="admin-card-info"><div class="admin-card-name">品牌理念</div><div class="admin-card-desc">编辑首页品牌故事</div></div></div>
                 <div class="admin-card" onclick="openAdminSection('secContact')"><div class="admin-card-cover"><span class="admin-chip">📞</span></div><div class="admin-card-info"><div class="admin-card-name">联系方式</div><div class="admin-card-desc">修改微信号等联系信息</div></div></div>
@@ -3763,7 +3763,7 @@ window.onload = async function(){
     initLightboxSwipe();
     initScrollElastic(document.querySelector('.gallery-box'));
     const host = location.hostname || "";
-    const isOnBirchDomain = /birchfangwei/i.test(host);
+    const isOnBirchDomain = /birchstudio|birchfangwei/i.test(host);
     const urlParams = new URLSearchParams(location.search);
     const autoId = urlParams.get("verify");
     if(autoId){
