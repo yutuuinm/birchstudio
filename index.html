@@ -1013,6 +1013,20 @@ body::after{
 @keyframes lbInfoL{from{opacity:0;transform:translateX(-44px);}to{opacity:1;transform:translateX(0);}}
 .js-ripple{position:absolute;border-radius:50%;transform:scale(0);animation:jsRipple 0.6s ease-out forwards;pointer-events:none;z-index:5;}
 @keyframes jsRipple{to{transform:scale(1);opacity:0;}}
+/* ===== NFC 抽一签 / 答案之书 ===== */
+.nfc-overlay{position:fixed;inset:0;z-index:11900;background:radial-gradient(ellipse at 50% 30%, rgba(201,169,110,0.18), transparent 60%), linear-gradient(160deg,#121a16 0%, #1c2a22 60%, #0b120f 100%);display:none;align-items:center;justify-content:center;padding:24px;opacity:0;transition:opacity 0.45s ease;}
+.nfc-overlay.show{display:flex;opacity:1;}
+.nfc-box{width:100%;max-width:340px;background:linear-gradient(165deg,#fffdf6,#f7efdf);border:1px solid rgba(201,169,110,0.5);border-radius:24px;padding:36px 28px;text-align:center;box-shadow:0 30px 80px rgba(0,0,0,0.45);transform:scale(0.92) translateY(20px);transition:transform 0.5s var(--spring);}
+.nfc-overlay.show .nfc-box{transform:scale(1) translateY(0);}
+.nfc-title{font-family:Georgia,'Songti SC',serif;font-size:26px;font-weight:700;color:#a8874a;letter-spacing:6px;}
+.nfc-sub{font-size:13px;color:var(--text-light);letter-spacing:3px;margin:10px 0 24px;}
+.nfc-tip{font-size:11px;color:var(--text-light);margin-top:20px;letter-spacing:1px;}
+.fortune-shake{animation:fortuneShake 0.9s ease-in-out;}
+@keyframes fortuneShake{0%,100%{transform:translateX(0);}15%{transform:translateX(-8px) rotate(-2deg);}30%{transform:translateX(8px) rotate(2deg);}45%{transform:translateX(-6px);}60%{transform:translateX(6px);}75%{transform:translateX(-3px);}90%{transform:translateX(3px);}}
+.answer-card{width:200px;height:260px;margin:0 auto;perspective:800px;cursor:pointer;}
+.answer-front{width:100%;height:100%;background:linear-gradient(150deg,#4a7c59,#6aa07e);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-size:22px;letter-spacing:3px;box-shadow:0 18px 44px rgba(74,124,89,0.4);transition:transform 0.55s var(--spring);}
+.answer-card.flip .answer-front{transform:rotateY(180deg);}
+.answer-front.show-answer{background:linear-gradient(150deg,#fffdf6,#f7efdf);color:#4a7c59;font-size:24px;font-weight:700;box-shadow:0 18px 44px rgba(201,169,110,0.4);transform:rotateY(0);}
 /* ===== 手机端精装修 ===== */
 @media (max-width: 520px){
     .main-wrap{padding:0 12px;}
@@ -1122,6 +1136,16 @@ body::after{
                     <div class="func-icon">📦</div>
                     <div class="func-name">我的订单</div>
                     <div class="func-desc">查看订单与物流状态</div>
+                </div>
+                <div class="func-card" onclick="openFortune()">
+                    <div class="func-icon">🎋</div>
+                    <div class="func-name">抽一签</div>
+                    <div class="func-desc">每日一签，顺心如意</div>
+                </div>
+                <div class="func-card" onclick="openAnswerBook()">
+                    <div class="func-icon">📖</div>
+                    <div class="func-name">答案之书</div>
+                    <div class="func-desc">困惑之时，问它一问</div>
                 </div>
             </div>
             <!-- 专业定制流程 -->
@@ -1362,6 +1386,7 @@ body::after{
             </div>
             <div class="btn-row" style="grid-template-columns:1fr;">
                 <button class="btn btn-light" onclick="saveQrImg()">📷 导出卡片JPG</button>
+                <button class="btn btn-light" onclick="copyNfcCode()">📱 复制NFC码</button>
             </div>
         </div>
         </div>
@@ -1721,6 +1746,43 @@ body::after{
     </div>
 </div>
 
+<!-- NFC 入口（抽一签 / 答案之书） -->
+<div class="nfc-overlay" id="nfcOverlay" onclick="closeNfc()">
+    <div class="nfc-box" onclick="event.stopPropagation()">
+        <div class="nfc-title">白桦 · 每日一签</div>
+        <div class="nfc-sub">心有灵犀，一签即明</div>
+        <div class="nfc-btns">
+            <button class="btn" style="width:100%;padding:16px 0;font-size:17px;" onclick="openFortune()">🎋 抽一签</button>
+            <button class="btn btn-light" style="width:100%;padding:16px 0;font-size:17px;margin-top:14px;" onclick="openAnswerBook()">📖 答案之书</button>
+        </div>
+        <div class="nfc-tip">点击空白处返回官网主页</div>
+    </div>
+</div>
+
+<!-- 抽一签弹窗 -->
+<div class="modal-mask" id="fortuneModal" onclick="closeFortune()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h3 style="color:var(--text-dark);">🎋 抽一签</h3>
+        <div style="font-size:13px;color:var(--text-light);margin:8px 0 12px;">心诚则灵，默念心中所问，摇一签看看</div>
+        <div id="fortuneResult" style="display:none;margin-bottom:12px;"></div>
+        <button class="btn" style="width:100%;" onclick="drawFortune()">摇一签</button>
+        <button class="btn btn-light" style="margin-top:8px;width:100%;" onclick="closeFortune()">关闭</button>
+    </div>
+</div>
+
+<!-- 答案之书弹窗 -->
+<div class="modal-mask" id="answerModal" onclick="closeAnswerBook()">
+    <div class="modal-box" onclick="event.stopPropagation()">
+        <h3 style="color:var(--text-dark);">📖 答案之书</h3>
+        <div style="font-size:13px;color:var(--text-light);margin:8px 0 12px;">心中默念你的问题，翻开书页找答案</div>
+        <div class="answer-card" id="answerCard" onclick="drawAnswer()">
+            <div class="answer-front">问吧<br><small style="font-size:11px;opacity:0.7;">轻触翻开</small></div>
+        </div>
+        <button class="btn" style="margin-top:14px;width:100%;" onclick="drawAnswer()">再问一次</button>
+        <button class="btn btn-light" style="margin-top:8px;width:100%;" onclick="closeAnswerBook()">关闭</button>
+    </div>
+</div>
+
 <!-- 订单提交成功弹窗 -->
 <div class="modal-mask" id="orderOkModal">
     <div class="modal-box" style="text-align:center;max-width:360px;">
@@ -1843,9 +1905,9 @@ body::after{
         <div class="form-item"><label>商品名称 *</label><input id="galleryName" placeholder="例如：Rémy 限量款" oninput="updateGalleryPreview()"></div>
         <div class="form-item"><label>设计理念</label><textarea id="galleryDesign" placeholder="描述设计理念 / 卖点" oninput="updateGalleryPreview()"></textarea></div>
         <div class="form-item"><label>图片文件名（或完整图片网址）</label><input id="galleryImage" placeholder="例如 product1.jpg（自动拼上基础地址）" oninput="updateGalleryPreview()"><div style="font-size:12px;color:var(--text-light);margin-top:6px;">图片放在 GitHub 仓库 Remy/ 文件夹，通过 jsDelivr CDN 访问。</div></div>
-        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
-            <div class="form-item" style="margin-bottom:8px;"><label>现价（如 ¥599）</label><input id="galleryPrice" placeholder="¥599" oninput="updateGalleryPreview()"></div>
-            <div class="form-item" style="margin-bottom:8px;"><label>原价（可选，用于打折显示）</label><input id="galleryOriginalPrice" placeholder="¥899" oninput="updateGalleryPreview()"></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;align-items:stretch;">
+            <div class="form-item" style="margin-bottom:8px;"><label>现价</label><input id="galleryPrice" placeholder="如 ¥599" oninput="updateGalleryPreview()" style="height:48px;box-sizing:border-box;"></div>
+            <div class="form-item" style="margin-bottom:8px;"><label>原价</label><input id="galleryOriginalPrice" placeholder="如 ¥899" oninput="updateGalleryPreview()" style="height:48px;box-sizing:border-box;"></div>
         </div>
         <div class="gallery-preview" id="galleryPreview">
             <div class="gp-head">👁️ 预览效果</div>
@@ -2532,6 +2594,7 @@ function renderDbList(){
                     <button class="btn-view db-preview-btn" onclick="dbPreviewItem('${item.id}')">🖼️ 预览</button>
                     <button class="btn-view" onclick="previewRecord('${item.id}')">查看详情</button>
                     <button class="btn-view" onclick="setTracking('${item.id}')">📦 运单号</button>
+                    <button class="btn-view" onclick="copyNfcCode()">📱 NFC码</button>
                     <button class="btn-del" onclick="deleteRecord('${item.id}')">删除</button>
                 </div>
             </div>
@@ -3825,6 +3888,12 @@ window.onload = async function(){
         const hp = document.getElementById("homePanel");
         if(hp) hp.classList.add("loaded");
     });
+    // NFC 扫码进入：打开抽一签 / 答案之书
+    try {
+        if(new URLSearchParams(location.search).get('nfc') === '1'){
+            setTimeout(openNfc, 500);
+        }
+    } catch(e){}
 };
 
 // ================== 17. 修改密码（改远程） ==================
@@ -4958,6 +5027,84 @@ function closeOrderDetail(){
 function copyTracking(nu){
     copyText(nu || '');
 }
+/* ================== 抽一签 / 答案之书（NFC 入口） ================== */
+const NFC_URL = SITE_URL + "?nfc=1";
+const FORTUNES = [
+  {no:'上上签', poem:'云开月朗照前程，灵机一动事事通。', mean:'诸事顺遂，贵人扶持，放心大胆前行。'},
+  {no:'上上签', poem:'春风得意马蹄疾，一日看尽长安花。', mean:'运势正旺，心想事成，把握当下良机。'},
+  {no:'上上签', poem:'山重水复疑无路，柳暗花明又一村。', mean:'看似困顿实有转机，坚持即见柳暗花明。'},
+  {no:'上吉', poem:'东边日出西边雨，道是无晴却有晴。', mean:'好事多磨，结局圆满，耐心等待花开。'},
+  {no:'上吉', poem:'宝剑锋从磨砺出，梅花香自苦寒来。', mean:'付出终有回报，此刻的努力不会白费。'},
+  {no:'上吉', poem:'海阔凭鱼跃，天高任鸟飞。', mean:'空间广阔，大胆施展，自有机遇相逢。'},
+  {no:'上吉', poem:'会当凌绝顶，一览众山小。', mean:'格局已开，眼光放远，必有大成。'},
+  {no:'中吉', poem:'千淘万漉虽辛苦，吹尽狂沙始到金。', mean:'过程或有波折，结果终得真金，保持从容。'},
+  {no:'中吉', poem:'竹外桃花三两枝，春江水暖鸭先知。', mean:'细微处见先机，顺势而为自有收获。'},
+  {no:'中吉', poem:'不畏浮云遮望眼，只缘身在最高层。', mean:'站高望远，浮云自散，前路清晰。'},
+  {no:'中吉', poem:'沉舟侧畔千帆过，病树前头万木春。', mean:'旧去新来，焕然一新，未来可期。'},
+  {no:'中吉', poem:'纸上得来终觉浅，绝知此事要躬行。', mean:'行动胜于空想，实践会给你答案。'},
+  {no:'小吉', poem:'小荷才露尖尖角，早有蜻蜓立上头。', mean:'好事初现端倪，留意身边的微小变化。'},
+  {no:'小吉', poem:'随风潜入夜，润物细无声。', mean:'静水流深，默默积累，终有回报。'},
+  {no:'小吉', poem:'等闲识得东风面，万紫千红总是春。', mean:'时机未到莫心急，春来自会花开。'},
+  {no:'小吉', poem:'欲穷千里目，更上一层楼。', mean:'再进一步，眼界更宽，收获更多。'}
+];
+const ANSWERS = ['是的','再等等','放手去做','此刻不宜','相信直觉','会有转机','保持耐心','好运将至','问问内心','晚点再说','一定能成','顺其自然','机会就在眼前','放下执念','坚持下去','答案在路上','不妨换个角度','时机未到','放心向前','会如愿的'];
+function openNfc(){
+    document.getElementById("nfcOverlay").classList.add("show");
+}
+function closeNfc(){
+    document.getElementById("nfcOverlay").classList.remove("show");
+}
+function openFortune(){
+    document.getElementById("fortuneModal").style.zIndex = '11800';
+    const r = document.getElementById("fortuneResult");
+    r.style.display = 'none';
+    document.getElementById("fortuneModal").classList.add("show");
+    lockScroll(true);
+}
+function closeFortune(){
+    document.getElementById("fortuneModal").classList.remove("show");
+    if(!anyOverlayOpen()) lockScroll(false);
+}
+function drawFortune(){
+    const box = document.getElementById("fortuneResult");
+    box.style.display = "block";
+    box.innerHTML = '<div style="font-size:14px;color:var(--text-light);">✨ 签筒摇动中...</div>';
+    box.classList.remove('fortune-shake');
+    void box.offsetWidth;
+    box.classList.add('fortune-shake');
+    setTimeout(()=>{
+        box.classList.remove('fortune-shake');
+        const f = FORTUNES[Math.floor(Math.random()*FORTUNES.length)];
+        box.innerHTML = '<div style="font-size:26px;font-weight:700;color:var(--green-main);">'+f.no+'</div>' +
+            '<div style="font-size:14px;color:var(--text-dark);margin:10px 0;line-height:1.8;">'+f.poem+'</div>' +
+            '<div style="font-size:13px;color:var(--text-light);line-height:1.7;">'+f.mean+'</div>';
+    }, 1200);
+}
+function openAnswerBook(){
+    document.getElementById("answerModal").style.zIndex = '11800';
+    const card = document.getElementById("answerCard");
+    card.classList.remove('flip','show-answer');
+    card.innerHTML = '<div class="answer-front">问吧<br><small style="font-size:11px;opacity:0.7;">轻触翻开</small></div>';
+    document.getElementById("answerModal").classList.add("show");
+    lockScroll(true);
+}
+function closeAnswerBook(){
+    document.getElementById("answerModal").classList.remove("show");
+    if(!anyOverlayOpen()) lockScroll(false);
+}
+function drawAnswer(){
+    const card = document.getElementById("answerCard");
+    card.classList.add('flip');
+    setTimeout(()=>{
+        const a = ANSWERS[Math.floor(Math.random()*ANSWERS.length)];
+        card.classList.remove('flip');
+        card.classList.add('show-answer');
+        card.innerHTML = '<div class="answer-front show-answer">'+a+'</div>';
+    }, 420);
+}
+function copyNfcCode(){
+    copyText(NFC_URL);
+}
 let BRAND_JOIN = '· 分销返佣：每售出 1 单返佣 20%\n· 月销满 10 单：返佣升至 25%\n· 月销满 30 单：返佣升至 30%\n· 你只负责卖，我们制作发货';
 async function loadJoin(){
     try {
@@ -5400,18 +5547,31 @@ async function loadWheel(){
         for(let i=0;i<4;i++){ const pEl=document.getElementById("wheelP"+(i+1)); if(pEl) pEl.value = wheelCfg.probs[i]; }
     } catch(e){}
 }
+function wheelSegs(){
+    const totalP = wheelCfg.probs.reduce((s,x)=>s+x,0) || 100;
+    const segs=[]; let cum=0;
+    for(let i=0;i<4;i++){
+        const size = wheelCfg.probs[i]/totalP*360;
+        segs.push({start:cum, size, mid:cum+size/2});
+        cum += size;
+    }
+    return segs;
+}
 function renderWheel(){
     const wheel = document.getElementById("wheel");
     if(!wheel) return;
     const amounts = wheelAmounts();
-    // 用三角函数直接计算各数值的坐标（转盘 220px，圆心 110,110，半径 58px 靠近中心）
-    // 顺时针偏移 45°，使数值居中于各自扇区
+    const segs = wheelSegs();
+    const colors = ['#f2b8c6','#f2d27e','#9bc5a0','#8ec5e8'];
+    // 扇区大小按概率分配
+    wheel.style.background = 'conic-gradient(' + segs.map((s,i)=>colors[i]+' '+s.start.toFixed(1)+'deg '+(s.start+s.size).toFixed(1)+'deg').join(', ') + ')';
+    // 数值居中于各自扇区
     const r = 58, cx = 110, cy = 110;
     wheel.innerHTML = amounts.map((a,i)=>{
-        const ang = (i * 90 + 45) * Math.PI / 180;
+        const ang = segs[i].mid * Math.PI / 180;
         const x = cx + r * Math.sin(ang);
         const y = cy - r * Math.cos(ang);
-        return `<span class="wl" style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;transform:translate(-50%,-50%) rotate(${-(i*90+45)}deg);">¥${a}<small style="display:block;font-size:10px;opacity:0.9;">${wheelCfg.probs[i]}%</small></span>`;
+        return `<span class="wl" style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;transform:translate(-50%,-50%) rotate(${-segs[i].mid}deg);">¥${a}<small style="display:block;font-size:10px;opacity:0.9;">${wheelCfg.probs[i]}%</small></span>`;
     }).join('');
     const el2 = document.getElementById("wheelModalRange");
     if(el2) el2.innerText = '¥'+wheelCfg.min+'~'+wheelCfg.max;
@@ -5511,7 +5671,7 @@ async function spinWheel(){
     const totalP = wheelCfg.probs.reduce((s,x)=>s+x,0);
     let r = Math.random()*totalP, chosen = 0;
     for(let i=0;i<4;i++){ r -= wheelCfg.probs[i]; if(r <= 0){ chosen = i; break; } }
-    const R = 720 + ((360 - (45 + 90*chosen)) % 360);
+    const R = 720 + ((360 - wheelSegs()[chosen].mid) % 360);
     wheel.style.transform = 'rotate('+R+'deg)';
     // 转动期间提示
     document.getElementById("wheelResult").style.display = "block";
