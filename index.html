@@ -1023,10 +1023,12 @@ body::after{
 .nfc-tip{font-size:11px;color:var(--text-light);margin-top:20px;letter-spacing:1px;}
 .fortune-shake{animation:fortuneShake 0.9s ease-in-out;}
 @keyframes fortuneShake{0%,100%{transform:translateX(0);}15%{transform:translateX(-8px) rotate(-2deg);}30%{transform:translateX(8px) rotate(2deg);}45%{transform:translateX(-6px);}60%{transform:translateX(6px);}75%{transform:translateX(-3px);}90%{transform:translateX(3px);}}
-.answer-card{width:200px;height:260px;margin:0 auto;perspective:800px;cursor:pointer;}
-.answer-front{width:100%;height:100%;background:linear-gradient(150deg,#4a7c59,#6aa07e);border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff;font-size:22px;letter-spacing:3px;box-shadow:0 18px 44px rgba(74,124,89,0.4);transition:transform 0.55s var(--spring);}
+.answer-card{width:210px;height:280px;margin:0 auto;perspective:900px;cursor:pointer;position:relative;transform-style:preserve-3d;}
+.answer-face{position:absolute;inset:0;border-radius:16px;display:flex;flex-direction:column;align-items:center;justify-content:center;letter-spacing:3px;backface-visibility:hidden;-webkit-backface-visibility:hidden;transition:transform 0.6s var(--spring);}
+.answer-front{background:linear-gradient(150deg,#4a7c59,#6aa07e);color:#fff;font-size:24px;box-shadow:0 18px 44px rgba(74,124,89,0.4);}
+.answer-back{background:linear-gradient(150deg,#fffdf6,#f7efdf);color:#4a7c59;font-size:26px;font-weight:700;transform:rotateY(180deg);box-shadow:0 18px 44px rgba(201,169,110,0.4);}
 .answer-card.flip .answer-front{transform:rotateY(180deg);}
-.answer-front.show-answer{background:linear-gradient(150deg,#fffdf6,#f7efdf);color:#4a7c59;font-size:24px;font-weight:700;box-shadow:0 18px 44px rgba(201,169,110,0.4);transform:rotateY(0);}
+.answer-card.flip .answer-back{transform:rotateY(360deg);}
 /* ===== 手机端精装修 ===== */
 @media (max-width: 520px){
     .main-wrap{padding:0 12px;}
@@ -1776,9 +1778,10 @@ body::after{
         <h3 style="color:var(--text-dark);">📖 答案之书</h3>
         <div style="font-size:13px;color:var(--text-light);margin:8px 0 12px;">心中默念你的问题，翻开书页找答案</div>
         <div class="answer-card" id="answerCard" onclick="drawAnswer()">
-            <div class="answer-front">问吧<br><small style="font-size:11px;opacity:0.7;">轻触翻开</small></div>
+            <div class="answer-face answer-front">问吧<br><small style="font-size:11px;opacity:0.7;">轻触翻开</small></div>
+            <div class="answer-face answer-back" id="answerBack">✨</div>
         </div>
-        <button class="btn" style="margin-top:14px;width:100%;" onclick="drawAnswer()">再问一次</button>
+        <button class="btn" style="margin-top:14px;width:100%;" onclick="drawAnswer()">翻一页</button>
         <button class="btn btn-light" style="margin-top:8px;width:100%;" onclick="closeAnswerBook()">关闭</button>
     </div>
 </div>
@@ -5083,8 +5086,8 @@ function drawFortune(){
 function openAnswerBook(){
     document.getElementById("answerModal").style.zIndex = '11950';
     const card = document.getElementById("answerCard");
-    card.classList.remove('flip','show-answer');
-    card.innerHTML = '<div class="answer-front">问吧<br><small style="font-size:11px;opacity:0.7;">轻触翻开</small></div>';
+    card.classList.remove('flip');
+    document.getElementById("answerBack").innerText = '✨';
     document.getElementById("answerModal").classList.add("show");
     lockScroll(true);
 }
@@ -5094,13 +5097,13 @@ function closeAnswerBook(){
 }
 function drawAnswer(){
     const card = document.getElementById("answerCard");
-    card.classList.add('flip');
-    setTimeout(()=>{
-        const a = ANSWERS[Math.floor(Math.random()*ANSWERS.length)];
-        card.classList.remove('flip');
-        card.classList.add('show-answer');
-        card.innerHTML = '<div class="answer-front show-answer">'+a+'</div>';
-    }, 420);
+    const back = document.getElementById("answerBack");
+    // 先归位，再翻，保证每次都有动效；背面文字为正（背面面片自带 180° 抵消）
+    card.classList.remove('flip');
+    back.innerText = ANSWERS[Math.floor(Math.random()*ANSWERS.length)];
+    requestAnimationFrame(()=>{
+        requestAnimationFrame(()=>{ card.classList.add('flip'); });
+    });
 }
 function copyNfcCode(){
     copyText(NFC_URL);
