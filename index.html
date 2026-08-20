@@ -5055,7 +5055,7 @@ function closeNfc(){
     document.getElementById("nfcOverlay").classList.remove("show");
 }
 function openFortune(){
-    document.getElementById("fortuneModal").style.zIndex = '11800';
+    document.getElementById("fortuneModal").style.zIndex = '11950';
     const r = document.getElementById("fortuneResult");
     r.style.display = 'none';
     document.getElementById("fortuneModal").classList.add("show");
@@ -5081,7 +5081,7 @@ function drawFortune(){
     }, 1200);
 }
 function openAnswerBook(){
-    document.getElementById("answerModal").style.zIndex = '11800';
+    document.getElementById("answerModal").style.zIndex = '11950';
     const card = document.getElementById("answerCard");
     card.classList.remove('flip','show-answer');
     card.innerHTML = '<div class="answer-front">问吧<br><small style="font-size:11px;opacity:0.7;">轻触翻开</small></div>';
