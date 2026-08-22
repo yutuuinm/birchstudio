@@ -4143,7 +4143,7 @@ function dbPreviewItem(id){
     } else {
         imgWrap.innerHTML = '<div style="color:var(--text-light);font-size:13px;">该记录暂无图片</div>';
     }
-    document.getElementById("dbPreviewName").innerText = (r.productName || '白桦定制') + ' · 白桦官方官方验证';
+    document.getElementById("dbPreviewName").innerText = (r.productName || '白桦定制') + ' · 白桦官方验证';
     const statusEl = document.getElementById("dbPreviewStatus");
     if(r.verifyCount === 0){ statusEl.innerText = '🔒 尚未被查询'; statusEl.style.color = 'var(--text-light)'; }
     else if(r.verifyCount === 1){ statusEl.innerText = '✅ 正品首次查询'; statusEl.style.color = 'var(--success-green)'; }
@@ -4175,7 +4175,7 @@ function previewRecord(id){
         cpImg.innerHTML = '<div class="verify-media" onclick="openImmersivePreview()">' + (isVideo(src) ? `<video src="${escapeHtml(src)}" muted loop autoplay playsinline></video>` : `<img src="${escapeHtml(src)}" alt="产品图" onerror="this.style.opacity='0.2'">`) + '<div class="verify-media-hint">🔍 点击沉浸浏览</div></div>';
         cpImg.style.display = "block";
     } else { cpImgSrc = ''; cpImg.style.display = "none"; cpImg.innerHTML = ''; }
-    document.getElementById("cpTitle").innerText = (r.productName || '白桦定制') + ' · 白桦官方官方验证';
+    document.getElementById("cpTitle").innerText = (r.productName || '白桦定制') + ' · 白桦官方验证';
     document.getElementById("cpDesc").innerText = "一物一码 · 正品保障";
     let info = `<div class="info-line"><span class="info-label">产品名称</span><span class="info-val">${escapeHtml(r.productName||'-')}</span></div>`;
     if(r.batchNo) info += `<div class="info-line"><span class="info-label">专属定制编号</span><span class="info-val">${escapeHtml(r.batchNo)}</span></div>`;
@@ -4315,7 +4315,7 @@ async function submitVerify(){
     if(/birchstudio\.cn/i.test(input)){
         if(targetId){
             document.getElementById("inputId").value = targetId;
-            toast("🔗 已识别白桦官方官方，正在验证...");
+            toast("🔗 已识别白桦官方，正在验证...");
             setTimeout(()=>submitVerify(), 600);
             return;
         }
@@ -4433,7 +4433,7 @@ function openScan(){
         const targetId = extractVerifyId(res);
         document.getElementById("inputId").value = targetId || res;
         if(/birchstudio\.cn/i.test(res)){
-            toast("🔗 已识别白桦官方官方，正在验证...");
+            toast("🔗 已识别白桦官方，正在验证...");
         }
         submitVerify();
     },()=>{});
@@ -4461,7 +4461,7 @@ document.getElementById("imgFile").onchange = async e=>{
         const targetId = extractVerifyId(res);
         document.getElementById("inputId").value = targetId || res;
         if(/birchstudio\.cn/i.test(res)){
-            toast("🔗 已识别白桦官方官方，正在验证...");
+            toast("🔗 已识别白桦官方，正在验证...");
         }
         submitVerify();
     }else toast("图片未识别到二维码");
@@ -4584,7 +4584,7 @@ window.onload = async function(){
     const autoId = urlParams.get("verify");
     if(autoId){
         document.getElementById("inputId").value = autoId;
-        if(isOnBirchDomain) toast("🔗 白桦官方官方，正在自动验证...");
+        if(isOnBirchDomain) toast("🔗 白桦官方，正在自动验证...");
         await submitVerify();
     }
     
