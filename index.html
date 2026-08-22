@@ -614,6 +614,7 @@ body::after{
 #homePanel .func-card:nth-child(6){animation-delay:0.33s;}
 #homePanel .func-card:nth-child(7){animation-delay:0.38s;}
 #homePanel .func-card:nth-child(8){animation-delay:0.43s;}
+#homePanel .func-card:nth-child(9){animation-delay:0.48s;}
 /* 臻选推荐商品逐条弹出 */
 #luxPicksGrid .lp-item{animation:cardPop 0.45s cubic-bezier(0.22,1,0.36,1) backwards;}
 #luxPicksGrid .lp-item:nth-child(1){animation-delay:0.05s;}
@@ -1357,6 +1358,11 @@ body::after{
                     <div class="func-name">答案之书</div>
                     <div class="func-desc">困惑之时，问它一问</div>
                 </div>
+                <div class="func-card" onclick="openBuy()">
+                    <div class="func-icon">📞</div>
+                    <div class="func-name">联系我们</div>
+                    <div class="func-desc">微信咨询 · 专属服务</div>
+                </div>
             </div>
             <!-- 专业定制流程 -->
             <div class="lux-process">
@@ -1372,7 +1378,7 @@ body::after{
             </div>
             <!-- 臻选推荐 -->
             <div class="lux-picks">
-                <div class="lp-title">臻 选 推 荐<span class="lp-more" style="font-size:10px;color:var(--text-light);letter-spacing:1px;margin-left:6px;">点击图片查看详情</span><span onclick="openCustomContact()" style="display:inline-block;margin-left:8px;font-size:11px;color:#4a7c59;border:1px solid rgba(74,124,89,0.4);border-radius:999px;padding:2px 12px;cursor:pointer;letter-spacing:1px;">💬 联系定制 · ¥488 起</span></div>
+                <div class="lp-title">臻 选 推 荐<span class="lp-more" style="font-size:10px;color:var(--text-light);letter-spacing:1px;margin-left:6px;">点击图片查看详情</span></div>
                 <div class="lp-grid" id="luxPicksGrid"></div>
             </div>
         </div>
@@ -1764,7 +1770,8 @@ body::after{
 
         <div class="admin-section-page" id="secCrystal">
             <button class="back-btn" onclick="backToAdminHome()">← 返回</button>
-            <h3 style="margin-bottom:16px;color:var(--text-dark)">💎 水晶知识库</h3>
+            <h3 style="margin-bottom:6px;color:var(--text-dark)">💎 水晶知识库</h3>
+            <p style="font-size:12px;color:var(--text-light);margin-bottom:12px;">五行口径与「命语」专业排盘同步：木=绿系（绿幽灵/绿玉髓/橄榄石）· 火=红紫系（粉晶/红玛瑙/草莓晶）· 土=黄棕系（黄水晶/茶晶/虎眼石）· 金=白金系（白水晶/金发晶/钛晶）· 水=黑蓝系（黑曜石/海蓝宝/月光石）。生辰测算按喜用五行自动匹配。</p>
             <input type="hidden" id="crystalEditId" value="">
             <div class="form-item"><label>名称</label><input id="crystalName" placeholder="例如：白水晶"></div>
             <div class="form-item"><label>颜色（色值）</label><input id="crystalColor" type="color" value="#8fbfa3" style="padding:4px;height:44px;"></div>
@@ -1775,7 +1782,18 @@ body::after{
                 <button class="btn" onclick="saveCrystal()">保存水晶</button>
                 <button class="btn btn-light" onclick="clearCrystalForm()">清空</button>
             </div>
-            <div class="db-list-wrap" id="crystalAdminList" style="margin-top:16px;background:#fff;"></div>
+            <div style="display:flex;align-items:center;gap:8px;margin:14px 0 8px;flex-wrap:wrap;">
+                <span style="font-size:13px;color:var(--text-dark);font-weight:600;">🪨 水晶属性库（共 <span id="crystalCount">0</span> 种）</span>
+                <select id="crystalFilter" onchange="renderCrystalAdmin()" style="padding:8px 10px;border:2px solid var(--border-green);border-radius:10px;background:#f6fbf8;font-size:13px;color:var(--text-dark);">
+                    <option value="">全部五行</option>
+                    <option value="木">木 · 绿系</option>
+                    <option value="火">火 · 红紫系</option>
+                    <option value="土">土 · 黄棕系</option>
+                    <option value="金">金 · 白金系</option>
+                    <option value="水">水 · 黑蓝系</option>
+                </select>
+            </div>
+            <div class="db-list-wrap" id="crystalAdminList" style="margin-top:0;background:#fff;"></div>
         </div>
 
         <div class="admin-section-page" id="pwdChangeSection">
@@ -4786,6 +4804,12 @@ window.onload = async function(){
     
     // 左侧大图加载占位：立即开始轮播品牌理念（数据就绪后自动淡出）
     startQuoteRotation(document.getElementById("hlQuote"));
+    // 臻选推荐加载占位：数据加载完成前显示轮流文字
+    const luxGrid = document.getElementById("luxPicksGrid");
+    if(luxGrid){
+        luxGrid.innerHTML = '<div class="gallery-loading" style="grid-column:1/-1;min-height:120px;padding:16px;"><div class="gl-brand" style="font-size:11px;letter-spacing:6px;">臻 选 呈 现</div><div class="hl-line"></div><div class="hl-quote" id="luxLoadingQuote">白桦，是纯洁与坚强的象征。</div></div>';
+        startQuoteRotation(document.getElementById("luxLoadingQuote"));
+    }
     initLoginBtn();
     loadCart();
     updateCartBadge();
@@ -5886,13 +5910,25 @@ async function openMyOrders(){
         myOrderRecMap = recMap;
         document.getElementById("myOrdersList").innerHTML = list.map((o,idx)=>{
             const rec = recMap[o.anti_code];
-            const st = o.status === 'shipped' ? '<span style="color:#2e7d4f;">✅ 已发货</span>' : '<span style="color:#c9921a;">⏳ 待处理</span>';
+            const isMerged = o.status === 'merged';
+            const st = o.status === 'shipped' ? '<span style="color:#2e7d4f;">✅ 已发货</span>' : (isMerged ? '<span style="color:#b8a76a;">🧩 已合并</span>' : '<span style="color:#c9921a;">⏳ 待处理</span>');
             const thumbImg = rec && rec.image_url ? splitImages(rec.image_url)[0] : '';
             const thumb = thumbImg
                 ? (isVideo(thumbImg)
                     ? `<video src="${escapeHtml(imgSrc(thumbImg))}" muted loop autoplay playsinline style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;"></video>`
                     : `<img src="${escapeHtml(imgSrc(thumbImg))}" style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;background:#e8f5ef;" onerror="this.style.display='none'">`)
                 : '';
+            // 已合并的订单：仅作为记录展示，不提供详情/查找服务
+            if(isMerged){
+                return `<div style="display:flex;gap:10px;align-items:center;background:#f4f2ea;border:1px dashed #d8cfa8;border-radius:12px;padding:10px 12px;margin-bottom:10px;opacity:0.8;cursor:default;">
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:13px;font-weight:600;color:var(--text-dark);">${escapeHtml(o.product_name)}</div>
+                        <div style="font-size:12px;color:var(--text-light);margin-top:2px;">${escapeHtml(o.order_no)}</div>
+                        <div style="font-size:12px;color:#b8a76a;margin-top:4px;">🧩 该订单已并入其他订单，仅保留记录</div>
+                    </div>
+                    <span style="font-size:11px;color:var(--text-light);">${st}</span>
+                </div>`;
+            }
             return `<div onclick="openOrderDetail(${idx})" style="display:flex;gap:10px;align-items:center;background:#f6fbf8;border:1px solid var(--border-green);border-radius:12px;padding:10px 12px;margin-bottom:10px;cursor:pointer;">
                 ${thumb}
                 <div style="flex:1;min-width:0;">
@@ -5927,13 +5963,24 @@ async function searchByTracking(){
         myOrderRecMap = recMap;
         if(box) box.innerHTML = list.map((o,idx)=>{
             const rec = recMap[o.anti_code];
-            const st = o.status === 'shipped' ? '<span style="color:#2e7d4f;">✅ 已发货</span>' : '<span style="color:#c9921a;">⏳ 待处理</span>';
+            const isMerged = o.status === 'merged';
+            const st = o.status === 'shipped' ? '<span style="color:#2e7d4f;">✅ 已发货</span>' : (isMerged ? '<span style="color:#b8a76a;">🧩 已合并</span>' : '<span style="color:#c9921a;">⏳ 待处理</span>');
             const thumbImg = rec && rec.image_url ? splitImages(rec.image_url)[0] : '';
             const thumb = thumbImg
                 ? (isVideo(thumbImg)
                     ? `<video src="${escapeHtml(imgSrc(thumbImg))}" muted loop autoplay playsinline style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;"></video>`
                     : `<img src="${escapeHtml(imgSrc(thumbImg))}" style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;background:#e8f5ef;" onerror="this.style.display='none'">`)
                 : '';
+            if(isMerged){
+                return `<div style="display:flex;gap:10px;align-items:center;background:#f4f2ea;border:1px dashed #d8cfa8;border-radius:12px;padding:10px 12px;margin-bottom:8px;opacity:0.8;cursor:default;">
+                    <div style="flex:1;min-width:0;">
+                        <div style="font-size:13px;font-weight:600;color:var(--text-dark);">${escapeHtml(o.product_name)}</div>
+                        <div style="font-size:12px;color:var(--text-light);margin-top:2px;">${escapeHtml(o.order_no)}</div>
+                        <div style="font-size:12px;color:#b8a76a;margin-top:4px;">🧩 该订单已并入其他订单，仅保留记录</div>
+                    </div>
+                    <span style="font-size:11px;color:var(--text-light);">${st}</span>
+                </div>`;
+            }
             return `<div onclick="openOrderDetail(${idx})" style="display:flex;gap:10px;align-items:center;background:#f6fbf8;border:1px solid var(--border-green);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;">
                 ${thumb}
                 <div style="flex:1;min-width:0;">
@@ -5952,6 +5999,7 @@ async function searchByTracking(){
 function openOrderDetail(i){
     const o = myOrderData[i];
     if(!o) return;
+    if(o.status === 'merged') return toast("该订单已合并，仅保留记录，不提供详情查询");
     const rec = myOrderRecMap[o.anti_code];
     const st = o.status === 'shipped' ? '<span style="color:#2e7d4f;">✅ 已发货</span>' : '<span style="color:#c9921a;">⏳ 待处理</span>';
     let media;
@@ -6193,7 +6241,13 @@ function renderCrystalKnowledge(){
     const el = document.getElementById("crystalKnowledge");
     if(!el) return;
     if(!crystals.length){ el.innerHTML = '<div class="empty-tip">暂无水晶常识</div>'; return; }
-    el.innerHTML = crystals.map(c => `<div class="ck-item"><i style="background:${escapeHtml(c.color)}"></i><div><span class="ck-name">${escapeHtml(c.name)}</span> · 五行：${escapeHtml(c.element)}<div class="ck-meta">${escapeHtml(c.meaning)}</div></div></div>`).join('');
+    const elNames = {木:'绿系',火:'红/紫系',土:'黄/棕系',金:'白/金系',水:'黑/蓝系'};
+    el.innerHTML =
+        '<div style="background:#f6fbf8;border:1px solid var(--border-green);border-radius:12px;padding:10px 12px;margin-bottom:10px;font-size:12px;color:var(--text-dark);line-height:1.7;">' +
+        '🔮 五行口径与「命语」专业排盘同步：生辰测算按你的喜用五行匹配下方水晶，' +
+        '主珠用喜用五行、配珠用相生五行补气。<br>' +
+        '<span style="color:var(--text-light);">木=' + (elNames['木']) + ' · 火=' + (elNames['火']) + ' · 土=' + (elNames['土']) + ' · 金=' + (elNames['金']) + ' · 水=' + (elNames['水']) + '</span></div>' +
+        crystals.map(c => `<div class="ck-item"><i style="background:${escapeHtml(c.color)}"></i><div><span class="ck-name">${escapeHtml(c.name)}</span> · 五行：<b style="color:var(--green-main)">${escapeHtml(c.element)}</b><div class="ck-meta">${escapeHtml(c.meaning)}</div></div></div>`).join('');
 }
 /* 手串 */
 let braceletBeads = [];
@@ -6357,10 +6411,73 @@ function calcBazi(){
         out.style.display="block"; out.innerHTML="请填写完整的出生日期与时辰"; return;
     }
     const isLunar = document.querySelector('input[name=baziCal]:checked').value==='lunar';
+    // 专业排盘：优先调用命语公开 API（八字排盘，含日主五行/喜用），失败则本地算法兜底
+    out.style.display="block"; out.innerHTML="🔮 正在专业排盘，请稍候...";
+    try {
+        const apiHour = hIdx === 0 ? 23 : (hIdx * 2 - 1);
+        const body = { year:y, month:m, day:d, hour:apiHour, gender:'male', dateType: isLunar ? 'lunar' : 'solar', timeIndex: hIdx };
+        fetch('https://aov.cc/api/v1/bazi/calculate', {
+            method:'POST', headers:{'Content-Type':'application/json'},
+            body: JSON.stringify(body)
+        }).then(r=>r.json()).then(api=>{
+            if(api && api.ok && api.data && api.data.dayMaster && api.data.pillars){
+                applyBaziApiResult(api.data, out, isLunar, y, m, d, hIdx);
+                return;
+            }
+            calcBaziLocal(out, isLunar, y, m, d, hIdx);
+        }).catch(()=>calcBaziLocal(out, isLunar, y, m, d, hIdx));
+    } catch(e){
+        calcBaziLocal(out, isLunar, y, m, d, hIdx);
+    }
+}
+// 命语 API 结果 → 喜用五行 → 水晶推荐
+function applyBaziApiResult(data, out, isLunar, sy, sm, sd, hIdx){
+    try {
+        const p = data.pillars || {};
+        const ygz = (p.year && p.year.ganZhi) || ''; const mgz = (p.month && p.month.ganZhi) || '';
+        const dgz = (p.day && p.day.ganZhi) || ''; const hgz = (p.hour && p.hour.ganZhi) || '';
+        const dm = data.dayMaster || {};
+        const dayMaster = dm.element || (dgz ? GAN_EL[GAN.indexOf(dgz.charAt(0))] : '');
+        const gans = [ygz.charAt(0), mgz.charAt(0), dgz.charAt(0), hgz.charAt(0)];
+        const zhis = [ygz.charAt(1), mgz.charAt(1), dgz.charAt(1), hgz.charAt(1)];
+        const els = [];
+        gans.forEach(g=>{ if(GAN.indexOf(g)>=0) els.push(GAN_EL[GAN.indexOf(g)]); });
+        zhis.forEach(z=>{ if(ZHI.indexOf(z)>=0) els.push(ZHI_EL[ZHI.indexOf(z)]); });
+        const count={木:0,火:0,土:0,金:0,水:0};
+        els.forEach(e=>{ if(count[e]!=null) count[e]++; });
+        // 定喜用：日主偏弱则生扶（印比），偏旺则清泄（食伤财官）
+        const shengMe = Object.keys(SHENG).find(k=>SHENG[k]===dayMaster);
+        const same = dayMaster;
+        const woSheng = SHENG[dayMaster], woKe = KE[dayMaster];
+        const keWo = Object.keys(KE).find(k=>KE[k]===dayMaster);
+        const strongCount = count[shengMe]+count[same];
+        const weakCount = count[woSheng]+count[woKe]+count[keWo];
+        const isStrong = strongCount >= weakCount;
+        let xiyong;
+        if(isStrong) xiyong = [woSheng,woKe,keWo].sort((a,b)=>count[a]-count[b])[0];
+        else xiyong = [shengMe,same].sort((a,b)=>count[a]-count[b])[0];
+        if(!xiyong) xiyong = '土';
+        lastXiyong=xiyong;
+        const recs=crystals.filter(c=>c.element===xiyong).map(c=>c.name);
+        const dayGan = dgz ? dgz.charAt(0) : '';
+        out.style.display="block";
+        out.innerHTML=(isLunar?`（阴历已换算为阳历 ${sy}-${sm}-${sd}）<br>`:'')+
+            `专业排盘（命语）：<b>${ygz||'—'} ${mgz||'—'} ${dgz||'—'} ${hgz||'—'}</b><br>`+
+            `日主：<b>${dayGan}</b>（${dayMaster}）　${isStrong?'偏旺，宜清泄疏导':'偏弱，宜生扶补益'}<br>`+
+            `能量分布：${Object.keys(count).map(k=>k+' '+count[k]).join('　')}<br>`+
+            `推荐能量元素：<b style="color:var(--green-main)">${xiyong}</b>　建议水晶：${recs.length?recs.join('、'):'（后台可添加）'}<br>`+
+            `<span style="color:var(--text-light);font-size:12px;">${ELEMENT_INFO[xiyong]||''}</span>`+
+            `<span style="color:var(--text-light);font-size:11px;">（数据来源：命语公开 API · 仅供参考）</span>`;
+    } catch(e){
+        calcBaziLocal(out, isLunar, sy, sm, sd, hIdx);
+    }
+}
+// 本地排盘兜底（lunar-javascript 万年历），API 不可用时自动使用
+function calcBaziLocal(out, isLunar, y, m, d, hIdx){
     let lunar, sy=y, sm=m, sd=d;
     try {
         if(typeof Lunar === 'undefined'){ out.style.display="block"; out.innerHTML="日历组件未加载，请刷新重试"; return; }
-        const hour = hIdx === 0 ? 23 : (hIdx * 2 - 1); // 子时=23点，丑时=1点...
+        const hour = (hIdx == null || hIdx < 0 || hIdx > 11) ? 23 : (hIdx === 0 ? 23 : (hIdx * 2 - 1)); // 子时=23点，丑时=1点...
         if(isLunar){
             // 阴历必须带时辰，否则时柱会错
             lunar = Lunar.fromYmdHms(y, m, d, hour, 0, 0);
@@ -6406,6 +6523,8 @@ function calcBazi(){
         `<span style="color:var(--text-light);font-size:12px;">${ELEMENT_INFO[xiyong]||''}</span>`;
 }
 function configBraceletByElement(){
+    // 命理锁定：主珠用「喜用五行」水晶，配珠用「生喜用」五行水晶（补气）
+    // 每次点击在对应五行的水晶池内随机挑选，搭配每次不同，但五行方向不变
     const el = lastXiyong || '土';
     const list = crystals.filter(c=>c.element===el);
     if(!list.length) return toast("暂无该五行水晶，请在后台「水晶知识库」添加");
@@ -6415,11 +6534,13 @@ function configBraceletByElement(){
     const total = braceletSize === 8 ? 22 : 18;
     const main = Math.round(total * 0.65);
     const sub = total - main;
-    for(let i=0;i<main;i++) braceletBeads.push(list[i % list.length]);
-    if(comp.length) for(let i=0;i<sub;i++) braceletBeads.push(comp[i % comp.length]);
-    else for(let i=0;i<sub;i++) braceletBeads.push(list[(main+i) % list.length]);
+    // 主珠：喜用五行水晶池随机（可重复），每次点击搭配不同
+    for(let i=0;i<main;i++) braceletBeads.push(list[Math.floor(Math.random()*list.length)]);
+    // 配珠：生喜用五行水晶池随机；若该五行没有水晶则仍用喜用池
+    const pool = comp.length ? comp : list;
+    for(let i=0;i<sub;i++) braceletBeads.push(pool[Math.floor(Math.random()*pool.length)]);
     drawBracelet();
-    toast("已按喜用『"+el+"』+『"+shengEl+"』平衡配置 "+total+" 颗");
+    toast("已按命理『"+el+"』（主）+『"+shengEl+"』（补）随机搭配 "+total+" 颗，再点可换新搭配");
 }
 function configBraceletByRandom(){
     if(!crystals.length) return toast("暂无水晶数据");
@@ -6573,19 +6694,25 @@ function openCustomContact(){
 function renderCrystalAdmin(){
     const wrap = document.getElementById("crystalAdminList");
     if(!wrap) return;
-    if(!crystals.length){ wrap.innerHTML = '<div class="empty-tip">暂无水晶</div>'; return; }
-    wrap.innerHTML = crystals.map(c => `
+    const cntEl = document.getElementById("crystalCount");
+    if(cntEl) cntEl.innerText = crystals.length;
+    const filterEl = document.getElementById("crystalFilter");
+    const f = filterEl ? filterEl.value : '';
+    const list = f ? crystals.filter(c => c.element === f) : crystals;
+    if(!list.length){ wrap.innerHTML = '<div class="empty-tip">暂无水晶' + (f?'（该五行）':'') + '，可在上方添加</div>'; return; }
+    wrap.innerHTML = list.map(c => `
         <div class="db-record">
             <div class="db-record-main" style="margin-left:0;flex:1;min-width:0;">
-                <div class="db-record-header"><span class="db-record-id">${escapeHtml(c.name)} · ${escapeHtml(c.element)}</span></div>
+                <div class="db-record-header"><span class="db-record-id">${escapeHtml(c.name)}</span><span style="font-size:11px;color:var(--green-main);background:#eaf4ee;padding:2px 8px;border-radius:6px;">五行·${escapeHtml(c.element)}</span></div>
                 <div class="db-record-body">${escapeHtml(c.meaning||'-')}</div>
                 <div class="db-record-actions">
                     <button class="btn-view" onclick="editCrystal(${c.id})">✏️ 编辑</button>
-                    <button class="btn-del" onclick="deleteCrystal(${c.id})">删除</button>
+                    <button class="btn-del" onclick="deleteCrystal(${c.id})">🗑️ 删除</button>
                 </div>
             </div>
         </div>`).join('');
 }
+
 function clearCrystalForm(){
     document.getElementById("crystalEditId").value = "";
     document.getElementById("crystalName").value = "";
