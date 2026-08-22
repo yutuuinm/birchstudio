@@ -463,6 +463,15 @@ body::after{
 .history-item{padding:3px 0;border-bottom:1px dashed var(--border-green);}
 .history-item:last-child{border:none;}
 .verify-img{margin-bottom:16px;background:#f6fbf8;border-radius:16px;padding:10px;overflow:hidden;}
+/* 多图横滚（官方码记录支持多张图片） */
+.mm-scroll{scrollbar-width:thin;scrollbar-color:#c9d9cd transparent;}
+.mm-scroll::-webkit-scrollbar{height:5px;}
+.mm-scroll::-webkit-scrollbar-thumb{background:#c9d9cd;border-radius:99px;}
+.mm-scroll .mm-item{overflow:hidden;border-radius:12px;background:#eef3ef;}
+.mm-scroll .mm-item img,.mm-scroll .mm-item video{width:100%;height:150px;object-fit:cover;display:block;}
+#dbPreviewImg .mm-scroll .mm-item img,#dbPreviewImg .mm-scroll .mm-item video{height:180px;}
+.verify-media .mm-scroll .mm-item{width:150px;}
+.verify-media .mm-scroll .mm-item img,.verify-media .mm-scroll .mm-item video{height:170px;}
 .verify-img img,.verify-img video{width:100%;max-height:320px;object-fit:contain;border-radius:12px;display:block;background:#fff;}
 .verify-media{position:relative;cursor:pointer;border-radius:12px;overflow:hidden;}
 .verify-media-hint{position:absolute;right:10px;bottom:10px;background:rgba(40,52,45,0.78);color:#fff;font-size:12px;padding:5px 10px;border-radius:999px;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);pointer-events:none;}
@@ -1531,8 +1540,8 @@ body::after{
     <textarea id="genMsg"></textarea>
 </div>
         <div class="form-item">
-            <label>图片文件名（扫码查询时显示，留空则不显示）</label>
-            <input id="genImage" placeholder="例如 product1.jpg / 1.mp4">
+            <label>图片文件名（扫码查询时显示，留空则不显示；多个用英文逗号分隔）</label>
+            <input id="genImage" placeholder="例如 product1.jpg, product2.jpg, 1.mp4">
             <div style="font-size:12px;color:var(--text-light);margin-top:6px;">图片放在 Remy 文件夹，自动拼上基础地址。</div>
         </div>
         <button class="btn" onclick="createSingleCode()">生成官方二维码</button>
@@ -1592,8 +1601,8 @@ body::after{
     <textarea id="batchMsg"></textarea>
 </div>
         <div class="form-item">
-            <label>统一图片文件名（扫码查询时显示，留空则不显示）</label>
-            <input id="batchImage" placeholder="例如 product1.jpg / 1.mp4">
+            <label>统一图片文件名（扫码查询时显示，留空则不显示；多个用英文逗号分隔）</label>
+            <input id="batchImage" placeholder="例如 product1.jpg, product2.jpg, 1.mp4">
             <div style="font-size:12px;color:var(--text-light);margin-top:6px;">图片放在 Remy 文件夹，自动拼上基础地址。</div>
         </div>
         <button class="btn" onclick="batchCreateCode()">批量生成（自动入库）</button>
@@ -1804,7 +1813,7 @@ body::after{
         <div class="form-item"><label>产品名称</label><input id="editProductName"></div>
         <div class="form-item"><label>专属定制编号</label><input id="editBatchNo"></div>
         <div class="form-item"><label>白桦寄语</label><textarea id="editMessage"></textarea></div>
-        <div class="form-item"><label>图片文件名</label><input id="editImage" placeholder="例如 1.jpg / 1.mp4"></div>
+        <div class="form-item"><label>图片文件名（多个用英文逗号分隔）</label><input id="editImage" placeholder="例如 1.jpg, 2.jpg, 1.mp4"></div>
         <div style="display:flex;gap:12px;margin-bottom:14px;font-size:13px;color:var(--text-light);flex-wrap:wrap;">
             <label style="display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="checkbox" id="editExpName" checked> 导出名称</label>
             <label style="display:flex;align-items:center;gap:4px;cursor:pointer;"><input type="checkbox" id="editExpBatch" checked> 导出编号</label>
@@ -2131,8 +2140,8 @@ body::after{
             <textarea id="oaMsg" rows="2"></textarea>
         </div>
         <div class="form-item">
-            <label>图片文件名（扫码查询时显示，留空则不显示）</label>
-            <input id="oaImage" placeholder="例如 product1.jpg / 1.mp4">
+            <label>图片文件名（扫码查询时显示，留空则不显示；多个用英文逗号分隔）</label>
+            <input id="oaImage" placeholder="例如 product1.jpg, product2.jpg, 1.mp4">
             <div style="font-size:12px;color:var(--text-light);margin-top:6px;">图片放在 Remy 文件夹，自动拼上基础地址。</div>
         </div>
         <div id="oaResult" style="display:none;background:#f6fbf8;border:1px solid var(--border-green);border-radius:12px;padding:12px;margin-bottom:14px;">
@@ -2248,6 +2257,32 @@ const SITE_URL = "https://birchstudio.cn";
 const BRAND_CONTACT = { wechats: ["fftt0227"], note: "白桦水晶定制工作室 · 支持专属定制" };
 let galleryItems = [];
 function isVideo(url){ return /\.(mp4|webm|mov|m4v)(\?|#|$)/i.test(url || ''); }
+
+// ===== 多图支持：图片文件名可用逗号/换行/中文逗号分隔多个 =====
+// 拆分多个文件名（去空、去重复）
+function splitImages(str){
+    if(!str) return [];
+    return String(str).split(/[,，;\n\r]+/).map(s=>s.trim()).filter(Boolean);
+}
+// 拼接完整地址
+function imgSrc(name){
+    if(!name) return '';
+    return name.startsWith('http') ? name : (REMY_BASE_URL + name);
+}
+// 渲染多图：返回横向滚动容器 HTML（每张图都可点开沉浸浏览）
+function multiImgHtml(str, onTapFnName){
+    const names = splitImages(str);
+    if(!names.length) return '';
+    const items = names.map((n,i)=>{
+        const src = imgSrc(n);
+        const media = isVideo(src)
+            ? `<video src="${escapeHtml(src)}" muted loop autoplay playsinline></video>`
+            : `<img src="${escapeHtml(src)}" alt="产品图" loading="lazy" onerror="this.style.opacity='0.25'">`;
+        const tap = onTapFnName ? `onclick="event.stopPropagation();${onTapFnName}(${i})"` : '';
+        return `<div class="mm-item" style="flex:0 0 auto;width:${names.length>1?'150px':'100%'};${names.length===1?'width:100%':''}" ${tap}>${media}</div>`;
+    }).join('');
+    return `<div class="mm-scroll" style="display:flex;gap:10px;overflow-x:auto;overscroll-behavior:auto;-webkit-overflow-scrolling:touch;${names.length===1?'justify-content:center;':''}padding:2px;">${items}</div>`;
+}
 
 // ================== 2. 原有变量保留 ==================
 const DEFAULT_PASSWORD = "030227";
@@ -2949,7 +2984,7 @@ function renderOrders(){
                         <input id="ordBatch_${o.id}" value="${escapeHtml(o.order_no)}" placeholder="专属定制编号" style="padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;">
                     </div>
                     <textarea id="ordMsg_${o.id}" rows="2" placeholder="白桦寄语（选填）" style="width:100%;padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;margin-bottom:8px;box-sizing:border-box;">${escapeHtml(o.note||'')}</textarea>
-                    <input id="ordImg_${o.id}" placeholder="图片文件名（选填）如 product1.jpg" style="width:100%;padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;margin-bottom:8px;box-sizing:border-box;">
+                    <input id="ordImg_${o.id}" placeholder="图片文件名（选填，多个用逗号分隔）如 product1.jpg, 1.mp4" style="width:100%;padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;margin-bottom:8px;box-sizing:border-box;">
                     ${o.anti_code ? `<div style="font-size:12px;color:var(--green-main);margin-bottom:8px;">✅ 官方码已生成：${escapeHtml(o.anti_code)}</div>` : ''}
                     <div style="display:flex;gap:8px;">
                         <button class="btn" style="flex:1;padding:12px 0;font-size:14px;background:var(--green-main);" onclick="exportOrderCodeImg(${o.id})">📷 导出防伪码图片</button>
@@ -4198,8 +4233,7 @@ function dbPreviewItem(id){
     const content = document.getElementById("dbPreviewContent");
     const empty = document.getElementById("dbPreviewEmpty");
     if(r.imageUrl){
-        const src = r.imageUrl.startsWith('http') ? r.imageUrl : (REMY_BASE_URL + r.imageUrl);
-        imgWrap.innerHTML = isVideo(src) ? `<video src="${escapeHtml(src)}" muted loop autoplay playsinline></video>` : `<img src="${escapeHtml(src)}" alt="产品图" onerror="this.style.opacity='0.2'">`;
+        imgWrap.innerHTML = multiImgHtml(r.imageUrl, null);
     } else {
         imgWrap.innerHTML = '<div style="color:var(--text-light);font-size:13px;">该记录暂无图片</div>';
     }
@@ -4227,12 +4261,12 @@ function previewRecord(id){
     const r = db.records.find(item=>item.id === id);
     if(!r) return toast("记录不存在");
     currentPreviewId = id;
-    // 图片/视频
+    // 图片/视频（支持多图）
     const cpImg = document.getElementById("cpImg");
     if(r.imageUrl){
-        const src = r.imageUrl.startsWith('http') ? r.imageUrl : (REMY_BASE_URL + r.imageUrl);
-        cpImgSrc = src; cpImgName = r.productName || '产品'; cpImgDesign = r.message || '';
-        cpImg.innerHTML = '<div class="verify-media" onclick="openImmersivePreview()">' + (isVideo(src) ? `<video src="${escapeHtml(src)}" muted loop autoplay playsinline></video>` : `<img src="${escapeHtml(src)}" alt="产品图" onerror="this.style.opacity='0.2'">`) + '<div class="verify-media-hint">🔍 点击沉浸浏览</div></div>';
+        const list = splitImages(r.imageUrl);
+        cpImgSrc = imgSrc(list[0]); cpImgName = r.productName || '产品'; cpImgDesign = r.message || '';
+        cpImg.innerHTML = '<div class="verify-media" onclick="openImmersivePreview()">' + multiImgHtml(r.imageUrl, null) + '<div class="verify-media-hint">🔍 点击沉浸浏览</div></div>';
         cpImg.style.display = "block";
     } else { cpImgSrc = ''; cpImg.style.display = "none"; cpImg.innerHTML = ''; }
     document.getElementById("cpTitle").innerText = (r.productName || '白桦定制') + ' · 白桦官方验证';
@@ -4367,12 +4401,13 @@ async function addToGallery(id){
     if(!r) return toast("记录不存在");
     if(!r.imageUrl) return toast("该记录没有图片，无法加入臻品橱窗");
     if(!currentAdminPwd) return toast("管理员密码已过期");
+    const firstImg = splitImages(r.imageUrl)[0] || r.imageUrl;
     showLoading('正在加入臻品橱窗...');
     try {
         const { data, error } = await supabaseClient.rpc('add_gallery_item', {
             p_name: r.productName || '白桦臻品',
             p_design: r.message || '',
-            p_image: r.imageUrl || '',
+            p_image: firstImg,
             p_pwd: currentAdminPwd
         });
         if(error || data === false){ toast("加入失败："+(error?.message||"密码无效")); return; }
@@ -4482,18 +4517,15 @@ async function submitVerify(){
         msgWrap.classList.add("show");
         msgWrap.innerHTML = `<div style="font-weight:600;margin-bottom:8px;">白桦寄语 💌</div>${record.message}`;
     }
-    // 显示商品图片/视频（若有）
+    // 显示商品图片/视频（若有，支持多图）
     const verifyImgWrap = document.getElementById("verifyImgWrap");
     const vImg = record.image_url || '';
     if(vImg){
-        const vSrc = vImg.startsWith('http') ? vImg : (REMY_BASE_URL + vImg);
-        currentVerifyImgSrc = vSrc;
-        verifyImgWrap.innerHTML = '<div class="verify-media" onclick="openImmersiveVerify()">' + (isVideo(vSrc)
-            ? `<video src="${escapeHtml(vSrc)}" muted loop autoplay playsinline></video>`
-            : `<img src="${escapeHtml(vSrc)}" alt="产品图" onerror="this.style.opacity='0.2'">`) + '<div class="verify-media-hint">🔍 点击沉浸浏览</div></div>';
+        currentVerifyImgs = splitImages(vImg);
+        verifyImgWrap.innerHTML = '<div class="verify-media">' + multiImgHtml(vImg, 'openImmersiveVerify') + '<div class="verify-media-hint">🔍 点击图片沉浸浏览</div></div>';
         verifyImgWrap.style.display = "block";
     } else {
-        currentVerifyImgSrc = '';
+        currentVerifyImgs = [];
         verifyImgWrap.style.display = "none";
         verifyImgWrap.innerHTML = '';
     }
@@ -5706,10 +5738,11 @@ function closeWechatModal(){
 function recordMediaHtml(rec){
     if(!rec) return '';
     let html = '';
-    if(rec.image_url){
-        const url = escapeHtml(REMY_BASE_URL + rec.image_url);
+    const rImg = rec.image_url ? splitImages(rec.image_url)[0] : '';
+    if(rImg){
+        const url = escapeHtml(imgSrc(rImg));
         const style = 'width:100%;height:130px;object-fit:cover;border-radius:10px;margin-top:8px;display:block;background:#e8f5ef;';
-        html += isVideo(rec.image_url)
+        html += isVideo(rImg)
             ? `<video src="${url}" muted loop autoplay playsinline style="${style}"></video>`
             : `<img src="${url}" style="${style}" onerror="this.style.display='none'">`;
     }
@@ -5758,10 +5791,11 @@ async function openMyOrders(){
         document.getElementById("myOrdersList").innerHTML = list.map((o,idx)=>{
             const rec = recMap[o.anti_code];
             const st = o.status === 'shipped' ? '<span style="color:#2e7d4f;">✅ 已发货</span>' : '<span style="color:#c9921a;">⏳ 待处理</span>';
-            const thumb = rec && rec.image_url
-                ? (isVideo(rec.image_url)
-                    ? `<video src="${escapeHtml(REMY_BASE_URL + rec.image_url)}" muted loop autoplay playsinline style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;"></video>`
-                    : `<img src="${escapeHtml(REMY_BASE_URL + rec.image_url)}" style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;background:#e8f5ef;" onerror="this.style.display='none'">`)
+            const thumbImg = rec && rec.image_url ? splitImages(rec.image_url)[0] : '';
+            const thumb = thumbImg
+                ? (isVideo(thumbImg)
+                    ? `<video src="${escapeHtml(imgSrc(thumbImg))}" muted loop autoplay playsinline style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;"></video>`
+                    : `<img src="${escapeHtml(imgSrc(thumbImg))}" style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;background:#e8f5ef;" onerror="this.style.display='none'">`)
                 : '';
             return `<div onclick="openOrderDetail(${idx})" style="display:flex;gap:10px;align-items:center;background:#f6fbf8;border:1px solid var(--border-green);border-radius:12px;padding:10px 12px;margin-bottom:10px;cursor:pointer;">
                 ${thumb}
@@ -5798,10 +5832,11 @@ async function searchByTracking(){
         if(box) box.innerHTML = list.map((o,idx)=>{
             const rec = recMap[o.anti_code];
             const st = o.status === 'shipped' ? '<span style="color:#2e7d4f;">✅ 已发货</span>' : '<span style="color:#c9921a;">⏳ 待处理</span>';
-            const thumb = rec && rec.image_url
-                ? (isVideo(rec.image_url)
-                    ? `<video src="${escapeHtml(REMY_BASE_URL + rec.image_url)}" muted loop autoplay playsinline style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;"></video>`
-                    : `<img src="${escapeHtml(REMY_BASE_URL + rec.image_url)}" style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;background:#e8f5ef;" onerror="this.style.display='none'">`)
+            const thumbImg = rec && rec.image_url ? splitImages(rec.image_url)[0] : '';
+            const thumb = thumbImg
+                ? (isVideo(thumbImg)
+                    ? `<video src="${escapeHtml(imgSrc(thumbImg))}" muted loop autoplay playsinline style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;"></video>`
+                    : `<img src="${escapeHtml(imgSrc(thumbImg))}" style="width:64px;height:64px;border-radius:10px;object-fit:cover;flex:0 0 auto;background:#e8f5ef;" onerror="this.style.display='none'">`)
                 : '';
             return `<div onclick="openOrderDetail(${idx})" style="display:flex;gap:10px;align-items:center;background:#f6fbf8;border:1px solid var(--border-green);border-radius:12px;padding:10px 12px;margin-bottom:8px;cursor:pointer;">
                 ${thumb}
@@ -5824,10 +5859,11 @@ function openOrderDetail(i){
     const rec = myOrderRecMap[o.anti_code];
     const st = o.status === 'shipped' ? '<span style="color:#2e7d4f;">✅ 已发货</span>' : '<span style="color:#c9921a;">⏳ 待处理</span>';
     let media;
-    if(rec && rec.image_url){
-        const url = escapeHtml(REMY_BASE_URL + rec.image_url);
+    const detailImg = rec && rec.image_url ? splitImages(rec.image_url)[0] : '';
+    if(detailImg){
+        const url = escapeHtml(imgSrc(detailImg));
         const mediaStyle = 'position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;';
-        media = isVideo(rec.image_url)
+        media = isVideo(detailImg)
             ? `<video src="${url}" muted loop autoplay playsinline style="${mediaStyle}"></video>`
             : `<img src="${url}" style="${mediaStyle}" onerror="this.style.opacity='0.15'">`;
     } else {
@@ -5860,8 +5896,8 @@ function openOrderImg(i){
     if(!o) return;
     const rec = myOrderRecMap[o.anti_code];
     if(!rec || !rec.image_url) return;
-    // 与左侧轮播同款沉浸式浏览：图片 + 白桦寄语 + 光晕背景
-    openImmersiveSingle(REMY_BASE_URL + rec.image_url, o.product_name, rec.message || '');
+    // 与左侧轮播同款沉浸式浏览：图片 + 白桦寄语 + 光晕背景（多图时展示第一张）
+    openImmersiveSingle(imgSrc(splitImages(rec.image_url)[0] || rec.image_url), o.product_name, rec.message || '');
 }
 function closeOrderDetail(){
     document.getElementById("orderDetailModal").classList.remove("show");
@@ -6830,6 +6866,7 @@ function prevLightbox(){
     renderLightbox(-1);
 }
 let currentVerifyImgSrc = '';
+let currentVerifyImgs = [];   // 多图：验证结果页图片文件名列表（已拆分为数组）
 let cpImgSrc = '', cpImgName = '', cpImgDesign = '';
 function openImmersiveSingle(src, name, design){
     if(!src) return toast("暂无图片可浏览");
@@ -6838,8 +6875,13 @@ function openImmersiveSingle(src, name, design){
     document.getElementById("lightbox").classList.add("show");
     lockScroll(true);
 }
-function openImmersiveVerify(){
-    openImmersiveSingle(currentVerifyImgSrc, '白桦正品 · 产品图', '');
+function openImmersiveVerify(idx){
+    // 支持多图：currentVerifyImgs 为文件名数组，idx 为第几张
+    const list = (currentVerifyImgs && currentVerifyImgs.length) ? currentVerifyImgs : [currentVerifyImgSrc];
+    const i = (idx == null ? 0 : idx) % list.length;
+    const src = imgSrc(list[i]);
+    if(!src) return toast("暂无图片可浏览");
+    openImmersiveSingle(src, '白桦正品 · 产品图 ' + (list.length>1 ? (i+1)+'/'+list.length : ''), '');
 }
 function openImmersivePreview(){
     openImmersiveSingle(cpImgSrc, cpImgName, cpImgDesign);
