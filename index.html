@@ -253,6 +253,49 @@ body::after{
     from{opacity:0;transform:translateY(40px) scale(0.97);}
     to{opacity:1;transform:translateY(0) scale(1);}
 }
+/* 后台功能卡片逐条弹出（返回后台首页时一条一条出现） */
+@keyframes cardPop{
+    0%{opacity:0;transform:translateY(26px) scale(0.9);}
+    60%{opacity:1;transform:translateY(-4px) scale(1.03);}
+    100%{opacity:1;transform:translateY(0) scale(1);}
+}
+.admin-home .admin-card{
+    animation: cardPop 0.45s cubic-bezier(0.22,1,0.36,1) backwards;
+}
+.admin-home .admin-card:nth-child(1){animation-delay:0.02s;}
+.admin-home .admin-card:nth-child(2){animation-delay:0.07s;}
+.admin-home .admin-card:nth-child(3){animation-delay:0.12s;}
+.admin-home .admin-card:nth-child(4){animation-delay:0.17s;}
+.admin-home .admin-card:nth-child(5){animation-delay:0.22s;}
+.admin-home .admin-card:nth-child(6){animation-delay:0.27s;}
+.admin-home .admin-card:nth-child(7){animation-delay:0.32s;}
+.admin-home .admin-card:nth-child(8){animation-delay:0.37s;}
+.admin-home .admin-card:nth-child(9){animation-delay:0.42s;}
+.admin-home .admin-card:nth-child(10){animation-delay:0.47s;}
+.admin-home .admin-card:nth-child(11){animation-delay:0.52s;}
+.admin-home .admin-card:nth-child(12){animation-delay:0.57s;}
+.admin-home .admin-card:nth-child(13){animation-delay:0.62s;}
+.admin-home .admin-card:nth-child(14){animation-delay:0.67s;}
+/* 返回时重播：打开后台首页时动画由 backToAdminHome() 强制重放 */
+/* 二级页面内容逐条弹出（打开具体信息页） */
+.admin-section-page.show .form-item,
+.admin-section-page.show .db-list-wrap,
+.admin-section-page.show > h3,
+.admin-section-page.show > p,
+.admin-section-page.show > div:not(.db-layout):not(.db-list-wrap),
+.admin-section-page.show > .btn,
+.admin-section-page.show .back-btn{
+    animation: cardPop 0.45s cubic-bezier(0.22,1,0.36,1) backwards;
+}
+.admin-section-page.show .back-btn{animation-delay:0s;}
+.admin-section-page.show > h3{animation-delay:0.04s;}
+.admin-section-page.show > p{animation-delay:0.08s;}
+.admin-section-page.show > .form-item{animation-delay:0.12s;}
+.admin-section-page.show .form-item:nth-of-type(2){animation-delay:0.17s;}
+.admin-section-page.show .form-item:nth-of-type(3){animation-delay:0.22s;}
+.admin-section-page.show .form-item:nth-of-type(4){animation-delay:0.27s;}
+.admin-section-page.show > .btn{animation-delay:0.32s;}
+.admin-section-page.show > .db-list-wrap{animation-delay:0.36s;}
 .back-btn{
     display:inline-flex;align-items:center;gap:6px;background:#e8ede8;border:none;padding:8px 14px;border-radius:10px;font-size:13px;margin-bottom:12px;cursor:pointer;color:var(--text-dark);transition: all 0.35s var(--spring);position:relative;overflow:hidden;
 }
@@ -2317,13 +2360,24 @@ function openAdminSection(id){
 function backToAdminHome(){
     document.querySelectorAll('.admin-section-page').forEach(p => p.classList.remove('show'));
     const home = document.getElementById('adminHome');
-    if(home) home.style.display = 'grid';
+    if(home){
+        home.style.display = 'grid';
+        // 重播逐条弹出动画：先停掉再强制回流后重放
+        home.querySelectorAll('.admin-card').forEach(c => c.style.animation = 'none');
+        void home.offsetHeight;
+        home.querySelectorAll('.admin-card').forEach(c => c.style.animation = '');
+    }
 }
 
 function backHome(){
     const panels=document.querySelectorAll(".input-area.show,.result-card.show,.gen-panel.show,.customize-panel.show");
     if(panels.length===0){
-        document.getElementById("homePanel").style.display="flex";
+        const hp=document.getElementById("homePanel");
+        hp.style.display="flex";
+        // 主页板块逐条弹出
+        hp.querySelectorAll('.brand-story,.func-grid,.lux-process,.lux-contact,.lux-picks').forEach(el=>{ el.style.animation='none'; });
+        void hp.offsetHeight;
+        hp.querySelectorAll('.brand-story,.func-grid,.lux-process,.lux-contact,.lux-picks').forEach(el=>{ el.style.animation=''; });
         document.getElementById("inputId").value = "";
         backToAdminHome();
         return;
@@ -2340,9 +2394,11 @@ function backHome(){
         });
         const hp=document.getElementById("homePanel");
         hp.style.display="flex";hp.style.opacity="0";hp.style.transform="translateY(30px) scale(0.95)";
+        hp.querySelectorAll('.brand-story,.func-grid,.lux-process,.lux-contact,.lux-picks').forEach(el=>{ el.style.animation='none'; });
         requestAnimationFrame(()=>{
             hp.style.transition="all 0.55s var(--spring)";
             hp.style.opacity="1";hp.style.transform="translateY(0) scale(1)";
+            hp.querySelectorAll('.brand-story,.func-grid,.lux-process,.lux-contact,.lux-picks').forEach(el=>{ el.style.animation=''; });
             setTimeout(()=>{hp.style.transition="";hp.style.opacity="";hp.style.transform="";},600);
         });
         document.getElementById("inputId").value = "";
