@@ -13,6 +13,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lunar-javascript@1.6.12/lunar.min.js"></script>
 <style>
 :root {
     --green-main: #4a7c59;
@@ -521,7 +522,7 @@ body::after{
 .myorders-panel{width:min(600px,100%);height:min(780px,92vh);background:linear-gradient(165deg,#fbfdfb,#eef6f1);border-radius:24px;display:flex;flex-direction:column;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,0.45);animation:lightboxIn 0.4s var(--spring);}
 .myorders-head{display:flex;justify-content:space-between;align-items:center;padding:15px 18px;font-size:16px;font-weight:700;color:var(--text-dark);border-bottom:1px solid rgba(201,169,110,0.25);background:rgba(255,255,255,0.6);}
 .myorders-close{width:30px;height:30px;border-radius:50%;border:none;background:rgba(61,90,69,0.12);color:var(--text-dark);font-size:14px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.myorders-body{flex:1;overflow-y:auto;padding:14px;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+.myorders-body{flex:1;overflow-y:auto;padding:14px;overscroll-behavior:auto;-webkit-overflow-scrolling:touch;}
 .myorders-foot{display:flex;gap:10px;padding:12px 14px;border-top:1px solid rgba(201,169,110,0.25);background:rgba(255,255,255,0.6);}
 /* 购物车 */
 .cart-fab{position:fixed;right:16px;bottom:56px;z-index:2500;width:54px;height:54px;border-radius:50%;border:none;cursor:pointer;background:linear-gradient(145deg,#4a7c59,#6aa07e);box-shadow:0 10px 26px rgba(74,124,89,0.4);display:flex;align-items:center;justify-content:center;transition:transform 0.3s var(--spring), box-shadow 0.3s ease;}
@@ -577,6 +578,9 @@ body::after{
 .bracelet-beads .bb-chip i{width:12px;height:12px;border-radius:50%;display:inline-block;}
 .crystal-palette{display:grid;grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:8px;}
 .cust-modes{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.cust-tier-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-bottom:16px;}
+.cust-mode.tier{padding:12px 4px;font-size:13px;font-weight:700;color:#2e6b3f;}
+.cust-mode.tier.contact{grid-column:1 / -1;background:linear-gradient(145deg,#4a7c59,#6aa07e);border-color:#4a7c59;color:#fff;font-weight:700;}
 .cust-mode{padding:16rpx 0;padding:12px 0;font-size:14px;font-weight:700;letter-spacing:1px;border-radius:12px;border:1px solid var(--border-green);background:#fff;color:var(--text-dark);cursor:pointer;transition:all 0.3s var(--spring);}
 .cust-mode.active{border-color:#4a7c59;background:linear-gradient(145deg,#f2f8f3,#e3efe6);color:#2e6b3f;box-shadow:0 6rpx 16rpx rgba(74,124,89,0.18);}
 .birth-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px;}
@@ -590,7 +594,30 @@ body::after{
 #crystalKnowledge .ck-item .ck-name{font-weight:600;color:var(--text-dark);font-size:13px;}
 #crystalKnowledge .ck-item .ck-meta{font-size:12px;color:var(--text-light);line-height:1.5;}
 #baziResult,#hexagramResult{background:#f6fbf8;border-radius:12px;padding:12px;font-size:13px;color:var(--text-dark);line-height:1.8;display:none;}
-#hexagramResult{text-align:left;font-family:Consolas,Menlo,monospace;font-size:14px;line-height:1.5;}
+#hexagramResult{text-align:center;font-size:13px;padding:14px;}
+.hex-draw{display:inline-block;margin:10px 0 4px;}
+.hex-row{display:flex;gap:5px;margin-bottom:5px;justify-content:center;}
+.hseg{width:32px;height:7px;border-radius:2px;background:#4a7c59;display:inline-block;}
+.hseg.gap{background:transparent;}
+.hex-trigram-gap{height:10px;}
+.hex-name{font-size:16px;font-weight:700;color:var(--text-dark);margin-top:4px;}
+.hex-sub{font-size:12px;color:var(--text-light);margin-top:2px;}
+.hex-info{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 12px;font-size:12px;color:#4a7c59;margin-top:8px;}
+.hex-info span{background:#eaf4ee;border-radius:20px;padding:3px 10px;}
+.hex-layout{display:flex;flex-direction:column;gap:14px;text-align:left;}
+.hex-col{flex:1 1 0;min-width:0;}
+.hex-left{text-align:center;}
+.hex-right{border-top:1px dashed rgba(74,124,89,0.35);padding-top:12px;}
+@media(min-width:768px){
+    .hex-layout{flex-direction:row;gap:18px;}
+    .hex-left{border-right:1px dashed rgba(74,124,89,0.35);padding-right:16px;}
+    .hex-right{border-top:none;padding-top:0;border-left:none;}
+}
+.jie-section{margin-bottom:10px;}
+.jie-title{font-weight:700;color:#4a7c59;font-size:13px;margin-bottom:2px;}
+.jie-title::before{content:"◆ ";font-size:10px;}
+.jie-text{font-size:12.5px;color:var(--text-dark);line-height:1.8;}
+.hl-loading{color:#e8c37a !important;font-size:13px !important;letter-spacing:4px !important;}
 /* 活动通知（右下角悬浮） */
 .notice-bar{position:fixed;right:14px;bottom:14px;left:auto;top:auto;z-index:1500;max-width:min(330px,calc(100vw - 28px));background:linear-gradient(135deg,#fff7e0,#ffe9b8);border:1px solid rgba(212,160,61,0.4);border-radius:14px;padding:10px 12px 10px 14px;display:flex;align-items:center;gap:8px;font-size:13px;color:#7a5a1a;box-shadow:0 12px 32px rgba(0,0,0,0.18);animation:noticeIn 0.5s var(--spring);}
 @keyframes noticeIn{from{opacity:0;transform:translateY(18px) scale(0.95);}to{opacity:1;transform:translateY(0) scale(1);}}
@@ -697,7 +724,7 @@ body::after{
     -webkit-backdrop-filter: blur(4px);
     opacity: 0;
     transition: opacity 0.3s ease;
-    overscroll-behavior: contain;
+    overscroll-behavior: auto;
 }
 .modal-mask.show{
     display:flex;
@@ -709,11 +736,25 @@ body::after{
     opacity: 0;
     transition: all 0.4s var(--spring);
     box-shadow: 0 24px 60px rgba(0,0,0,0.15);
-    max-height:88vh;overflow-y:auto;overscroll-behavior:contain;
+    max-height:88vh;overflow-y:auto;overscroll-behavior:auto;
 }
 .modal-mask.show .modal-box{
     transform: scale(1) translateY(0);
     opacity: 1;
+}
+/* 弹窗入场动画微调（更轻盈跟手） */
+@keyframes modalPop{
+    0%{transform:scale(0.92) translateY(24px);opacity:0;}
+    60%{transform:scale(1.015) translateY(-2px);opacity:1;}
+    100%{transform:scale(1) translateY(0);opacity:1;}
+}
+.modal-mask.show .modal-box{
+    animation: modalPop 0.38s cubic-bezier(0.22,1,0.36,1);
+}
+/* 弹窗内容横向排列辅助（手机端自动纵向） */
+.modal-box .row2{display:flex;gap:10px;}
+@media (max-width: 420px){
+    .modal-box .row2{flex-direction:column;}
 }
 /* 购买弹窗：隐藏右侧滚动条（仍可滚动） */
 #buyModal .modal-box{scrollbar-width:none;-ms-overflow-style:none;position:relative;}
@@ -817,7 +858,7 @@ body::after{
     to{opacity:0.75;transform:translateY(0);}
 }
 /* 数据库记录列表 */
-.db-list-wrap{background:#f6fbf8;border-radius:16px;padding:16px;margin-top:18px;max-height:calc(100vh - 240px);overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+.db-list-wrap{background:#f6fbf8;border-radius:16px;padding:16px;margin-top:18px;max-height:calc(100vh - 240px);overflow-y:auto;overscroll-behavior:auto;-webkit-overflow-scrolling:touch;}
 .db-layout{display:grid;grid-template-columns:1fr;gap:16px;}
 .db-preview-panel{background:#fbfdfb;border:1px solid var(--border-green);border-radius:16px;padding:16px;display:none;}
 .db-preview-panel .pp-img{background:#eef6f1;border-radius:14px;overflow:hidden;margin-bottom:12px;min-height:200px;display:flex;align-items:center;justify-content:center;}
@@ -831,7 +872,7 @@ body::after{
 .db-preview-btn{display:none;}
 @media (min-width: 900px){
     .db-layout{grid-template-columns:1.05fr 0.95fr;}
-    .db-preview-panel{display:block;position:sticky;top:16px;max-height:calc(100vh - 200px);overflow-y:auto;overscroll-behavior:contain;}
+    .db-preview-panel{display:block;position:sticky;top:16px;max-height:calc(100vh - 200px);overflow-y:auto;overscroll-behavior:auto;}
     .db-preview-btn{display:block;}
 }
 .db-list-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;}
@@ -939,7 +980,7 @@ body::after{
 .export-tip{margin:6px auto 0;font-size:16.5px;color:var(--text-light);opacity:0.85;text-align:center;width:100%;}
 .particle-canvas{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:0;border-radius:20px;}
 /* 购买浏览画廊 */
-.gallery-box{width:100%;max-width:720px;max-height:88vh;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;background:linear-gradient(160deg,#fbf9f4 0%,#f4eee2 100%);border:1px solid rgba(201,169,110,0.25);border-radius:24px;padding:20px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.6);transform:scale(0.9) translateY(20px);opacity:0;transition:all 0.4s var(--spring);}
+.gallery-box{width:100%;max-width:720px;max-height:88vh;overflow-y:auto;overscroll-behavior:auto;-webkit-overflow-scrolling:touch;background:linear-gradient(160deg,#fbf9f4 0%,#f4eee2 100%);border:1px solid rgba(201,169,110,0.25);border-radius:24px;padding:20px;text-align:center;box-shadow:0 24px 60px rgba(0,0,0,0.18), inset 0 1px 0 rgba(255,255,255,0.6);transform:scale(0.9) translateY(20px);opacity:0;transition:all 0.4s var(--spring);}
 .gallery-mask.show .gallery-box{transform:scale(1) translateY(0);opacity:1;}
 .gallery-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;text-align:left;}
 .gallery-head h3{font-size:18px;color:var(--text-dark);}
@@ -994,7 +1035,7 @@ body::after{
 .lightbox-info{flex:0 0 auto;width:100%;max-width:640px;background:linear-gradient(165deg, rgba(255,255,255,0.20), rgba(255,255,255,0.06) 55%, rgba(255,255,255,0.02));backdrop-filter:blur(16px) saturate(160%);-webkit-backdrop-filter:blur(16px) saturate(160%);border:1px solid rgba(255,255,255,0.18);border-radius:20px;padding:14px 16px;text-align:center;box-shadow:0 12px 34px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.26);animation:infoSlideUp 0.55s var(--spring) 0.1s both;}
 @keyframes infoSlideUp{from{opacity:0;transform:translateY(24px);}to{opacity:1;transform:translateY(0);}}
 .lightbox-info .lb-name{font-weight:700;font-size:18px;color:#faf8f3;letter-spacing:0.6px;margin-bottom:4px;}
-.lightbox-info .lb-design{font-size:14px;color:rgba(250,248,243,0.85);line-height:1.7;white-space:pre-wrap;word-break:break-word;text-align:left;max-height:22vh;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;}
+.lightbox-info .lb-design{font-size:14px;color:rgba(250,248,243,0.85);line-height:1.7;white-space:pre-wrap;word-break:break-word;text-align:left;max-height:22vh;overflow-y:auto;overscroll-behavior:auto;-webkit-overflow-scrolling:touch;}
 .lightbox-close{position:absolute;top:14px;right:14px;width:40px;height:40px;border-radius:50%;border:1px solid rgba(255,255,255,0.24);background:linear-gradient(160deg, rgba(255,255,255,0.22), rgba(255,255,255,0.05));backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%);color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform 0.3s var(--spring), background 0.3s ease;box-shadow:0 6px 18px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.25);}
 .lightbox-close:hover{transform:rotate(90deg) scale(1.05);background:rgba(255,255,255,0.22);}
 .lightbox-nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:44px;border-radius:50%;border:1px solid rgba(255,255,255,0.24);background:linear-gradient(160deg, rgba(255,255,255,0.22), rgba(255,255,255,0.05));backdrop-filter:blur(12px) saturate(150%);-webkit-backdrop-filter:blur(12px) saturate(150%);color:#fff;font-size:24px;cursor:pointer;display:none;align-items:center;justify-content:center;transition:all 0.3s var(--spring);z-index:3;box-shadow:0 6px 18px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.25);}
@@ -1029,6 +1070,8 @@ body::after{
 .answer-back{background:linear-gradient(150deg,#fffdf6,#f7efdf);color:#4a7c59;font-size:26px;font-weight:700;transform:rotateY(180deg);box-shadow:0 18px 44px rgba(201,169,110,0.4);}
 .answer-card.flip .answer-front{transform:rotateY(180deg);}
 .answer-card.flip .answer-back{transform:rotateY(360deg);}
+.answer-card.anim-flip{animation:answerFlip 0.7s cubic-bezier(.22,1,.36,1) both;}
+@keyframes answerFlip{0%{transform:rotateY(0deg);}100%{transform:rotateY(180deg);}}
 /* ===== 手机端精装修 ===== */
 @media (max-width: 520px){
     .main-wrap{padding:0 12px;}
@@ -1046,6 +1089,25 @@ body::after{
     .home-funcs{gap:4px 8px;}
     .brand-story .bs-text{font-size:13.5px;}
     .gallery-item img,.gallery-item video{height:150px;}
+    /* —— 后台手机端布局优化 —— */
+    .admin-grid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;}
+    .admin-card-name{font-size:13.5px;}
+    .admin-card-desc{font-size:10.5px;line-height:1.35;}
+    .db-record-actions{flex-wrap:wrap;}
+    .db-record-actions button{flex:1 1 46%;min-width:0;padding:9px 4px;font-size:11.5px;}
+    .db-record-actions .btn-view,.db-record-actions .btn-del{white-space:normal;line-height:1.3;}
+    .db-list-wrap{padding:12px;max-height:none;}
+    .gen-panel{padding:14px 0;}
+    .form-item input,.form-item textarea{font-size:14px;}
+    /* 订单选择弹窗列表项 */
+    #orderPickList label{font-size:12.5px;}
+    #orderPickList label span{line-height:1.5;}
+    /* 弹窗底部按钮两行不挤压 */
+    .modal-box .form-item{margin-bottom:13px;}
+}
+@media (max-width: 380px){
+    .admin-grid{grid-template-columns:repeat(2,1fr);}
+    .db-record-actions button{flex:1 1 100%;}
 }
 </style>
 </head>
@@ -1164,7 +1226,7 @@ body::after{
             </div>
             <!-- 臻选推荐 -->
             <div class="lux-picks">
-                <div class="lp-title">臻 选 推 荐<span class="lp-more" style="font-size:10px;color:var(--text-light);letter-spacing:1px;margin-left:6px;">点击图片查看详情</span></div>
+                <div class="lp-title">臻 选 推 荐<span class="lp-more" style="font-size:10px;color:var(--text-light);letter-spacing:1px;margin-left:6px;">点击图片查看详情</span><span onclick="openCustomContact()" style="display:inline-block;margin-left:8px;font-size:11px;color:#4a7c59;border:1px solid rgba(74,124,89,0.4);border-radius:999px;padding:2px 12px;cursor:pointer;letter-spacing:1px;">💬 联系定制 · ¥488 起</span></div>
                 <div class="lp-grid" id="luxPicksGrid"></div>
             </div>
         </div>
@@ -1210,27 +1272,36 @@ body::after{
         <h3 style="margin-bottom:14px;color:var(--text-dark)">✒️ 专属定制 · 手串预览</h3>
         <div class="customize-grid" id="customizeGrid">
             <div class="customize-left">
-                <div class="bracelet-box">
+                <!-- 手串预览（始终存在） -->
+                <div class="bracelet-box" id="braceletBox">
                     <svg id="braceletSvg" viewBox="0 0 240 240"></svg>
                 </div>
                 <div class="bracelet-actions">
                     <button class="btn btn-light" onclick="randomBracelet()">🎲 随机搭配</button>
                     <button class="btn btn-light" onclick="clearBracelet()">🧹 清空</button>
+                    <button class="btn btn-light" onclick="exportBraceletImg()">📤 导出图片</button>
                 </div>
                 <div style="display:flex;align-items:center;gap:14px;margin-top:10px;justify-content:center;">
                     <span style="font-size:13px;color:var(--text-light);">规格</span>
                     <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:var(--text-dark);cursor:pointer;"><input type="radio" name="bsize" value="8" checked onchange="braceletSizeChange()"> 8mm·22颗</label>
                     <label style="display:flex;align-items:center;gap:4px;font-size:13px;color:var(--text-dark);cursor:pointer;"><input type="radio" name="bsize" value="10" onchange="braceletSizeChange()"> 10mm·18颗</label>
                 </div>
-                <div class="bracelet-beads" id="braceletBeads"></div>
+                <!-- 珠子清单（仅手动选择时出现） -->
+                <div id="custBeads" style="display:none;">
+                    <div class="bracelet-beads" id="braceletBeads"></div>
+                </div>
             </div>
             <div class="customize-right">
                 <!-- 定制模式（一级标题=按钮，点开看内容） -->
                 <div class="cust-modes">
-                    <button class="cust-mode active" id="modeManual" onclick="switchCustMode('manual')">✋ 手动选择</button>
+                    <button class="cust-mode" id="modeManual" onclick="switchCustMode('manual')">✋ 手动选择</button>
                     <button class="cust-mode" id="modeBirth" onclick="switchCustMode('birth')">🎂 生辰定制</button>
                     <button class="cust-mode" id="modeHex" onclick="switchCustMode('hex')">🎴 摇卦定制</button>
                     <button class="cust-mode" id="modeRandom" onclick="switchCustMode('random')">🎲 随缘生成</button>
+                </div>
+                <!-- 联系定制 -->
+                <div class="cust-tier-row">
+                    <button class="cust-mode tier contact" onclick="openCustomContact()">💬 联系定制</button>
                 </div>
                 <!-- 手动选择 -->
                 <div id="custManual">
@@ -1265,7 +1336,8 @@ body::after{
                 <!-- 摇卦定制 -->
                 <div id="custHex" style="display:none;">
                     <h4 style="margin-bottom:8px;color:var(--text-dark)">🎴 摇卦定制</h4>
-                    <button class="btn btn-light" onclick="shakeHexagram()">一键摇卦</button>
+                    <p style="font-size:12px;color:var(--text-light);line-height:1.8;margin-bottom:10px;">心中默念所问之事，轻摇一卦，卦象自会给出启示。</p>
+                    <button class="btn" style="width:100%;" onclick="shakeHexagram()">🎲 摇卦</button>
                     <div id="hexagramResult" style="margin-top:12px;"></div>
                     <button class="btn btn-light" style="margin-top:10px;width:100%;" onclick="configBraceletByRandom()">💎 一键配置水晶</button>
                 </div>
@@ -1274,10 +1346,13 @@ body::after{
                     <h4 style="margin-bottom:8px;color:var(--text-dark)">🎲 随缘生成</h4>
                     <p style="font-size:12px;color:var(--text-light);line-height:1.8;margin-bottom:10px;">交给缘分——随机为你搭配一串水晶手串，点击下方按钮生成。</p>
                     <button class="btn" style="width:100%;" onclick="randomBracelet()">🎲 随缘生成一串</button>
+                    <button class="btn btn-light" style="margin-top:10px;width:100%;" onclick="openCustomContact()">💬 联系定制</button>
                 </div>
                 <hr style="margin:18px 0;border-color:var(--border-green)">
-                <h4 style="margin-bottom:8px;color:var(--text-dark)">📖 水晶五行常识</h4>
-                <div id="crystalKnowledge"></div>
+                <div id="custKnowledge">
+                    <h4 style="margin-bottom:8px;color:var(--text-dark)">📖 水晶五行常识</h4>
+                    <div id="crystalKnowledge"></div>
+                </div>
             </div>
         </div>
     </div>
@@ -1317,7 +1392,7 @@ body::after{
         <div class="admin-section-page" id="secUsers">
             <button class="back-btn" onclick="backToAdminHome()">← 返回</button>
             <h3 style="margin-bottom:6px;color:var(--text-dark)">👥 用户管理</h3>
-            <p style="font-size:12px;color:var(--text-light);margin-bottom:14px;">查看全部注册账号；密码为加密存储无法查看明文，可一键重置。</p>
+            <p style="font-size:12px;color:var(--text-light);margin-bottom:14px;">查看全部注册账号；可查看/选择删除该账号的订单、为账号添加订单（自动生成防伪码入库）、重置密码等。密码为加密存储无法查看明文。</p>
             <div class="db-list-wrap" id="usersListWrap" style="margin-top:0;">
                 <div class="empty-tip">正在加载用户...</div>
             </div>
@@ -1326,10 +1401,14 @@ body::after{
         <div class="admin-section-page" id="secOrders">
             <button class="back-btn" onclick="backToAdminHome()">← 返回</button>
             <h3 style="margin-bottom:6px;color:var(--text-dark)">📋 待处理订单</h3>
-            <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">客户下单后自动进入此列表；生成官方码后自动入库并完成订单。</p>
+            <p style="font-size:12px;color:var(--text-light);margin-bottom:10px;">客户下单后自动进入此列表：先「✨ 生成防伪码」入库，再「✅ 完成订单」标记发货；勾选多单可合并，合并后可一键拆分。</p>
             <div style="margin-bottom:12px;">
                 <input id="orderSearch" placeholder="🔍 搜索：订单号 / 订单密码 / 用户名 / 昵称 / 手机号 / 商品名" oninput="renderOrders()" style="width:100%;padding:12px 14px;border:2px solid var(--border-green);border-radius:12px;background:#f6fbf8;font-size:13px;box-sizing:border-box;">
                 <div style="font-size:11px;color:var(--text-light);margin-top:5px;">不输入时只显示待处理订单；输入关键词可查找全部订单（含已发货）。</div>
+                <div style="display:flex;gap:10px;margin-top:10px;">
+                    <button class="btn btn-light" style="flex:1;padding:10px 0;font-size:13px;" onclick="mergeSelectedOrders()">🧩 合并选中订单</button>
+                    <span style="font-size:12px;color:var(--text-light);align-self:center;" id="mergeSelInfo">已选 0 单</span>
+                </div>
             </div>
             <div class="db-list-wrap" id="ordersListWrap" style="margin-top:0;">
                 <div class="empty-tip">正在加载订单...</div>
@@ -1438,6 +1517,11 @@ body::after{
         <div class="admin-section-page" id="secDb">
             <button class="back-btn" onclick="backToAdminHome()">← 返回</button>
             <h3 style="margin-bottom:16px;color:var(--text-dark)">数据库记录管理</h3>
+        <div style="margin-bottom:12px;display:flex;flex-wrap:wrap;gap:8px;align-items:center;">
+            <button class="btn" style="width:auto;display:inline-flex;align-items:center;gap:6px;padding:10px 16px;" onclick="openAdminSection('secOrders')">📋 退回待处理订单</button>
+            <button class="btn btn-light" style="width:auto;display:inline-flex;align-items:center;gap:6px;padding:10px 16px;" onclick="addOrderForAnyUser()">➕ 为账号增加订单</button>
+        </div>
+        <div style="font-size:12px;color:var(--text-light);margin-bottom:12px;">「📋 退回待处理订单」：直接切换到待处理订单界面继续处理；「➕ 为账号增加订单」：为指定用户账号补建一笔订单。</div>
         <div class="db-layout">
             <div class="db-list-wrap" id="dbListWrap" style="margin-top:0;">
                 <div class="empty-tip">暂无记录</div>
@@ -1539,6 +1623,7 @@ body::after{
             <div class="form-item"><label>颜色（色值）</label><input id="crystalColor" type="color" value="#8fbfa3" style="padding:4px;height:44px;"></div>
             <div class="form-item"><label>五行</label><input id="crystalElement" placeholder="金 / 木 / 水 / 火 / 土"></div>
             <div class="form-item"><label>功效</label><textarea id="crystalMeaning" placeholder="净化、招财、辟邪..."></textarea></div>
+            <div class="form-item"><label>图片文件名（选填，放 Remy 文件夹）</label><input id="crystalImage" placeholder="例如 crystal1.jpg"></div>
             <div style="display:flex;gap:10px;">
                 <button class="btn" onclick="saveCrystal()">保存水晶</button>
                 <button class="btn btn-light" onclick="clearCrystalForm()">清空</button>
@@ -1656,7 +1741,7 @@ body::after{
 <div class="modal-mask" id="cartModal">
     <div class="modal-box" style="text-align:left;max-width:400px;">
         <h3 style="text-align:center;margin-bottom:10px;color:var(--text-dark);">🛒 购物车</h3>
-        <div id="cartList" style="max-height:44vh;overflow-y:auto;overscroll-behavior:contain;-webkit-overflow-scrolling:touch;"></div>
+        <div id="cartList" style="max-height:44vh;overflow-y:auto;overscroll-behavior:auto;-webkit-overflow-scrolling:touch;"></div>
         <div style="display:flex;justify-content:space-between;align-items:center;border-top:1px dashed var(--border-green);margin-top:12px;padding-top:12px;">
             <span style="font-size:13px;color:var(--text-light);">合计</span>
             <strong id="cartTotal" style="color:var(--danger-red);font-size:22px;"></strong>
@@ -1927,6 +2012,72 @@ body::after{
     </div>
 </div>
 
+<!-- 为账号添加订单（界面与「单个官方码生成」一致） -->
+<div class="modal-mask" id="orderAddModal" onclick="closeOrderAddModal()">
+    <div class="modal-box" style="text-align:left;max-width:420px;" onclick="event.stopPropagation()">
+        <h3 style="margin-bottom:4px;color:var(--text-dark);">➕ 为账号添加订单</h3>
+        <p style="font-size:12px;color:var(--text-light);margin:0 0 14px;" id="orderAddAccount"></p>
+        <div class="form-item">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <label>产品名称 *</label>
+                <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-light);cursor:pointer;font-weight:400;">
+                    <input type="checkbox" id="oaExpName" checked style="width:15px;height:15px;accent-color:var(--green-main);cursor:pointer;"> 导出
+                </label>
+            </div>
+            <input id="oaName" placeholder="白桦定制礼盒">
+        </div>
+        <div class="form-item">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <label>专属定制编号</label>
+                <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-light);cursor:pointer;font-weight:400;">
+                    <input type="checkbox" id="oaExpBatch" checked style="width:15px;height:15px;accent-color:var(--green-main);cursor:pointer;"> 导出
+                </label>
+            </div>
+            <input id="oaBatch" placeholder="留空则用订单号">
+        </div>
+        <div class="form-item">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+                <label>白桦寄语</label>
+                <label style="display:flex;align-items:center;gap:4px;font-size:12px;color:var(--text-light);cursor:pointer;font-weight:400;">
+                    <input type="checkbox" id="oaExpMsg" style="width:15px;height:15px;accent-color:var(--green-main);cursor:pointer;"> 导出
+                </label>
+            </div>
+            <textarea id="oaMsg" rows="2"></textarea>
+        </div>
+        <div class="form-item">
+            <label>图片文件名（扫码查询时显示，留空则不显示）</label>
+            <input id="oaImage" placeholder="例如 product1.jpg / 1.mp4">
+            <div style="font-size:12px;color:var(--text-light);margin-top:6px;">图片放在 Remy 文件夹，自动拼上基础地址。</div>
+        </div>
+        <div id="oaResult" style="display:none;background:#f6fbf8;border:1px solid var(--border-green);border-radius:12px;padding:12px;margin-bottom:14px;">
+            <div style="font-size:12px;color:var(--text-dark);line-height:1.9;" id="oaResultText"></div>
+        </div>
+        <div style="display:flex;gap:10px;">
+            <button class="btn" style="flex:1;" onclick="saveOrderAdd()">✨ 生成防伪码并创建订单</button>
+            <button style="flex:1;padding:12px;border:none;border-radius:10px;background:#e0ede7;color:var(--text-dark);cursor:pointer;" onclick="closeOrderAddModal()">取消</button>
+        </div>
+    </div>
+</div>
+
+<!-- 选择删除账号的订单 -->
+<div class="modal-mask" id="orderPickModal" onclick="closeOrderPickModal()">
+    <div class="modal-box" style="text-align:left;max-width:420px;" onclick="event.stopPropagation()">
+        <h3 style="margin-bottom:4px;color:var(--text-dark);">🗑️ 删除账号订单</h3>
+        <p style="font-size:12px;color:var(--text-light);margin:0 0 10px;" id="orderPickHint"></p>
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;">
+            <label style="display:flex;align-items:center;gap:5px;font-size:12px;color:var(--text-dark);cursor:pointer;">
+                <input type="checkbox" id="orderPickAll" onchange="togglePickAll(this.checked)" style="width:15px;height:15px;accent-color:var(--green-main);cursor:pointer;"> 全选
+            </label>
+            <span style="font-size:11px;color:var(--text-light);" id="orderPickCount">已选 0 单</span>
+        </div>
+        <div id="orderPickList" style="max-height:46vh;overflow-y:auto;overscroll-behavior:auto;-webkit-overflow-scrolling:touch;"></div>
+        <div style="display:flex;gap:10px;margin-top:14px;">
+            <button class="btn" style="flex:1;background:var(--danger-red);" onclick="confirmPickDeleteOrders()">🗑️ 删除选中</button>
+            <button style="flex:1;padding:12px;border:none;border-radius:10px;background:#e0ede7;color:var(--text-dark);cursor:pointer;" onclick="closeOrderPickModal()">取消</button>
+        </div>
+    </div>
+</div>
+
 <!-- 购买浏览画廊 -->
 <div class="modal-mask gallery-mask" id="galleryModal" onclick="closeGallery()">
     <div class="gallery-box" onclick="event.stopPropagation()">
@@ -2112,6 +2263,13 @@ function openAdminSection(id){
     if(sec) sec.classList.add('show');
     const home = document.getElementById('adminHome');
     if(home) home.style.display = 'none';
+    // 数据库记录管理：刷新订单关联状态（撤回待处理按钮依赖 orderList）
+    if(id === 'secDb'){
+        loadOrders().then(()=>renderDbList());
+    }
+    if(id === 'secRecycle'){
+        loadOrders().then(()=>loadRecycleBin());
+    }
 }
 function backToAdminHome(){
     document.querySelectorAll('.admin-section-page').forEach(p => p.classList.remove('show'));
@@ -2519,6 +2677,7 @@ function saveQrImg(){
         a.download = `白桦官方_${safeName}${batchPart}_${r.id}.jpg`;
         a.href = canvas.toDataURL("image/jpeg", 0.92);
         a.click();
+        logSession('exportImg', [r.id + '（' + (r.productName||'') + '）']);
         toast("卡片 JPG 已下载");
     }).catch(err=>{
         console.error(err);
@@ -2578,6 +2737,10 @@ function renderDbList(){
     </div>`;
     list.forEach(item=>{
         const timeStr = item.createTime || '-';
+        // 查找该官方码关联的订单（用于显示状态；仅已发货才显示退回按钮）
+        const linked = orderList.find(o => o.anti_code === item.id);
+        const linkedShipped = linked && linked.status === 'shipped';
+        const linkedStatus = linked ? (linked.status === 'shipped' ? '已发货' : (linked.status === 'merged' ? '已合并' : '待处理')) : '';
         html += `<div class="db-record" data-id="${item.id}">
             <div class="db-record-check">
                 <input type="checkbox" class="rec-chk" value="${item.id}" onchange="onRecordCheckChange()">
@@ -2593,11 +2756,13 @@ function renderDbList(){
                     <span>🔍 ${item.verifyCount||0}次</span>
                 </div>
                 <div class="db-record-time">⏰ 创建时间：${timeStr}</div>
+                ${linked ? `<div style="font-size:12px;color:var(--text-dark);margin:4px 0 6px;">📋 关联订单：${escapeHtml(linked.order_no)}　状态：<span style="color:${linked.status==='shipped'?'var(--green-main)':(linked.status==='merged'?'#c9a96e':'var(--danger-red)')};">${linkedStatus}</span></div>` : ''}
                 <div class="db-record-actions">
                     <button class="btn-view db-preview-btn" onclick="dbPreviewItem('${item.id}')">🖼️ 预览</button>
                     <button class="btn-view" onclick="previewRecord('${item.id}')">查看详情</button>
                     <button class="btn-view" onclick="setTracking('${item.id}')">📦 运单号</button>
                     <button class="btn-view" onclick="copyNfcCode()">📱 NFC码</button>
+                    ${linkedShipped ? `<button class="btn-del" style="background:#eaf4ee;color:var(--green-main);border:1px solid var(--border-green);" onclick="recallOrderByCode('${item.id}')">↩️ 退回待处理</button>` : ''}
                     <button class="btn-del" onclick="deleteRecord('${item.id}')">删除</button>
                 </div>
             </div>
@@ -2625,17 +2790,19 @@ function renderOrders(){
     const q = ((document.getElementById("orderSearch") || {}).value || '').trim().toLowerCase();
     let rows;
     if(q){
-        // 搜索模式：按订单号/订单密码/用户名/昵称/手机号/商品名查找全部订单（含已发货）
+        // 搜索模式：按订单号/订单密码/用户名/昵称/手机号/商品名查找全部订单（含已发货；不含已删除）
         rows = orderList.filter(o =>
+            o.status !== 'deleted' && (
             (o.order_no||'').toLowerCase().includes(q) ||
             (o.order_pwd||'').toLowerCase().includes(q) ||
             (o.username||'').toLowerCase().includes(q) ||
             (o.nickname||'').toLowerCase().includes(q) ||
             (o.phone||'').toLowerCase().includes(q) ||
             (o.product_name||'').toLowerCase().includes(q)
+            )
         );
     } else {
-        rows = orderList.filter(o => o.status !== 'shipped');
+        rows = orderList.filter(o => o.status !== 'shipped' && o.status !== 'merged' && o.status !== 'deleted');
     }
     if(!orderList.length){
         wrap.innerHTML = '<div class="empty-tip">暂无订单</div>';
@@ -2647,11 +2814,16 @@ function renderOrders(){
     }
     wrap.innerHTML = rows.map(o=>{
         const shipped = o.status === 'shipped';
+        const mergedResult = !shipped && /合并自：/.test(o.note || '');
         return `<div class="db-record" style="margin-bottom:12px;">
+            <div style="display:flex;align-items:center;gap:8px;padding:2px 0 8px;">
+                ${!shipped ? `<input type="checkbox" class="merge-chk" data-id="${o.id}" onchange="updateMergeSel()" style="width:18px;height:18px;accent-color:var(--green-main);cursor:pointer;">` : ''}
+                <span style="font-size:11px;color:var(--text-light);">${shipped?'已发货':(mergedResult?'已合并':'待处理')} · ${mergedResult?'可拆分':'选中可合并'}</span>
+            </div>
             <div class="db-record-main" style="margin-left:0;flex:1;min-width:0;">
                 <div class="db-record-header">
-                    <span class="db-record-id" style="color:${shipped?'var(--green-main)':'var(--danger-red)'};">${escapeHtml(o.order_no)}</span>
-                    <span style="font-size:11px;color:var(--text-light);">${shipped?'✅ 已发货':'⏳ 待处理'}　⏰ ${new Date(o.created_at).toLocaleString()}</span>
+                    <span class="db-record-id" style="color:${shipped?'var(--green-main)':(mergedResult?'#c9a96e':'var(--danger-red)')};">${escapeHtml(o.order_no)}</span>
+                    <span style="font-size:11px;color:var(--text-light);">${shipped?'✅ 已发货':(mergedResult?'🧩 已合并':'⏳ 待处理')}　⏰ ${new Date(o.created_at).toLocaleString()}</span>
                 </div>
                 <div class="db-record-body">
                     <span>📦 ${escapeHtml(o.product_name)}</span>
@@ -2666,29 +2838,35 @@ function renderOrders(){
                     地址：${escapeHtml(o.address||'—')}${o.note?'<br>备注：'+escapeHtml(o.note):''}
                 </div>
                 ${!shipped ? `<div style="background:#fff;border:1px dashed var(--border-green);border-radius:10px;padding:10px;margin-bottom:10px;">
-                    <div style="font-size:12px;font-weight:700;color:var(--text-dark);margin-bottom:8px;">🧾 生成官方码（自动入库并完成订单）</div>
+                    <div style="font-size:12px;font-weight:700;color:var(--text-dark);margin-bottom:8px;">🧾 防伪码（导出图片时自动生成入库并完成订单）</div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
                         <input id="ordName_${o.id}" value="${escapeHtml(o.product_name)}" placeholder="产品名称" style="padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;">
                         <input id="ordBatch_${o.id}" value="${escapeHtml(o.order_no)}" placeholder="专属定制编号" style="padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;">
                     </div>
                     <textarea id="ordMsg_${o.id}" rows="2" placeholder="白桦寄语（选填）" style="width:100%;padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;margin-bottom:8px;box-sizing:border-box;">${escapeHtml(o.note||'')}</textarea>
                     <input id="ordImg_${o.id}" placeholder="图片文件名（选填）如 product1.jpg" style="width:100%;padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;margin-bottom:8px;box-sizing:border-box;">
+                    ${o.anti_code ? `<div style="font-size:12px;color:var(--green-main);margin-bottom:8px;">✅ 官方码已生成：${escapeHtml(o.anti_code)}</div>` : ''}
                     <div style="display:flex;gap:8px;">
-                        <button class="btn" style="flex:1;padding:10px 0;font-size:13px;" onclick="completeOrder(${o.id})">✨ 生成官方码并完成</button>
-                        <button class="btn btn-light" style="flex:1;padding:10px 0;font-size:13px;" onclick="setOrderTracking(${o.id})">📦 填运单号</button>
+                        <button class="btn" style="flex:1;padding:12px 0;font-size:14px;background:var(--green-main);" onclick="exportOrderCodeImg(${o.id})">📷 导出防伪码图片</button>
+                        ${mergedResult ? `<button class="btn" style="flex:1;padding:12px 0;font-size:13px;" onclick="finishOrder(${o.id})">✅ 完成订单</button>` : ''}
                     </div>
                     ${o.tracking_no ? `<div style="font-size:12px;color:var(--green-main);margin-top:6px;">🚚 运单号：${escapeHtml(o.tracking_no)}</div>` : ''}
+                    <div style="display:flex;gap:8px;margin-top:8px;">
+                        ${mergedResult ? `<button class="btn btn-light" style="flex:1;padding:10px 0;font-size:13px;" onclick="splitMergedOrder(${o.id})">🔀 拆分此单</button>` : ''}
+                        <button class="btn-del" style="flex:1;padding:10px 0;font-size:13px;border-radius:10px;" onclick="deleteOrder(${o.id})">🗑️ 删除订单</button>
+                    </div>
                 </div>` : `
                 <div style="display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text-dark);margin-bottom:8px;flex-wrap:wrap;">
                     ${o.tracking_no ? `<span style="color:var(--green-main);">🚚 运单号：${escapeHtml(o.tracking_no)}</span><button class="btn-view" style="width:auto;padding:4px 10px;font-size:11px;" onclick="copyTracking('${escapeHtml(o.tracking_no)}')">📋 复制</button>` : '<span style="color:var(--text-light);">暂无运单号</span>'}
                     ${o.anti_code ? `<span style="color:var(--text-light);">官方码：${escapeHtml(o.anti_code)}</span>` : ''}
                     <button class="btn btn-light" style="width:auto;padding:4px 10px;font-size:11px;" onclick="setOrderTracking(${o.id})">📦 修改运单号</button>
+                    <button class="btn-del" style="width:auto;padding:4px 10px;font-size:11px;" onclick="recallShippedOrder(${o.id})">↩️ 撤回待处理</button>
                 </div>`}
             </div>
         </div>`;
     }).join('');
 }
-async function completeOrder(id){
+async function generateOrderCode(id){
     const o = orderList.find(x => x.id === id);
     if(!o) return;
     if(!currentAdminPwd) return toast("管理员密码已过期");
@@ -2698,7 +2876,7 @@ async function completeOrder(id){
     const image = (document.getElementById("ordImg_"+id).value || '').trim();
     if(!name) return toast("请填写产品名称");
     const code = generateId();
-    showLoading('正在生成官方码...');
+    showLoading('正在生成防伪码...');
     try {
         const { data, error } = await supabaseClient.rpc('insert_record', {
             p_pwd: currentAdminPwd, p_id: code, p_product_name: name, p_batch_no: batch,
@@ -2707,11 +2885,131 @@ async function completeOrder(id){
             p_image_url: image || null, p_export_name: true, p_export_batch: true
         });
         if(error || data === false){ toast("入库失败：" + (error ? error.message : "密码无效")); return; }
-        await supabaseClient.rpc('update_order', { p_id: id, p_status: 'shipped', p_anti_code: code, p_pwd: currentAdminPwd });
+        // 仅保存防伪码，订单仍为待处理
+        await supabaseClient.rpc('update_order', { p_id: id, p_anti_code: code, p_pwd: currentAdminPwd });
         await loadData();
         await loadOrders();
-        toast('✅ 官方码已生成并入库：' + code);
+        logSession('genOrderCode', ['订单 ' + o.order_no + ' → 防伪码 ' + code]);
+        toast('✅ 防伪码已生成并入库：' + code);
     } finally { hideLoading(); }
+}
+async function finishOrder(id){
+    const o = orderList.find(x => x.id === id);
+    if(!o) return;
+    if(!currentAdminPwd) return toast("管理员密码已过期");
+    let code = o.anti_code || '';
+    if(!code){
+        // 未生成防伪码时，提示先填产品名称并自动生成
+        const el = document.getElementById("ordName_"+id);
+        const name = (el && el.value || '').trim();
+        if(!name) return toast("请先生成防伪码，或先填写产品名称");
+        code = generateId();
+        const batch = (document.getElementById("ordBatch_"+id).value || '').trim();
+        const msg = (document.getElementById("ordMsg_"+id).value || '').trim();
+        const image = (document.getElementById("ordImg_"+id).value || '').trim();
+        showLoading('正在生成防伪码并完成订单...');
+        try {
+            const { data, error } = await supabaseClient.rpc('insert_record', {
+                p_pwd: currentAdminPwd, p_id: code, p_product_name: name, p_batch_no: batch,
+                p_message: msg, p_export_msg: !!msg, p_create_time: new Date().toLocaleString(),
+                p_create_timestamp: Date.now(), p_verify_count: 0, p_verify_history: [],
+                p_image_url: image || null, p_export_name: true, p_export_batch: true
+            });
+            if(error || data === false){ toast("入库失败：" + (error ? error.message : "密码无效")); return; }
+            await supabaseClient.rpc('update_order', { p_id: id, p_status: 'shipped', p_anti_code: code, p_pwd: currentAdminPwd });
+            await loadData();
+            await loadOrders();
+            logSession('finishOrder', ['订单 ' + o.order_no + ' → 防伪码 ' + code]);
+            toast('✅ 防伪码已生成并完成订单：' + code);
+        } finally { hideLoading(); }
+        return;
+    }
+    if(!confirm("确定完成订单 " + o.order_no + " 吗？（已生成防伪码 " + code + "）")) return;
+    showLoading('正在完成订单...');
+    try {
+        const { error } = await supabaseClient.rpc('update_order', { p_id: id, p_status: 'shipped', p_pwd: currentAdminPwd });
+        if(error) return toast("完成订单失败：" + error.message);
+        await loadOrders();
+        logSession('finishOrder', ['订单 ' + o.order_no + '（防伪码 ' + code + '）']);
+        toast('✅ 订单已完成（防伪码：' + code + '）');
+    } finally { hideLoading(); }
+}
+async function exportOrderCodeImg(id){
+    const o = orderList.find(x => x.id === id);
+    if(!o) return;
+    if(!currentAdminPwd) return toast("管理员密码已过期");
+    let code = o.anti_code || '';
+    // 若尚未生成防伪码：先按表单内容生成并入数据库，再导出
+    if(!code){
+        const name = (document.getElementById("ordName_"+id).value || '').trim();
+        const batch = (document.getElementById("ordBatch_"+id).value || '').trim();
+        const msg = (document.getElementById("ordMsg_"+id).value || '').trim();
+        const image = (document.getElementById("ordImg_"+id).value || '').trim();
+        if(!name) return toast("请先填写产品名称");
+        code = generateId();
+        showLoading('正在生成防伪码并完成订单...');
+        try {
+            const { data, error } = await supabaseClient.rpc('insert_record', {
+                p_pwd: currentAdminPwd, p_id: code, p_product_name: name, p_batch_no: batch,
+                p_message: msg, p_export_msg: !!msg, p_create_time: new Date().toLocaleString(),
+                p_create_timestamp: Date.now(), p_verify_count: 0, p_verify_history: [],
+                p_image_url: image || null, p_export_name: true, p_export_batch: true
+            });
+            if(error || data === false){ toast("入库失败：" + (error ? error.message : "密码无效")); return; }
+            // 保存防伪码并自动完成订单
+            await supabaseClient.rpc('update_order', { p_id: id, p_status: 'shipped', p_anti_code: code, p_pwd: currentAdminPwd });
+            await loadData();
+            await loadOrders();
+        } finally { hideLoading(); }
+    } else if(o.status !== 'shipped'){
+        // 已有防伪码但订单未完成：自动完成订单
+        showLoading('正在完成订单...');
+        try {
+            await supabaseClient.rpc('update_order', { p_id: id, p_status: 'shipped', p_pwd: currentAdminPwd });
+            await loadOrders();
+        } finally { hideLoading(); }
+    }
+    // 用订单信息构建官方码卡片并导出 JPG
+    const rec = db.records.find(r => r.id === code) || { productName: o.product_name, batchNo: o.order_no, message: o.note || '' };
+    const holder = document.createElement('div');
+    holder.id = 'orderExportHolder';
+    holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:320px;';
+    holder.innerHTML = '<div class="export-card">' +
+        '<div class="export-title">白 桦 定 制</div>' +
+        '<div class="export-product">品名：' + escapeHtml(rec.productName || '') + '</div>' +
+        '<div class="export-num">专属定制编号：' + escapeHtml(rec.batchNo || '') + '</div>' +
+        '<div class="export-code">官方码：<span>' + escapeHtml(code) + '</span></div>' +
+        '<div class="export-qr" id="orderExpQr"></div>' +
+        (rec.message ? '<div class="export-msg"><div class="export-msg-label">💌 白桦寄语</div><div class="export-msg-text">' + escapeHtml(rec.message) + '</div></div>' : '') +
+        '<div class="export-tip">手机浏览器扫码查询正品</div>' +
+    '</div>';
+    document.body.appendChild(holder);
+    try {
+        new QRCode(holder.querySelector('#orderExpQr'), { text: getVerifyUrl(code), width: 150, height: 150, colorDark: '#274637', colorLight: '#ffffff' });
+    } catch(e){ document.body.removeChild(holder); return toast("二维码生成失败：" + e.message); }
+    showLoading('正在导出防伪码图片...');
+    try {
+        const cardEl = holder.querySelector('.export-card');
+        const canvas = await html2canvas(cardEl, {
+            backgroundColor: '#ffffff', scale: 2, useCORS: true,
+            onclone: (doc)=>{
+                const h = doc.getElementById('orderExportHolder');
+                if(h){ h.style.left = '0'; h.style.top = '0'; h.style.position = 'absolute'; }
+            }
+        });
+        const a = document.createElement('a');
+        const safeName = (rec.productName || '订单').replace(/[\\\/:*?"<>|]/g,'_');
+        a.download = '白桦官方_' + safeName + '_' + code + '.jpg';
+        a.href = canvas.toDataURL('image/jpeg', 0.92);
+        a.click();
+        logSession('exportCodeImg', ['订单 ' + o.order_no + ' → ' + code]);
+        toast('✅ 防伪码卡片已导出：' + code);
+    } catch(err){
+        toast("导出失败：" + err.message);
+    } finally {
+        document.body.removeChild(holder);
+        hideLoading();
+    }
 }
 async function setOrderTracking(id){
     const o = orderList.find(x => x.id === id);
@@ -2726,6 +3024,7 @@ async function setOrderTracking(id){
         const { error } = await supabaseClient.rpc('update_order', { p_id: id, p_tracking_no: t, p_pwd: currentAdminPwd });
         if(error) return toast("保存失败：" + error.message);
         await loadOrders();
+        logSession('setTracking', ['订单 ' + o.order_no + ' → ' + t]);
         toast('✅ 运单号已保存');
     } finally { hideLoading(); }
 }
@@ -2743,6 +3042,7 @@ async function setTracking(code){
             const { error } = await supabaseClient.rpc('update_order', { p_id: o.id, p_tracking_no: t, p_pwd: currentAdminPwd });
             if(error) return toast("保存失败：" + error.message);
             await loadOrders();
+            logSession('setTracking', ['订单 ' + o.order_no + ' → ' + t]);
             toast('✅ 运单号已保存');
         } finally { hideLoading(); }
         return;
@@ -2773,7 +3073,65 @@ async function setTracking(code){
         if(no){
             await supabaseClient.rpc('update_order', { p_id: no.id, p_status: 'shipped', p_tracking_no: t, p_anti_code: code, p_pwd: currentAdminPwd });
         }
+        logSession('setTracking', ['补建订单 ' + orderNo + ' → ' + t + '（账号 ' + uname + '）']);
         toast('✅ 已为用户 ' + uname + ' 补建订单并保存运单号');
+    } finally { hideLoading(); }
+}
+async function recallShippedOrder(id){
+    if(!currentAdminPwd) return toast("管理员密码已过期");
+    const o = orderList.find(x => x.id === id);
+    if(!o || o.status !== 'shipped') return toast("该订单不是已发货状态");
+    if(!confirm("确定将订单 " + o.order_no + " 撤回为待处理吗？\n\n撤回后需重新完成发货。")) return;
+    showLoading('正在撤回订单...');
+    try {
+        const { error } = await supabaseClient.rpc('update_order', { p_id: id, p_status: 'pending', p_pwd: currentAdminPwd });
+        if(error) return toast("撤回失败：" + error.message);
+        await loadOrders();
+        logSession('recallOrder', ['订单 ' + o.order_no]);
+        toast('✅ 订单 ' + o.order_no + ' 已撤回待处理');
+    } finally { hideLoading(); }
+}
+async function deleteOrder(id){
+    if(!currentAdminPwd) return toast("管理员密码已过期");
+    const o = orderList.find(x => x.id === id);
+    if(!o) return toast("订单不存在");
+    const hasCode = !!o.anti_code;
+    const msg = hasCode
+        ? "确定删除订单 " + o.order_no + " 吗？\n\n该订单将移入回收站（可在回收站恢复）；对应防伪码记录也将移入回收站。"
+        : "确定删除订单 " + o.order_no + " 吗？\n\n订单将移入回收站，可在回收站恢复。";
+    if(!confirm(msg)) return;
+    showLoading('正在删除订单...');
+    try {
+        // 有防伪码时同步软删除官方码记录（→ 回收站）
+        if(hasCode){
+            const { error: e1 } = await supabaseClient.rpc('soft_delete_records', { p_ids: [o.anti_code], p_pwd: currentAdminPwd });
+            if(e1) return toast("同步删除防伪码失败：" + e1.message);
+        }
+        // 订单软删除（标记 deleted，保留数据供回收站恢复/彻底删除）
+        const { error: e2 } = await supabaseClient.rpc('update_order', { p_id: id, p_status: 'deleted', p_pwd: currentAdminPwd });
+        if(e2) return toast("删除订单失败：" + e2.message);
+        await loadOrders();
+        await loadData();
+        await loadRecycleBin();
+        logSession('delOrder', [o.order_no + (hasCode ? '（防伪码 ' + o.anti_code + '）' : '')]);
+        toast('✅ 订单已删除（回收站可恢复）' + (hasCode ? '，防伪码已同步进回收站' : ''));
+    } finally { hideLoading(); }
+}
+async function recallOrderByCode(code){
+    // 数据库记录 → 将关联的已发货订单撤回为待处理
+    if(!currentAdminPwd) return toast("管理员密码已过期");
+    const o = orderList.find(x => x.anti_code === code);
+    if(!o) return toast("未找到关联订单");
+    if(o.status !== 'shipped') return toast("仅已发货订单可退回待处理");
+    if(!confirm("确定将订单 " + o.order_no + " 退回为待处理吗？\n\n退回后需在「待处理订单」中重新完成发货。" )) return;
+    showLoading('正在退回订单...');
+    try {
+        const { error } = await supabaseClient.rpc('update_order', { p_id: o.id, p_status: 'pending', p_pwd: currentAdminPwd });
+        if(error) return toast("退回失败：" + error.message);
+        await loadOrders();
+        await loadData();
+        logSession('recallOrder', ['订单 ' + o.order_no + '（防伪码 ' + code + '）']);
+        toast('✅ 订单 ' + o.order_no + ' 已退回待处理');
     } finally { hideLoading(); }
 }
 
@@ -2816,6 +3174,9 @@ function renderUsers(list){
                     <span>🕒 登录：${escapeHtml(timeAgoStr(u.last_login_at))}${u.last_login_at ? '（' + new Date(u.last_login_at).toLocaleString() + '）' : ''}</span>
                 </div>
                 <div class="db-record-actions">
+                    <button class="btn-view" onclick="viewUserOrders('${u.username.replace(/'/g,"\\'")}')">📋 查看订单</button>
+                    <button class="btn-del" style="background:#eaf4ee;color:var(--green-main);border:1px solid var(--border-green);" onclick="deleteUserOrders('${u.username.replace(/'/g,"\\'")}')">🗑️ 删除订单</button>
+                    <button class="btn-view" onclick="addOrderForUser('${u.username.replace(/'/g,"\\'")}')">➕ 增加订单</button>
                     <button class="btn-view" onclick="resetUserPwd('${u.username.replace(/'/g,"\\'")}')">🔑 重置密码</button>
                     <button class="btn-del" onclick="deleteUser('${u.username.replace(/'/g,"\\'")}')">🗑️ 删除账号</button>
                 </div>
@@ -2827,8 +3188,157 @@ async function deleteUser(username){
         const { data, error } = await supabaseClient.rpc('delete_user', { p_username: username, p_pwd: pwd });
         if(error || data === false) return toast("删除失败：" + (error ? error.message : "密码无效"));
         await loadUsers();
+        logSession('delUser', [username]);
         toast('✅ 账号 ' + username + ' 已删除');
     });
+}
+async function viewUserOrders(username){
+    if(!currentAdminPwd) return toast("管理员密码已过期");
+    if(!orderList.length) await loadOrders();
+    const orders = orderList.filter(o => o.username === username && o.status !== 'deleted');
+    if(!orders.length) return toast("该账号暂无订单");
+    const lines = orders.map(o => {
+        const st = o.status === 'shipped' ? '已发货' : (o.status === 'merged' ? '已合并' : '待处理');
+        return `${o.order_no}｜${o.product_name}｜¥${o.final_price}｜${st}${o.anti_code ? '｜码:' + o.anti_code : ''}`;
+    }).join('\n');
+    alert("账号 " + username + " 的订单（" + orders.length + " 笔）：\n\n" + lines);
+}
+
+// ===== 为账号添加订单（弹窗，界面与「单个官方码生成」一致）=====
+let orderAddUsername = '';
+function openOrderAddModal(username){
+    orderAddUsername = username || '';
+    document.getElementById("orderAddAccount").innerText = '为账号：' + escapeHtml(username) + ' 添加一笔订单（自动生成防伪码入官方码库并绑定订单）';
+    document.getElementById("oaName").value = '';
+    document.getElementById("oaBatch").value = '';
+    document.getElementById("oaMsg").value = '';
+    document.getElementById("oaImage").value = '';
+    document.getElementById("oaExpName").checked = true;
+    document.getElementById("oaExpBatch").checked = true;
+    document.getElementById("oaExpMsg").checked = false;
+    const res = document.getElementById("oaResult");
+    res.style.display = 'none';
+    document.getElementById("orderAddModal").classList.add("show");
+}
+function closeOrderAddModal(){
+    document.getElementById("orderAddModal").classList.remove("show");
+}
+async function saveOrderAdd(){
+    if(!currentAdminPwd) return toast("管理员密码已过期");
+    const pname = document.getElementById("oaName").value.trim();
+    if(!pname) return toast("请填写产品名称");
+    const batch = document.getElementById("oaBatch").value.trim();
+    const msg = document.getElementById("oaMsg").value.trim();
+    const image = document.getElementById("oaImage").value.trim();
+    const orderNo = 'BH' + Date.now().toString().slice(-8);
+    const pwd = String(Math.floor(100000 + Math.random() * 900000));
+    const batchNo = batch || orderNo;
+    showLoading('正在生成防伪码并创建订单...');
+    try {
+        // 1) 生成防伪码并入官方码库（与「单个官方码生成」一致，含导出开关）
+        const code = generateId();
+        const { data: d1, error: e1 } = await supabaseClient.rpc('insert_record', {
+            p_pwd: currentAdminPwd, p_id: code, p_product_name: pname, p_batch_no: batchNo,
+            p_message: msg, p_export_msg: document.getElementById("oaExpMsg").checked,
+            p_create_time: new Date().toLocaleString(), p_create_timestamp: Date.now(),
+            p_verify_count: 0, p_verify_history: [],
+            p_image_url: image || null,
+            p_export_name: document.getElementById("oaExpName").checked,
+            p_export_batch: document.getElementById("oaExpBatch").checked
+        });
+        if(e1 || d1 === false){ toast("防伪码入库失败：" + (e1 ? e1.message : "密码无效")); return; }
+        // 2) 创建订单
+        const { data, error } = await supabaseClient.rpc('submit_order', {
+            p_order_no: orderNo, p_order_pwd: pwd, p_username: orderAddUsername, p_nickname: '',
+            p_phone: '', p_product_name: pname, p_amount: 0, p_discount: 0, p_final: 0,
+            p_trade_no: '', p_receiver: '', p_address: '', p_note: msg
+        });
+        if(error || data === false){ toast("创建失败：" + (error ? error.message : "未知错误")); return; }
+        // 3) 绑定防伪码
+        await loadOrders();
+        const no = orderList.find(x => x.order_no === orderNo);
+        if(no){
+            await supabaseClient.rpc('update_order', { p_id: no.id, p_status: 'pending', p_anti_code: code, p_pwd: currentAdminPwd });
+        }
+        await loadData();
+        await loadOrders();
+        const res = document.getElementById("oaResult");
+        res.style.display = 'block';
+        res.innerHTML = '<div style="font-size:12px;color:var(--text-dark);line-height:1.9;">✅ 已为 <b>' + escapeHtml(orderAddUsername) + '</b> 创建订单<br>📋 订单号：<b>' + orderNo + '</b><br>🔑 订单密码：' + pwd + '<br>🧾 防伪码：<b>' + code + '</b><br><span style="color:var(--green-main);">已自动入官方码库并绑定订单（待处理列表可见）</span></div>';
+        logSession('addOrder', ['账号 ' + orderAddUsername + ' → ' + pname + '（' + orderNo + '，防伪码 ' + code + '）']);
+        toast('✅ 已为 ' + orderAddUsername + ' 创建订单并生成防伪码');
+    } finally { hideLoading(); }
+}
+function addOrderForUser(username){
+    openOrderAddModal(username);
+}
+function addOrderForAnyUser(){
+    const u = prompt("请输入要增加订单的用户账号（用户名）：");
+    if(u === null) return;
+    const uname = u.trim();
+    if(!uname) return toast("用户名不能为空");
+    openOrderAddModal(uname);
+}
+
+// ===== 选择删除账号的订单 =====
+let pickUsername = '';
+let pickOrders = [];
+function openOrderPickModal(username){
+    pickUsername = username || '';
+    const orders = orderList.filter(o => o.username === username && o.status !== 'deleted');
+    if(!orders.length) return toast("该账号暂无订单");
+    pickOrders = orders;
+    document.getElementById("orderPickHint").innerText = '账号：' + escapeHtml(username) + '（共 ' + orders.length + ' 笔，勾选要删除的订单）';
+    const list = document.getElementById("orderPickList");
+    list.innerHTML = orders.map((o,i) => {
+        const st = o.status === 'shipped' ? '已发货' : (o.status === 'merged' ? '已合并' : '待处理');
+        return `<label style="display:flex;align-items:center;gap:8px;padding:9px 8px;border-radius:10px;background:#f6fbf8;margin-bottom:6px;cursor:pointer;font-size:13px;color:var(--text-dark);">
+            <input type="checkbox" class="opk-chk" data-id="${o.id}" onchange="updatePickCount()" style="width:16px;height:16px;accent-color:var(--green-main);cursor:pointer;">
+            <span style="flex:1;min-width:0;">${escapeHtml(o.order_no)}<br><span style="font-size:11px;color:var(--text-light);">${escapeHtml(o.product_name)} ｜ ¥${o.final_price} ｜ ${st}</span></span>
+        </label>`;
+    }).join('');
+    document.getElementById("orderPickAll").checked = false;
+    updatePickCount();
+    document.getElementById("orderPickModal").classList.add("show");
+}
+function closeOrderPickModal(){
+    document.getElementById("orderPickModal").classList.remove("show");
+}
+function togglePickAll(checked){
+    document.querySelectorAll('.opk-chk').forEach(c => c.checked = checked);
+    updatePickCount();
+}
+function updatePickCount(){
+    const n = document.querySelectorAll('.opk-chk:checked').length;
+    const el = document.getElementById("orderPickCount");
+    if(el) el.innerText = '已选 ' + n + ' 单';
+}
+async function confirmPickDeleteOrders(){
+    if(!currentAdminPwd) return toast("管理员密码已过期");
+    const ids = [...document.querySelectorAll('.opk-chk:checked')].map(c => Number(c.dataset.id));
+    if(!ids.length) return toast("请先勾选要删除的订单");
+    const sel = pickOrders.filter(o => ids.includes(o.id));
+    if(!confirm("删除选中的 " + sel.length + " 笔订单？\n\n订单与对应防伪码记录将移入回收站，可恢复。")) return;
+    if(!confirm("再次确认：删除后订单与对应防伪码将进入回收站。")) return;
+    showLoading('正在删除订单...');
+    try {
+        for(const o of sel){
+            if(o.anti_code){
+                await supabaseClient.rpc('soft_delete_records', { p_ids: [o.anti_code], p_pwd: currentAdminPwd });
+            }
+            await supabaseClient.rpc('update_order', { p_id: o.id, p_status: 'deleted', p_pwd: currentAdminPwd });
+        }
+        await loadOrders();
+        await loadData();
+        await loadRecycleBin();
+        closeOrderPickModal();
+        logSession('delOrder', ['账号 ' + pickUsername + ' ' + sel.length + ' 单']);
+        toast('✅ 已删除 ' + sel.length + ' 笔订单（含防伪码，已进回收站）');
+    } finally { hideLoading(); }
+}
+function deleteUserOrders(username){
+    if(!orderList.length){ loadOrders().then(()=>openOrderPickModal(username)); return; }
+    openOrderPickModal(username);
 }
 async function resetUserPwd(username){
     if(!currentAdminPwd) return toast("管理员密码已过期");
@@ -2839,35 +3349,132 @@ async function resetUserPwd(username){
         const hash = await sha256hex(salt + "888888");
         const { data, error } = await supabaseClient.rpc('reset_user_pwd', { p_username: username, p_salt: salt, p_pwd_hash: hash, p_pwd: currentAdminPwd });
         if(error || data === false) return toast("重置失败：" + (error ? error.message : "密码无效"));
+        logSession('resetPwd', [username]);
         toast('✅ 已重置，新密码为 888888');
     } finally { hideLoading(); }
 }
 
+/* ================== 订单合并 ================== */
+function updateMergeSel(){
+    const n = document.querySelectorAll('.merge-chk:checked').length;
+    const info = document.getElementById("mergeSelInfo");
+    if(info) info.innerText = '已选 ' + n + ' 单';
+}
+async function mergeSelectedOrders(){
+    if(!currentAdminPwd) return toast("管理员密码已过期");
+    const ids = [...document.querySelectorAll('.merge-chk:checked')].map(c => Number(c.dataset.id));
+    if(ids.length < 2) return toast("请至少勾选 2 个订单进行合并");
+    const sel = orderList.filter(o => ids.includes(o.id));
+    const newName = prompt("为合并后的订单命名（重命名）：", sel.map(o=>o.product_name).join('、').slice(0,30));
+    if(newName === null) return;
+    const name = String(newName).trim();
+    if(!name) return toast("请填写合并订单的名称");
+    if(!confirm("确定合并选中的 " + sel.length + " 个订单为「" + name + "」吗？合并后原订单将标记为已合并。")) return;
+    showLoading('正在合并订单...');
+    try {
+        const orderNo = 'BH' + Date.now().toString().slice(-8);
+        const orderPwd = String(Math.floor(100000 + Math.random() * 900000));
+        const total = sel.reduce((s,o)=>s+(Number(o.final_price)||0),0);
+        const first = sel[0];
+        const note = '合并自：' + sel.map(o=>o.order_no).join('、');
+        const so = await supabaseClient.rpc('submit_order', {
+            p_order_no: orderNo, p_order_pwd: orderPwd,
+            p_username: (first && first.username) || '', p_nickname: (first && first.nickname) || '',
+            p_phone: (first && first.phone) || '',
+            p_product_name: name, p_amount: total, p_discount: 0,
+            p_final: total, p_trade_no: (first && first.trade_no) || '',
+            p_receiver: (first && first.receiver) || '', p_address: (first && first.address) || '', p_note: note
+        });
+        if(so.error || so.data === false){ toast("合并失败：" + (so.error ? so.error.message : '未知错误')); return; }
+        // 原订单标记为已合并
+        for(const o of sel){
+            await supabaseClient.rpc('update_order', { p_id: o.id, p_status: 'merged', p_pwd: currentAdminPwd });
+        }
+        await loadOrders();
+        logSession('mergeOrders', ['合并 ' + sel.length + ' 单 → ' + name + '（' + orderNo + '）']);
+        toast('✅ 已合并 ' + sel.length + ' 单为「' + name + '」，合计 ¥' + total);
+    } finally { hideLoading(); }
+}
+async function splitMergedOrder(id){
+    if(!currentAdminPwd) return toast("管理员密码已过期");
+    const o = orderList.find(x => x.id === id);
+    if(!o) return toast("订单不存在");
+    // 合并订单靠备注「合并自：BHxxx、BHyyy」识别（状态可能是 pending/shipped/被撤回后 pending）
+    const m = (o.note || '').match(/合并自：([^;]+)/);
+    const nos = m ? m[1].split('、').map(s=>s.trim()).filter(Boolean) : [];
+    if(!nos.length) return toast("无法识别被合并的原订单");
+    if(!confirm("确定拆分订单 " + o.order_no + " 吗？\n\n将恢复以下原订单为待处理：\n" + nos.join('\n'))) return;
+    showLoading('正在拆分订单...');
+    try {
+        for(const no of nos){
+            const orig = orderList.find(x => x.order_no === no && x.id !== o.id);
+            if(orig){
+                await supabaseClient.rpc('update_order', { p_id: orig.id, p_status: 'pending', p_pwd: currentAdminPwd });
+            }
+        }
+        // 删除合并后的新订单
+        const { error } = await supabaseClient.rpc('delete_order', { p_id: id, p_pwd: currentAdminPwd });
+        if(error) return toast("拆分失败：" + error.message);
+        await loadOrders();
+        logSession('splitOrder', ['拆分 ' + o.order_no + ' → 恢复 ' + nos.length + ' 单']);
+        toast('✅ 已拆分，恢复 ' + nos.length + ' 个原订单为待处理');
+    } finally { hideLoading(); }
+}
 function renderRecycleBin(){
     const wrap = document.getElementById("recycleBinWrap");
-    if(!db.recycleBin || db.recycleBin.length === 0){
+    const deletedOrders = orderList.filter(o => o.status === 'deleted');
+    const hasRecords = db.recycleBin && db.recycleBin.length > 0;
+    if(!hasRecords && !deletedOrders.length){
         wrap.innerHTML = '<div class="empty-tip">暂无已删除记录</div>';
         return;
     }
-    let html = `<div class="db-list-header"><h4>回收站</h4><span>共 ${db.recycleBin.length} 条</span></div>`;
-    db.recycleBin.forEach(item => {
-        html += `<div class="db-record" style="opacity:0.85;background:#fff8f8;border-color:#e8caca;">
-            <div class="db-record-main" style="margin-left:0;flex:1;min-width:0;">
-                <div class="db-record-header">
-                    <span class="db-record-id">${item.id}</span>
-                    <span style="font-size:11px;color:var(--danger-red);">已删 ${item.deletedAt||'-'}</span>
+    let html = '';
+    // 已删除订单区块
+    if(deletedOrders.length){
+        html += `<div class="db-list-header"><h4>已删除订单</h4><span>共 ${deletedOrders.length} 单</span></div>`;
+        deletedOrders.forEach(o => {
+            html += `<div class="db-record" style="opacity:0.85;background:#fff8f8;border-color:#e8caca;">
+                <div class="db-record-main" style="margin-left:0;flex:1;min-width:0;">
+                    <div class="db-record-header">
+                        <span class="db-record-id">📋 ${escapeHtml(o.order_no)}</span>
+                        <span style="font-size:11px;color:var(--danger-red);">已删除</span>
+                    </div>
+                    <div class="db-record-body">
+                        <span>📦 ${escapeHtml(o.product_name)}</span>
+                        <span>💰 ¥${o.final_price}</span>
+                        <span>👤 ${escapeHtml(o.username || '—')}</span>
+                    </div>
+                    <div style="font-size:11px;color:var(--text-light);margin:4px 0;">⏰ ${new Date(o.created_at).toLocaleString()}${o.anti_code ? '　官方码：' + escapeHtml(o.anti_code) : ''}</div>
+                    <div class="db-record-actions">
+                        <button class="btn-view" onclick="restoreDeletedOrder(${o.id})">↩️ 恢复</button>
+                        <button class="btn-del" onclick="purgeDeletedOrder(${o.id})">🗑️ 彻底删除</button>
+                    </div>
                 </div>
-                <div class="db-record-body">
-                    <span>📦 ${item.productName||'-'}</span>
-                    <span>🏷️ ${item.batchNo||'-'}</span>
+            </div>`;
+        });
+    }
+    // 已删除官方码记录区块
+    if(hasRecords){
+        html += `<div class="db-list-header"><h4>已删除官方码记录</h4><span>共 ${db.recycleBin.length} 条</span></div>`;
+        db.recycleBin.forEach(item => {
+            html += `<div class="db-record" style="opacity:0.85;background:#fff8f8;border-color:#e8caca;">
+                <div class="db-record-main" style="margin-left:0;flex:1;min-width:0;">
+                    <div class="db-record-header">
+                        <span class="db-record-id">${item.id}</span>
+                        <span style="font-size:11px;color:var(--danger-red);">已删 ${item.deletedAt||'-'}</span>
+                    </div>
+                    <div class="db-record-body">
+                        <span>📦 ${item.productName||'-'}</span>
+                        <span>🏷️ ${item.batchNo||'-'}</span>
+                    </div>
+                    <div class="db-record-actions">
+                        <button class="btn-view" onclick="restoreRecord('${item.id}')">↩️ 恢复</button>
+                        <button class="btn-del" onclick="purgeRecord('${item.id}')">🗑️ 彻底删除</button>
+                    </div>
                 </div>
-                <div class="db-record-actions">
-                    <button class="btn-view" onclick="restoreRecord('${item.id}')">↩️ 恢复</button>
-                    <button class="btn-del" onclick="purgeRecord('${item.id}')">🗑️ 彻底删除</button>
-                </div>
-            </div>
-        </div>`;
-    });
+            </div>`;
+        });
+    }
     wrap.innerHTML = html;
 }
 
@@ -2934,8 +3541,9 @@ async function purgeRecord(id){
 }
 
 async function batchPurge(){
-    if(db.recycleBin.length === 0) return toast('回收站为空');
-    askPassword('清空回收站', '即将彻底删除 '+db.recycleBin.length+' 条记录，请输入管理员密码确认', async (pwd)=>{
+    const deletedOrders = orderList.filter(o => o.status === 'deleted');
+    if(db.recycleBin.length === 0 && deletedOrders.length === 0) return toast('回收站为空');
+    askPassword('清空回收站', '即将彻底删除 '+db.recycleBin.length+' 条记录与 '+deletedOrders.length+' 笔订单，请输入管理员密码确认', async (pwd)=>{
         toast("🗑️ 正在清空回收站，请稍候...");
         await new Promise(r => setTimeout(r, 300));
         const ids = db.recycleBin.map(r => r.id);
@@ -2953,15 +3561,72 @@ async function batchPurge(){
                 successCount++;
             }
         }
+        // 彻底删除已删除订单（连同防伪码）
+        for(const o of deletedOrders){
+            if(o.anti_code && db.recycleBin.some(r => r.id === o.anti_code)){
+                await supabaseClient.rpc('purge_recycle_bin_one', { p_id: o.anti_code, p_pwd: pwd });
+            }
+            await supabaseClient.rpc('delete_order', { p_id: o.id, p_pwd: pwd });
+            successCount++;
+        }
         if(successCount === 0){
             toast("❌ 清空失败，请检查管理员密码");
             return;
         }
         currentAdminPwd = pwd;
         sessionStorage.setItem('birch_admin_pwd', pwd);
+        await loadOrders();
         await loadRecycleBin();
         logSession('clearRecycle', names.length ? names : ['清空回收站']);
         toast("✅ 回收站已清空");
+    });
+}
+
+// 回收站：恢复已删除订单（回到待处理；若防伪码在回收站则一并恢复）
+async function restoreDeletedOrder(id){
+    if(!currentAdminPwd) return toast("管理员密码已过期");
+    const o = orderList.find(x => x.id === id && x.status === 'deleted');
+    if(!o) return toast("订单不存在或未在回收站");
+    showLoading('正在恢复订单...');
+    try {
+        if(o.anti_code){
+            const inBin = db.recycleBin && db.recycleBin.some(r => r.id === o.anti_code);
+            if(inBin){
+                await supabaseClient.rpc('restore_records', { p_ids: [o.anti_code], p_pwd: currentAdminPwd });
+            }
+        }
+        const { error } = await supabaseClient.rpc('update_order', { p_id: id, p_status: 'pending', p_pwd: currentAdminPwd });
+        if(error) return toast("恢复失败：" + error.message);
+        await loadOrders();
+        await loadData();
+        await loadRecycleBin();
+        logSession('restore', ['订单 ' + o.order_no]);
+        toast('✅ 订单 ' + o.order_no + ' 已恢复为待处理');
+    } finally { hideLoading(); }
+}
+
+// 回收站：彻底删除订单（连同防伪码彻底清除）
+async function purgeDeletedOrder(id){
+    if(!currentAdminPwd) return toast("管理员密码已过期");
+    const o = orderList.find(x => x.id === id && x.status === 'deleted');
+    if(!o) return toast("订单不存在或未在回收站");
+    askPassword('彻底删除订单', '彻底删除订单 ' + o.order_no + ' 后不可恢复，请输入管理员密码确认', async (pwd)=>{
+        showLoading('正在彻底删除订单...');
+        try {
+            if(o.anti_code){
+                const inBin = db.recycleBin && db.recycleBin.some(r => r.id === o.anti_code);
+                if(inBin){
+                    await supabaseClient.rpc('purge_recycle_bin_one', { p_id: o.anti_code, p_pwd: pwd });
+                }
+            }
+            const { error } = await supabaseClient.rpc('delete_order', { p_id: id, p_pwd: pwd });
+            if(error) return toast("彻底删除失败：" + error.message);
+            await loadOrders();
+            await loadData();
+            await loadRecycleBin();
+            logSession('purge', ['订单 ' + o.order_no]);
+            toast('✅ 订单 ' + o.order_no + ' 已彻底删除');
+        } finally { hideLoading(); }
     });
 }
 
@@ -3124,6 +3789,7 @@ function keepaliveSaveArchives(list){
     } catch(e){ console.error('keepalive 存档失败', e); return false; }
 }
 window.addEventListener('pagehide', flushOnClose);
+window.addEventListener('beforeunload', flushOnClose);
 document.addEventListener('visibilitychange', function(){
     if(document.visibilityState === 'hidden') flushOnClose();
 });
@@ -3143,7 +3809,16 @@ function getActionLabel(action){
     const map = {
         'create':'生成单条','batchCreate':'批量生成','delete':'删除单条',
         'batchDelete':'批量删除','restore':'恢复记录','edit':'编辑记录',
-        'restoreArchive':'存档恢复','purge':'彻底删除','clearRecycle':'清空回收站'
+        'restoreArchive':'存档恢复','purge':'彻底删除','clearRecycle':'清空回收站',
+        'genOrderCode':'生成防伪码','finishOrder':'完成订单','exportCodeImg':'导出防伪码图片',
+        'setTracking':'填运单号','mergeOrders':'合并订单','splitOrder':'拆分订单',
+        'delOrder':'删除订单','recallOrder':'撤回订单','addOrder':'为账号增加订单',
+        'delUser':'删除账号','resetPwd':'重置密码',
+        'saveMail':'邮件设置','saveBrand':'品牌理念','saveContact':'联系方式',
+        'saveNotice':'活动通知','saveWheel':'转盘优惠','saveJoin':'分成政策',
+        'chgAdminPwd':'修改管理员密码','saveGallery':'保存商品','delGallery':'删除商品',
+        'toggleFeatured':'精选切换','toggleRecommended':'臻选切换','moveGallery':'商品排序',
+        'saveCrystal':'保存水晶','delCrystal':'删除水晶','exportImg':'导出卡片图片'
     };
     return map[action] || action;
 }
@@ -3825,6 +4500,12 @@ function initScrollElastic(container){
     container.addEventListener('touchend', release, {passive:true});
     container.addEventListener('touchcancel', release, {passive:true});
 }
+function initScrollChain(){
+    // 滚动链完全交由浏览器原生实现：各内层容器已设 overscroll-behavior:auto，
+    // 内层列表滑到底/顶后继续滑动，浏览器会自动带动上一级（外层大框/页面），
+    // 位移与手指一致、带惯性跟手，与小板块滚动保持一致。
+    // （旧内核不支持原生滚动链时，保持默认行为即可，不做手动干预以免破坏手感。）
+}
 function initTapRipple(){
     document.addEventListener('pointerdown', function(e){
         if(e.isPrimary === false) return;
@@ -3853,6 +4534,7 @@ window.onload = async function(){
     initTouchParticles();
     initElasticScroll();
     initTapRipple();
+    initScrollChain();
     initLightboxSwipe();
     initScrollElastic(document.querySelector('.gallery-box'));
     const host = location.hostname || "";
@@ -3933,6 +4615,7 @@ async function changeAdminPassword(){
     document.getElementById("oldPwd").value = "";
     document.getElementById("newPwd").value = "";
     document.getElementById("confirmPwd").value = "";
+    logSession('chgAdminPwd', ['管理员密码已修改']);
     toast("管理员密码修改成功，下次登录请使用新密码");
 }
 
@@ -4095,13 +4778,14 @@ function copySelectedIds(){
     if(ids.length === 0) return toast("请先勾选要复制的记录");
     const text = ids.join('\n');
     if(navigator.clipboard){
-        navigator.clipboard.writeText(text).then(()=>toast("已复制选中 "+ids.length+" 条官方码"));
+        navigator.clipboard.writeText(text).then(()=>{ toast("已复制选中 "+ids.length+" 条官方码"); if(currentAdminPwd) logSession('exportImg', ['复制 ' + ids.length + ' 条官方码']); });
     }else{
         const ta = document.createElement("textarea");
         ta.value = text; document.body.appendChild(ta);
         ta.select(); document.execCommand("copy");
         document.body.removeChild(ta);
         toast("已复制选中 "+ids.length+" 条官方码");
+        if(currentAdminPwd) logSession('exportImg', ['复制 ' + ids.length + ' 条官方码']);
     }
 }
 
@@ -4146,17 +4830,28 @@ const BRAND_QUOTES = [
     '愿每一件水晶，传递善与希望。'
 ];
 let quoteTimer = null;
+// 轮流展示品牌文字，并在中间插入「正在加载」
 function startQuoteRotation(el){
     if(!el) return;
     clearInterval(quoteTimer);
+    const seq = [];
+    BRAND_QUOTES.forEach((q,i)=>{
+        seq.push(q);
+        seq.push('⏳ 正在加载');
+    });
     let idx = 0;
-    el.innerText = BRAND_QUOTES[0];
-    el.classList.add('hl-show');
+    const apply = ()=>{
+        const isLoad = seq[idx] === '⏳ 正在加载';
+        el.innerText = seq[idx];
+        el.classList.toggle('hl-loading', isLoad);
+        el.classList.add('hl-show');
+    };
+    apply();
     quoteTimer = setInterval(()=>{
-        idx = (idx + 1) % BRAND_QUOTES.length;
+        idx = (idx + 1) % seq.length;
         el.classList.remove('hl-show');
-        setTimeout(()=>{ el.innerText = BRAND_QUOTES[idx]; el.classList.add('hl-show'); }, 450);
-    }, 2400);
+        setTimeout(apply, 450);
+    }, 1800);
 }
 function stopQuoteRotation(){ clearInterval(quoteTimer); quoteTimer = null; }
 function hideHeroLoading(){
@@ -4268,6 +4963,7 @@ async function saveBrandText(){
             p_pwd: currentAdminPwd
         });
         if(error || data === false){ toast("保存失败："+(error?.message||"密码无效")); return; }
+        logSession('saveBrand', [text.slice(0,30)]);
         toast("✅ 品牌理念已保存");
         loadBrandStory();
     } finally { hideLoading(); }
@@ -4639,6 +5335,7 @@ async function saveMailTo(){
         const { data, error } = await supabaseClient.rpc('set_app_data', { p_key: 'birch_mail_to', p_data: JSON.stringify(val), p_pwd: currentAdminPwd });
         if(error || data === false){ toast("保存失败：" + (error ? error.message : "密码无效")); return; }
         MAIL_TO = val;
+        logSession('saveMail', [list.length + ' 个邮箱']);
         toast('✅ 已保存 ' + list.length + ' 个收件邮箱');
     } finally { hideLoading(); }
 }
@@ -4720,8 +5417,8 @@ function openPurchase(){
     document.getElementById("infoTitle").innerText = "🛒 购买咨询";
     document.getElementById("infoContent").innerHTML = '<p style="font-size:14px;">臻品橱窗中的每一件水晶都是匠心之作。</p><p style="font-size:14px;">想购买或咨询库存 / 价格：</p>'
         + '<div style="display:flex;gap:10px;margin-top:6px;">'
-        + '<button class="btn" style="flex:1;" onclick="closeInfoModal();openWheel()">🎁 购买享优惠</button>'
-        + '<button class="btn btn-light" style="flex:1;" onclick="closeInfoModal();openContact()">💬 微信咨询</button>'
+        + '<button class="btn btn-light" style="flex:1;" onclick="closeInfoModal();openWheel()">🎁 购买享优惠</button>'
+        + '<button class="btn" style="flex:1;" onclick="closeInfoModal();openContact()">💬 微信咨询</button>'
         + '</div>'
         + crystalKnowledgeHtml();
     const btn = document.getElementById("infoExtraBtn");
@@ -5086,7 +5783,7 @@ function drawFortune(){
 function openAnswerBook(){
     document.getElementById("answerModal").style.zIndex = '11950';
     const card = document.getElementById("answerCard");
-    card.classList.remove('flip');
+    card.classList.remove('flip','anim-flip');
     document.getElementById("answerBack").innerText = '✨';
     document.getElementById("answerModal").classList.add("show");
     lockScroll(true);
@@ -5099,15 +5796,65 @@ function drawAnswer(){
     const card = document.getElementById("answerCard");
     const back = document.getElementById("answerBack");
     // 先归位，再翻，保证每次都有动效；背面文字为正（背面面片自带 180° 抵消）
-    card.classList.remove('flip');
+    card.classList.remove('anim-flip');
     back.innerText = ANSWERS[Math.floor(Math.random()*ANSWERS.length)];
-    requestAnimationFrame(()=>{
-        requestAnimationFrame(()=>{ card.classList.add('flip'); });
-    });
+    void card.offsetWidth; // 强制回流，动画每次重播
+    card.classList.add('anim-flip');
 }
 function copyNfcCode(){
     copyText(NFC_URL);
+    if(currentAdminPwd && document.getElementById("genPanel").classList.contains("show")){
+        logSession('exportImg', ['复制 NFC 码']);
+    }
 }
+/* ================== 手势返回：返回上一级，不直接退出网页 ================== */
+(function(){
+    function safeCall(name){
+        try { if(typeof window[name] === 'function'){ window[name](); return true; } } catch(e){}
+        return false;
+    }
+    function closeTopOverlay(){
+        const modalIds = ['nfcOverlay','fortuneModal','answerModal','wheelModal','buyModal','cartModal','infoModal','verifyOptModal','loginModal','wechatModal','myOrdersModal','orderDetailModal','orderOkModal','pwdModal','confirmPwdModal','editRecordModal','galleryFormModal'];
+        const closes = {
+            nfcOverlay:'closeNfc', fortuneModal:'closeFortune', answerModal:'closeAnswerBook',
+            wheelModal:'closeWheel', buyModal:'closeBuyModal', cartModal:'closeCart',
+            infoModal:'closeInfoModal', verifyOptModal:'closeVerifyOpts', loginModal:'closeLoginModal',
+            wechatModal:'closeWechatModal', myOrdersModal:'closeMyOrdersModal',
+            orderDetailModal:'closeOrderDetail', orderOkModal:'closeOrderOkModal',
+            pwdModal:'closePwdModal', confirmPwdModal:'closeConfirmPwdModal'
+        };
+        for(const id of modalIds){
+            const el = document.getElementById(id);
+            if(el && el.classList.contains('show')){
+                if(!safeCall(closes[id] || 'close'+id.charAt(0).toUpperCase()+id.slice(1))){
+                    el.classList.remove('show');
+                    if(window.anyOverlayOpen && !anyOverlayOpen()) lockScroll(false);
+                }
+                history.pushState({},'');
+                return true;
+            }
+        }
+        const gallery = document.getElementById('galleryModal');
+        if(gallery && gallery.classList.contains('show')){ closeGallery(); history.pushState({},''); return true; }
+        const lb = document.getElementById('lightbox');
+        if(lb && lb.classList.contains('show')){ closeLightbox(); history.pushState({},''); return true; }
+        const scan = document.getElementById('scanModal');
+        if(scan && getComputedStyle(scan).display !== 'none'){ safeCall('closeScan'); history.pushState({},''); return true; }
+        // 后台：有打开的区块先回后台首页
+        const sec = document.querySelector('.admin-section-page.show');
+        if(sec && typeof backToAdminHome === 'function'){ backToAdminHome(); history.pushState({},''); return true; }
+        // 面板：回到官网主页
+        const hp = document.getElementById('homePanel');
+        if(hp && getComputedStyle(hp).display === 'none'){
+            if(typeof backHome === 'function'){ backHome(); }
+            history.pushState({},'');
+            return true;
+        }
+        return false;
+    }
+    window.addEventListener('popstate', function(){ closeTopOverlay(); });
+    history.pushState({},'');
+})();
 let BRAND_JOIN = '· 分销返佣：每售出 1 单返佣 20%\n· 月销满 10 单：返佣升至 25%\n· 月销满 30 单：返佣升至 30%\n· 你只负责卖，我们制作发货';
 async function loadJoin(){
     try {
@@ -5126,6 +5873,7 @@ async function saveJoin(){
         const { data, error } = await supabaseClient.rpc('set_app_data', { p_key:'birch_join', p_data: JSON.stringify(text), p_pwd: currentAdminPwd });
         if(error || data === false){ toast("保存失败："+(error?.message||"密码无效")); return; }
         BRAND_JOIN = text;
+        logSession('saveJoin', [text.slice(0,30)]);
         toast("✅ 分成政策已保存");
     } finally { hideLoading(); }
 }
@@ -5155,7 +5903,7 @@ let crystals = [];
 async function loadCrystals(){
     const { data, error } = await supabaseClient.from('crystals').select('*').order('id');
     if(error){ console.error('加载水晶失败:', error); crystals = []; }
-    else crystals = (data || []).map(c => ({ id: c.id, name: c.name, color: c.color, element: c.element, meaning: c.meaning }));
+    else crystals = (data || []).map(c => ({ id: c.id, name: c.name, color: c.color, element: c.element, meaning: c.meaning, image: c.image || '', imageUrl: c.image || '' }));
     renderCrystalPalette();
     renderCrystalKnowledge();
     renderCrystalAdmin();
@@ -5215,9 +5963,14 @@ function drawBracelet(){
     if(!svg) return;
     const n = braceletBeads.length;
     const br = braceletSize === 8 ? 11 : 14;
-    let defs = '<defs>';
+    // 平面圆环 + 3D 立体珠子
+    let defs = '<defs><radialGradient id="shade3d" cx="32%" cy="28%" r="95%"><stop offset="0%" stop-color="#ffffff"/><stop offset="45%" stop-color="rgba(255,255,255,0)"/><stop offset="100%" stop-color="#000000"/></radialGradient>';
     braceletBeads.forEach((b,i)=>{
-        defs += `<radialGradient id="bd${i}" cx="35%" cy="30%" r="80%"><stop offset="0%" stop-color="${shade(b.color,45)}"/><stop offset="55%" stop-color="${b.color}"/><stop offset="100%" stop-color="${shade(b.color,-45)}"/></radialGradient>`;
+        if(b.imageUrl){
+            defs += `<clipPath id="cp${i}"><circle cx="0" cy="0" r="${br}"/></clipPath>`;
+        } else {
+            defs += `<radialGradient id="bd${i}" cx="30%" cy="26%" r="90%"><stop offset="0%" stop-color="${shade(b.color,95)}"/><stop offset="22%" stop-color="${shade(b.color,55)}"/><stop offset="48%" stop-color="${shade(b.color,18)}"/><stop offset="78%" stop-color="${shade(b.color,-30)}"/><stop offset="100%" stop-color="${shade(b.color,-60)}"/></radialGradient>`;
+        }
     });
     defs += '</defs>';
     let inner = defs + '<circle cx="120" cy="120" r="104" fill="none" stroke="#c9a96e" stroke-width="3" opacity="0.4"/>';
@@ -5225,14 +5978,28 @@ function drawBracelet(){
         for(let i=0;i<n;i++){
             const a=(i/n)*Math.PI*2 - Math.PI/2;
             const x=120+Math.cos(a)*92, y=120+Math.sin(a)*92;
-            inner += `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${br}" fill="url(#bd${i})" stroke="rgba(0,0,0,0.22)" stroke-width="1"/><ellipse cx="${(x-br*0.28).toFixed(1)}" cy="${(y-br*0.32).toFixed(1)}" rx="${(br*0.38).toFixed(1)}" ry="${(br*0.24).toFixed(1)}" fill="rgba(255,255,255,0.6)" transform="rotate(-30 ${x.toFixed(1)} ${y.toFixed(1)})"/>`;
+            const b = braceletBeads[i];
+            let bead;
+            if(b.imageUrl){
+                const src = escapeHtml(b.imageUrl.startsWith('http') ? b.imageUrl : REMY_BASE_URL + b.imageUrl);
+                bead = `<image href="${src}" x="${(x-br).toFixed(1)}" y="${(y-br).toFixed(1)}" width="${(br*2).toFixed(1)}" height="${(br*2).toFixed(1)}" preserveAspectRatio="xMidYMid slice" clip-path="url(#cp${i})"/>` +
+                       `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${br}" fill="none" stroke="rgba(0,0,0,0.35)" stroke-width="1"/>` +
+                       `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${br}" fill="url(#shade3d)" opacity="0.35"/>` +
+                       `<ellipse cx="${(x-br*0.34).toFixed(1)}" cy="${(y-br*0.4).toFixed(1)}" rx="${(br*0.4).toFixed(1)}" ry="${(br*0.22).toFixed(1)}" fill="rgba(255,255,255,0.55)" transform="rotate(-32 ${x.toFixed(1)} ${y.toFixed(1)})"/>`;
+            } else {
+                bead = `<circle cx="${x.toFixed(1)}" cy="${y.toFixed(1)}" r="${br}" fill="url(#bd${i})" stroke="rgba(0,0,0,0.3)" stroke-width="1"/>` +
+                       `<ellipse cx="${(x-br*0.36).toFixed(1)}" cy="${(y-br*0.42).toFixed(1)}" rx="${(br*0.5).toFixed(1)}" ry="${(br*0.3).toFixed(1)}" fill="rgba(255,255,255,0.5)" transform="rotate(-32 ${x.toFixed(1)} ${y.toFixed(1)})"/>` +
+                       `<ellipse cx="${(x-br*0.44).toFixed(1)}" cy="${(y-br*0.5).toFixed(1)}" rx="${(br*0.16).toFixed(1)}" ry="${(br*0.09).toFixed(1)}" fill="rgba(255,255,255,0.95)" transform="rotate(-32 ${x.toFixed(1)} ${y.toFixed(1)})"/>` +
+                       `<ellipse cx="${(x+br*0.32).toFixed(1)}" cy="${(y+br*0.36).toFixed(1)}" rx="${(br*0.34).toFixed(1)}" ry="${(br*0.18).toFixed(1)}" fill="rgba(0,0,0,0.16)"/>`;
+            }
+            inner += bead;
         }
     } else {
         inner += '<text x="120" y="118" text-anchor="middle" font-size="14" fill="#6b5d4d">点击右侧水晶</text><text x="120" y="138" text-anchor="middle" font-size="13" fill="#6b5d4d">加入你的手串</text>';
     }
     svg.innerHTML = inner;
     if(beadsWrap){
-        beadsWrap.innerHTML = braceletBeads.map((b,i)=>`<span class="bb-chip"><i style="background:${escapeHtml(b.color)}"></i>${escapeHtml(b.name)}<span style="cursor:pointer;color:var(--danger-red);" onclick="removeBead(${i})">✕</span></span>`).join('');
+        beadsWrap.innerHTML = braceletBeads.map((b,i)=>`<span class="bb-chip">${b.imageUrl?`<img src="${escapeHtml(b.imageUrl.startsWith('http')?b.imageUrl:REMY_BASE_URL+b.imageUrl)}" style="width:14px;height:14px;border-radius:50%;object-fit:cover;">`:`<i style="background:${escapeHtml(b.color)}"></i>`}${escapeHtml(b.name)}<span style="cursor:pointer;color:var(--danger-red);" onclick="removeBead(${i})">✕</span></span>`).join('');
     }
 }
 function shade(hex, amt){
@@ -5315,23 +6082,30 @@ function calcBazi(){
         out.style.display="block"; out.innerHTML="请填写完整的出生日期与时辰"; return;
     }
     const isLunar = document.querySelector('input[name=baziCal]:checked').value==='lunar';
-    let sy=y, sm=m, sd=d;
-    if(isLunar){
-        const s=lunar2solar(y,m,d);
-        if(!s){ out.style.display="block"; out.innerHTML="暂仅支持 1900-2100 年的阴历换算"; return; }
-        sy=s.y; sm=s.m; sd=s.d;
+    let lunar, sy=y, sm=m, sd=d;
+    try {
+        if(typeof Lunar === 'undefined'){ out.style.display="block"; out.innerHTML="日历组件未加载，请刷新重试"; return; }
+        const hour = hIdx === 0 ? 23 : (hIdx * 2 - 1); // 子时=23点，丑时=1点...
+        if(isLunar){
+            // 阴历必须带时辰，否则时柱会错
+            lunar = Lunar.fromYmdHms(y, m, d, hour, 0, 0);
+            const s = lunar.getSolar();
+            sy = s.getYear(); sm = s.getMonth(); sd = s.getDay();
+        } else {
+            lunar = Solar.fromYmdHms(y, m, d, hour, 0, 0).getLunar();
+        }
+    } catch(e){
+        out.style.display="block"; out.innerHTML="日期无效，请检查后重试"; return;
     }
-    // 年柱（立春换年）
-    const effYear = (new Date(sy,sm-1,sd) >= getTermDate(sy, 2)) ? sy : (sy - 1);
-    const yg=GAN[(effYear-4)%10], yz=ZHI[(effYear-4)%12];
-    // 月柱（节气定月 + 五虎遁）
-    const mzIdx = monthZhiBySolar(sy, sm, sd);
-    const mg=GAN[(((effYear-4)%10)%5*2 + 2 + ((mzIdx-2+12)%12)) % 10], mz=ZHI[mzIdx];
-    // 日柱（1900-1-1 甲戌日锚点）
-    const dayNum=Math.floor((new Date(sy,sm-1,sd).getTime() - new Date(1900,0,1).getTime())/86400000);
-    const dg=GAN[((dayNum%10)+10)%10], dz=ZHI[((dayNum+10)%12+12)%12];
-    // 时柱（五鼠遁）
-    const hg=GAN[(GAN.indexOf(dg)%5*2+hIdx)%10], hz=ZHI[hIdx];
+    // 四柱（万年历库计算：立春换年、节气定月、日/时柱均准确）
+    const ygz = lunar.getYearInGanZhi();
+    const mgz = lunar.getMonthInGanZhi();
+    const dgz = lunar.getDayInGanZhi();
+    const hgz = lunar.getTimeInGanZhi();
+    const yg=ygz.charAt(0), yz=ygz.charAt(1);
+    const mg=mgz.charAt(0), mz=mgz.charAt(1);
+    const dg=dgz.charAt(0), dz=dgz.charAt(1);
+    const hg=hgz.charAt(0), hz=hgz.charAt(1);
     const els=[GAN_EL[GAN.indexOf(yg)],ZHI_EL[ZHI.indexOf(yz)],GAN_EL[GAN.indexOf(mg)],ZHI_EL[ZHI.indexOf(mz)],GAN_EL[GAN.indexOf(dg)],ZHI_EL[ZHI.indexOf(dz)],GAN_EL[GAN.indexOf(hg)],ZHI_EL[ZHI.indexOf(hz)]];
     const count={木:0,火:0,土:0,金:0,水:0};
     els.forEach(e=>count[e]++);
@@ -5384,6 +6158,20 @@ function toggleCustomizeFullscreen(){
     document.getElementById("customizePanel").classList.toggle('customize-fullscreen');
 }
 /* 摇一卦 */
+const TRIGRAM_OF = {'111':'乾','110':'兑','101':'离','100':'震','011':'巽','010':'坎','001':'艮','000':'坤'};
+const TRI_NATURE = {乾:'天',兑:'泽',离:'火',震:'雷',巽:'风',坎:'水',艮:'山',坤:'地'};
+const TRI_ELEMENT = {乾:'金',兑:'金',离:'火',震:'木',巽:'木',坎:'水',艮:'土',坤:'土'};
+const HEX_NAMES = {
+    '乾乾':'乾为天','乾坤':'天地否','乾震':'天雷无妄','乾巽':'天风姤','乾坎':'天水讼','乾离':'天火同人','乾艮':'天山遁','乾兑':'天泽履',
+    '兑乾':'泽天夬','兑坤':'泽地萃','兑震':'泽雷随','兑巽':'泽风大过','兑坎':'泽水困','兑离':'泽火革','兑艮':'泽山咸','兑兑':'兑为泽',
+    '离乾':'火天大有','离坤':'火地晋','离震':'火雷噬嗑','离巽':'火风鼎','离坎':'火水未济','离离':'离为火','离艮':'火山旅','离兑':'火泽睽',
+    '震乾':'雷天大壮','震坤':'雷地豫','震震':'震为雷','震巽':'雷风恒','震坎':'雷水解','震离':'雷火丰','震艮':'雷山小过','震兑':'雷泽归妹',
+    '巽乾':'风天小畜','巽坤':'风地观','巽震':'风雷益','巽巽':'巽为风','巽坎':'风水涣','巽离':'风火家人','巽艮':'风山渐','巽兑':'风泽中孚',
+    '坎乾':'水天需','坎坤':'水地比','坎震':'水雷屯','坎巽':'水风井','坎坎':'坎为水','坎离':'水火既济','坎艮':'水山蹇','坎兑':'水泽节',
+    '艮乾':'山天大畜','艮坤':'山地剥','艮震':'山雷颐','艮巽':'山风蛊','艮坎':'山水蒙','艮离':'山火贲','艮艮':'艮为山','艮兑':'山泽损',
+    '坤乾':'地天泰','坤坤':'坤为地','坤震':'地雷复','坤巽':'地风升','坤坎':'地水师','坤离':'地火明夷','坤艮':'地山谦','坤兑':'地泽临'
+};
+let lastHex = null;
 function shakeHexagram(){
     const out = document.getElementById("hexagramResult");
     const lines = [];
@@ -5391,22 +6179,53 @@ function shakeHexagram(){
         const coins = [0,1,2].map(()=>Math.random()<0.5?2:3);
         lines.push(coins.reduce((a,b)=>a+b,0) % 2 === 1 ? 1 : 0);
     }
-    const yang = lines.filter(x=>x===1).length;
-    const pool = [
-        '顺应自然，张弛有度，近期宜稳中求进。',
-        '阴阳平衡方为大道，先静心，再行事。',
-        '此时蓄势，不必急于求成，贵人将至。',
-        '心诚则灵，坚守本心，水到渠成。',
-        '小有波折，但终归圆满，保持平和。',
-        '时机渐熟，大胆行动，但勿忘留三分余地。'
-    ];
-    const reading = pool[(yang + lines[0] + lines[5]) % pool.length];
+    const low = TRIGRAM_OF[lines.slice(0,3).join('')];
+    const high = TRIGRAM_OF[lines.slice(3,6).join('')];
+    const name = HEX_NAMES[high + low] || (high + low);
+    lastHex = {lines, low, high, name};
     out.style.display="block";
-    out.innerHTML = `本卦（自下而上）：<br><div style="font-family:Consolas,Menlo,monospace;font-size:16px;line-height:1.5;letter-spacing:2px;">${lines.map(l=>l?'▅▅▅▅▅':'▅▅　▅▅').join('<br>')}</div><br>阴阳：${yang} 阳 / ${6-yang} 阴<br>解：${reading}<br>平衡建议：${yang>=4 ? '偏阳，宜补水降火、佩戴深色水晶静心' : (yang<=2 ? '偏阴，宜补火土、佩戴暖色水晶提气' : '阴阳调和，随心而为')}`;
+    // 上卦在上（5、4、3 爻），下卦在下（2、1、0 爻）
+    let hexHtml = '';
+    for(let i=5;i>=0;i--){
+        if(i===2) hexHtml += '<div class="hex-trigram-gap"></div>';
+        hexHtml += lines[i]
+            ? '<div class="hex-row"><span class="hseg on"></span><span class="hseg on"></span><span class="hseg on"></span></div>'
+            : '<div class="hex-row"><span class="hseg on"></span><span class="hseg gap"></span><span class="hseg on"></span></div>';
+    }
+    const yang = lines.filter(x=>x===1).length;
+    // 解卦内容（自动展示）
+    const lowEl = TRI_ELEMENT[low], highEl = TRI_ELEMENT[high];
+    let rel;
+    if(lowEl===highEl) rel = '上卦 ' + high + ' 与下卦 ' + low + ' 五行皆属「' + lowEl + '」，同气相求，专注一事最易成。';
+    else if(SHENG[lowEl]===highEl) rel = '下卦 ' + low + '（' + lowEl + '）生上卦 ' + high + '（' + highEl + '），根基生发、气机向上，属吉象。';
+    else if(SHENG[highEl]===lowEl) rel = '上卦 ' + high + '（' + highEl + '）生下卦 ' + low + '（' + lowEl + '），上者扶助、泽被于下，多得贵人襄助。';
+    else if(KE[lowEl]===highEl) rel = '下卦 ' + low + '（' + lowEl + '）克上卦 ' + high + '（' + highEl + '），宜以柔克刚、稳中求进，不宜强争。';
+    else rel = '上卦 ' + high + '（' + highEl + '）克下卦 ' + low + '（' + lowEl + '），此局宜顺势而为，待时而动。';
+    let yinyang;
+    if(yang>=5) yinyang = '阳爻极盛，行动力强而锐气足，唯易急躁，宜沉稳守心、留有余地。';
+    else if(yang===4) yinyang = '阳气偏盛，正当主动进取之时，记得给身边人多留三分。';
+    else if(yang===3) yinyang = '阴阳平衡、不偏不倚，顺其自然即是上策。';
+    else if(yang===2) yinyang = '阴气偏盛，宜蓄力静养，先稳后动，贵人自会现身。';
+    else yinyang = '阴爻极盛，宜沉潜内省、厚积薄发，静待转机。';
+    const balance = yang>=4 ? '偏阳，宜补水降火、佩戴深色水晶静心' : (yang<=2 ? '偏阴，宜补火土、佩戴暖色水晶提气' : '阴阳调和，随心而为');
+    out.innerHTML =
+        '<div class="hex-layout">' +
+            '<div class="hex-col hex-left">' +
+                '<div class="hex-name">' + name + '</div>' +
+                '<div class="hex-sub">上卦 ' + high + '（' + TRI_NATURE[high] + '） · 下卦 ' + low + '（' + TRI_NATURE[low] + '）</div>' +
+                '<div class="hex-draw">' + hexHtml + '</div>' +
+                '<div class="hex-info"><span>☰ 阳爻 ' + yang + '</span><span>☷ 阴爻 ' + (6-yang) + '</span></div>' +
+            '</div>' +
+            '<div class="hex-col hex-right">' +
+                '<div class="jie-section"><div class="jie-title">卦象解读</div><div class="jie-text">本卦「' + name + '」，上' + high + '下' + low + '。' + rel + '</div></div>' +
+                '<div class="jie-section"><div class="jie-title">阴阳之数</div><div class="jie-text">' + yinyang + '</div></div>' +
+                '<div class="jie-section"><div class="jie-title">平衡建议</div><div class="jie-text">' + balance + '。心诚则灵，一切自有安排。</div></div>' +
+            '</div>' +
+        '</div>';
 }
 /* 定制面板 */
 function openCustomizePanel(){
-    switchCustMode('manual');
+    switchCustMode('none');
     document.getElementById("homePanel").style.display="none";
     document.getElementById("customizePanel").classList.add("show");
     loadCrystals();
@@ -5416,6 +6235,13 @@ function openCustomizePanel(){
     }
 }
 function switchCustMode(mode){
+    // 再次点击当前模式 → 收起回到上一级（无模式状态）
+    if(mode!=='none'){
+        const cur = document.getElementById('mode'+mode.charAt(0).toUpperCase()+mode.slice(1));
+        if(cur && cur.classList.contains('active')){
+            mode = 'none';
+        }
+    }
     ['manual','birth','hex','random'].forEach(m=>{
         const key = m.charAt(0).toUpperCase()+m.slice(1);
         const btn = document.getElementById('mode'+key);
@@ -5423,6 +6249,50 @@ function switchCustMode(mode){
         if(btn) btn.classList.toggle('active', m===mode);
         if(box) box.style.display = m===mode ? 'block' : 'none';
     });
+    // 珠子预览与五行常识：仅在「手动选择」时显示
+    const beads = document.getElementById("custBeads");
+    if(beads) beads.style.display = mode==='manual' ? 'block' : 'none';
+    const kn = document.getElementById("custKnowledge");
+    if(kn) kn.style.display = mode==='manual' ? 'block' : 'none';
+}
+function randomBraceletTier(tier){
+    randomBracelet();
+    toast('已按 ¥'+tier+' 挡位随机生成，联系定制可锁定具体款式');
+}
+function exportBraceletImg(){
+    const box = document.getElementById("braceletBox");
+    if(!box) return;
+    if(!window.html2canvas){ toast("导出组件未加载，请刷新重试"); return; }
+    showLoading('正在导出图片...');
+    html2canvas(box, { backgroundColor: '#f8f4ec', scale: 2 }).then(canvas=>{
+        const a = document.createElement('a');
+        a.href = canvas.toDataURL('image/png');
+        a.download = '白桦定制手串.png';
+        document.body.appendChild(a);
+        a.click();
+        a.remove();
+        toast('✅ 手串图片已导出');
+    }).catch(()=>{ toast('导出失败，请重试'); }).finally(()=>{ hideLoading(); });
+}
+function openTierBuy(tier){
+    if(!requireLogin()) return;
+    document.getElementById("buyModal").style.zIndex = '11500';
+    buyItem = { id:'tier'+tier, name:'¥'+tier+' 挡位定制手串', price:tier, originalPrice:'', image:'' };
+    buyDiscount = 0; buyQty = 1; cartCheckoutMode = false;
+    const qr = document.getElementById("buyQtyRow"); if(qr) qr.style.display = 'none';
+    document.getElementById("buyProductInfo").innerHTML =
+        '<div style="font-size:15px;font-weight:700;color:var(--text-dark);">¥'+tier+' 挡位定制手串</div>' +
+        '<div style="font-size:12px;color:var(--text-light);margin-top:4px;">随机搭配专属水晶 · 联系定制可锁定款式</div>';
+    finishOpenBuy();
+}
+function openCustomContact(){
+    document.getElementById("infoTitle").innerText = "💬 联系定制";
+    document.getElementById("infoContent").innerHTML = '<p style="font-size:14px;">随机生成的搭配不满意？告诉我们你的想法（场合 / 预算 / 五行 / 尺寸），一对一为你定制：</p>' + wechatHtml() + '<p style="color:var(--text-light);font-size:12px;">定制挡位：¥488 / ¥588 / ¥688</p>';
+    const btn = document.getElementById("infoExtraBtn");
+    btn.style.display = "flex"; btn.innerText = "🎲 试试随缘生成";
+    btn.onclick = function(){ closeInfoModal(); openCustomizePanel(); switchCustMode('random'); };
+    document.getElementById("infoModal").classList.add("show");
+    lockScroll(true);
 }
 /* 水晶知识库管理 */
 function renderCrystalAdmin(){
@@ -5447,6 +6317,7 @@ function clearCrystalForm(){
     document.getElementById("crystalColor").value = "#8fbfa3";
     document.getElementById("crystalElement").value = "";
     document.getElementById("crystalMeaning").value = "";
+    document.getElementById("crystalImage").value = "";
 }
 function editCrystal(id){
     const c = crystals.find(x=>x.id===id);
@@ -5456,6 +6327,7 @@ function editCrystal(id){
     document.getElementById("crystalColor").value = c.color || "#8fbfa3";
     document.getElementById("crystalElement").value = c.element || "";
     document.getElementById("crystalMeaning").value = c.meaning || "";
+    document.getElementById("crystalImage").value = c.imageUrl || "";
 }
 async function saveCrystal(){
     const name = document.getElementById("crystalName").value.trim();
@@ -5464,20 +6336,22 @@ async function saveCrystal(){
     const color = document.getElementById("crystalColor").value;
     const element = document.getElementById("crystalElement").value.trim();
     const meaning = document.getElementById("crystalMeaning").value.trim();
+    const image = document.getElementById("crystalImage").value.trim();
     const editId = document.getElementById("crystalEditId").value;
     showLoading('正在保存...');
     try {
         let ok = false;
         if(editId){
-            const { data, error } = await supabaseClient.rpc('update_crystal', { p_id: Number(editId), p_name: name, p_color: color, p_element: element, p_meaning: meaning, p_pwd: currentAdminPwd });
+            const { data, error } = await supabaseClient.rpc('update_crystal', { p_id: Number(editId), p_name: name, p_color: color, p_element: element, p_meaning: meaning, p_image: image || null, p_pwd: currentAdminPwd });
             ok = !error && data !== false;
         } else {
-            const { data, error } = await supabaseClient.rpc('add_crystal', { p_name: name, p_color: color, p_element: element, p_meaning: meaning, p_pwd: currentAdminPwd });
+            const { data, error } = await supabaseClient.rpc('add_crystal', { p_name: name, p_color: color, p_element: element, p_meaning: meaning, p_image: image || null, p_pwd: currentAdminPwd });
             ok = !error && data !== false;
         }
         if(!ok){ toast("保存失败，请重试"); return; }
         clearCrystalForm();
         await loadCrystals();
+        logSession('saveCrystal', [name + (editId ? '（编辑）' : '（新增）')]);
         toast("✅ 水晶已保存");
     } finally { hideLoading(); }
 }
@@ -5487,6 +6361,7 @@ async function deleteCrystal(id){
     const { data, error } = await supabaseClient.rpc('delete_crystal', { p_id: id, p_pwd: currentAdminPwd });
     if(error || data === false) return toast("删除失败："+(error?.message||"密码无效"));
     await loadCrystals();
+    logSession('delCrystal', ['ID ' + id]);
     toast("水晶已删除");
 }
 /* 联系方式 */
@@ -5521,6 +6396,7 @@ async function saveContact(){
         const { data, error } = await supabaseClient.rpc('set_app_data', { p_key:'birch_contact', p_data: JSON.stringify(list), p_pwd: currentAdminPwd });
         if(error || data === false){ toast("保存失败："+(error?.message||"密码无效")); return; }
         BRAND_CONTACT.wechats = list;
+        logSession('saveContact', [list.length + ' 个微信号']);
         toast("✅ 联系方式已保存");
     } finally { hideLoading(); }
 }
@@ -5564,17 +6440,16 @@ function renderWheel(){
     const wheel = document.getElementById("wheel");
     if(!wheel) return;
     const amounts = wheelAmounts();
-    const segs = wheelSegs();
     const colors = ['#f2b8c6','#f2d27e','#9bc5a0','#8ec5e8'];
-    // 扇区大小按概率分配
-    wheel.style.background = 'conic-gradient(' + segs.map((s,i)=>colors[i]+' '+s.start.toFixed(1)+'deg '+(s.start+s.size).toFixed(1)+'deg').join(', ') + ')';
-    // 数值居中于各自扇区
+    // 4 个扇区，各占 1/4
+    wheel.style.background = 'conic-gradient(' + colors.map((c,i)=>c+' '+(i*25)+'% '+(i+1)*25+'%').join(', ') + ')';
+    // 数值居中于各自扇区（顺时针偏移 45°）
     const r = 58, cx = 110, cy = 110;
     wheel.innerHTML = amounts.map((a,i)=>{
-        const ang = segs[i].mid * Math.PI / 180;
+        const ang = (i * 90 + 45) * Math.PI / 180;
         const x = cx + r * Math.sin(ang);
         const y = cy - r * Math.cos(ang);
-        return `<span class="wl" style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;transform:translate(-50%,-50%) rotate(${-segs[i].mid}deg);">¥${a}<small style="display:block;font-size:10px;opacity:0.9;">${wheelCfg.probs[i]}%</small></span>`;
+        return `<span class="wl" style="left:${x.toFixed(1)}px;top:${y.toFixed(1)}px;transform:translate(-50%,-50%) rotate(${-(i*90+45)}deg);">¥${a}<small style="display:block;font-size:10px;opacity:0.9;">${wheelCfg.probs[i]}%</small></span>`;
     }).join('');
     const el2 = document.getElementById("wheelModalRange");
     if(el2) el2.innerText = '¥'+wheelCfg.min+'~'+wheelCfg.max;
@@ -5596,6 +6471,7 @@ async function saveWheel(){
         renderWheel();
         const el = document.getElementById("wheelRangeDesc");
         if(el) el.innerText = '¥'+min+'~'+max;
+        logSession('saveWheel', ['¥' + min + '~' + max]);
         toast("✅ 优惠配置已保存");
     } finally { hideLoading(); }
 }
@@ -5674,7 +6550,7 @@ async function spinWheel(){
     const totalP = wheelCfg.probs.reduce((s,x)=>s+x,0);
     let r = Math.random()*totalP, chosen = 0;
     for(let i=0;i<4;i++){ r -= wheelCfg.probs[i]; if(r <= 0){ chosen = i; break; } }
-    const R = 720 + ((360 - wheelSegs()[chosen].mid) % 360);
+    const R = 720 + ((360 - (45 + 90*chosen)) % 360);
     wheel.style.transform = 'rotate('+R+'deg)';
     // 转动期间提示
     document.getElementById("wheelResult").style.display = "block";
@@ -5710,6 +6586,7 @@ async function saveNotice(){
     try {
         const { data, error } = await supabaseClient.rpc('set_app_data', { p_key:'birch_notice', p_data: JSON.stringify(text), p_pwd: currentAdminPwd });
         if(error || data === false){ toast("保存失败："+(error?.message||"密码无效")); return; }
+        logSession('saveNotice', [text.slice(0,30)]);
         toast("✅ 活动通知已保存");
         loadNotice();
     } finally { hideLoading(); }
@@ -5926,6 +6803,7 @@ async function toggleFeatured(id){
     await loadGallery();
     renderGalleryAdmin();
     initHero();
+    logSession('toggleFeatured', [it.name + (it.featured ? '（取消）' : '（设为精选）')]);
     toast(it.featured ? "已取消精选" : "✅ 已设为精选");
 }
 async function moveGalleryItem(id, dir){
@@ -5939,6 +6817,7 @@ async function moveGalleryItem(id, dir){
         supabaseClient.rpc('update_gallery_item', { p_id: b.id, p_name: b.name, p_design: b.design, p_image: b.imageUrl, p_pwd: currentAdminPwd, p_sort: a.sort })
     ]);
     await loadGallery();
+    logSession('moveGallery', [a.name + ' 与 ' + b.name + ' 交换排序']);
     renderGalleryAdmin();
     initHero();
 }
@@ -5954,6 +6833,7 @@ async function toggleRecommended(id){
     await loadGallery();
     renderGalleryAdmin();
     renderLuxPicks();
+    logSession('toggleRecommended', [it.name + (it.recommended ? '（移出）' : '（加入）')]);
     toast(it.recommended ? "已移出臻选推荐" : "✅ 已加入臻选推荐");
 }
 function renderGalleryAdmin(){
@@ -6012,6 +6892,7 @@ async function saveGalleryItem(){
         await loadGallery();
         renderGalleryAdmin();
         closeGalleryForm();
+        logSession('saveGallery', [name + (editId ? '（编辑）' : '（新增）')]);
         toast(editId ? "商品已更新" : "商品已添加");
     } finally {
         hideLoading();
@@ -6052,6 +6933,7 @@ async function deleteGalleryItem(id){
     if(error || data === false) return toast("删除失败："+(error?.message||"密码无效"));
     await loadGallery();
     renderGalleryAdmin();
+    logSession('delGallery', ['ID ' + id]);
     toast("商品已删除");
 }
 
@@ -6125,6 +7007,7 @@ async function exportAllCardsZip(){
     a.download=`白桦官方卡片_${db.records.length}张_${new Date().toLocaleDateString()}.zip`;
     a.click();
     URL.revokeObjectURL(url);
+    logSession('exportImg', ['ZIP ' + records.length + ' 张']);
     toast("✅ 成功导出 "+records.length+" 张卡片到ZIP");
 }
 
