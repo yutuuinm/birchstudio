@@ -859,6 +859,7 @@ body::after{
 .footer-line{width:52px;height:1px;background:linear-gradient(90deg,transparent,#c9a96e,transparent);margin:0 auto 16px;}
 .footer-brand{font-family:Georgia,'Songti SC',serif;font-size:15px;font-weight:700;color:#a8874a;letter-spacing:4px;}
 .footer-sub{font-size:12px;color:var(--text-light);letter-spacing:2px;margin-top:6px;}
+.footer-save{font-size:12px;color:var(--green-main);letter-spacing:1px;margin-top:8px;}
 .footer-copy{font-size:11px;color:var(--text-light);opacity:0.7;margin-top:10px;letter-spacing:1px;}
 .footer:hover{opacity:0.9;}
 @keyframes footerUp{
@@ -960,7 +961,7 @@ body::after{
 .preview-num{display:block;font-size:19.5px;color:var(--text-light);background:transparent;padding:0;margin:0 auto 2px;text-align:center;letter-spacing:1px;}
 .preview-product{font-size:22.5px;font-weight:normal;color:var(--text-dark);margin:0 auto 2px;text-align:center;width:100%;}
 .preview-code{font-size:18px;color:var(--text-light);margin:0px auto 0;text-align:center;word-break:break-all;width:100%;}
-.preview-code span{font-family:monospace;font-size:19.5px;color:var(--green-main);font-weight:normal;background:#f6fbf8;padding:3px 10px;border-radius:6px;display:inline-block;margin-top:4px;}
+.preview-code span{font-family:monospace;font-size:19.5px;color:var(--green-main);font-weight:normal;padding:3px 10px;display:inline-block;margin-top:4px;}
 .preview-msg-label{font-size:16.5px;font-weight:normal;color:var(--green-main);margin-bottom:2px;text-align:center;}
 .preview-msg-text{font-size:18px;color:var(--text-dark);line-height:1.5;word-break:break-word;white-space:pre-wrap;text-align:left;max-height:200px;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-right:4px;}
 .preview-tip{margin:6px auto 0;font-size:16.5px;color:var(--text-light);opacity:0.85;text-align:center;width:100%;}
@@ -982,7 +983,7 @@ body::after{
 .export-title{font-size:24px;font-weight:normal;color:var(--green-main);margin:0 auto 14px;line-height:1.5;text-align:center;width:100%;letter-spacing:0.5px;}
 .export-product{font-size:22.5px;font-weight:normal;color:var(--text-dark);margin:0 auto 2px;text-align:center;width:100%;}
 .export-code{font-size:18px;color:var(--text-light);margin:0px auto 0;text-align:center;word-break:break-all;width:100%;}
-.export-code span{font-family:monospace;font-size:19.5px;color:var(--green-main);font-weight:normal;background:#f6fbf8;padding:3px 10px;border-radius:6px;display:block;margin:8px auto 0;}
+.export-code span{font-family:monospace;font-size:19.5px;color:var(--green-main);font-weight:normal;padding:3px 10px;display:block;margin:8px auto 0;}
 .export-msg-label{font-size:16.5px;font-weight:normal;color:var(--green-main);margin-bottom:2px;text-align:center;}
 .export-msg-text{font-size:18px;color:var(--text-dark);line-height:1.5;word-break:break-word;white-space:pre-wrap;text-align:left;max-height:200px;overflow-y:auto;-webkit-overflow-scrolling:touch;padding-right:4px;}
 .export-tip{margin:6px auto 0;font-size:16.5px;color:var(--text-light);opacity:0.85;text-align:center;width:100%;}
@@ -1497,7 +1498,7 @@ body::after{
                 <div class="export-card" id="exportCard">
                     <div class="export-product" id="expProduct">品名：-</div>
                     <div class="export-num" id="expNum">专属定制编号：-</div>
-                    <div class="export-code">官方码：<span id="expCode">-</span></div>
+                    <div class="export-code">防伪码：<span id="expCode">-</span></div>
                     <div class="export-qr" id="expQrWrap"></div>
                     <div class="export-msg" id="expMsgWrap" style="display:none;">
                         <div class="export-msg-label">💌 白桦寄语</div>
@@ -1698,6 +1699,7 @@ body::after{
     <div class="footer-line"></div>
     <div class="footer-brand">白桦安全系统 · 正品保障</div>
     <div class="footer-sub">一物一码 · 扫码即验 · 安心之选</div>
+    <div class="footer-save">📦 订单记录保存 180 天，到期自动删除</div>
     <div class="footer-copy">© 2026 白桦定制</div>
 </div>
 </div>
@@ -2375,6 +2377,14 @@ async function enterAdmin(pwd){
     renderGalleryAdmin();
     loadOrders();
     loadUsers();
+    // 180 天自动清理：进入后台时顺带删除过期订单记录（配合 SQL 定时任务双保险）
+    try {
+        const { data: purged } = await supabaseClient.rpc('purge_old_orders', { p_days: 180, p_pwd: currentAdminPwd });
+        if(purged && Number(purged) > 0){
+            await loadOrders();
+            console.log('[自动清理] 已删除过期订单 ' + purged + ' 笔');
+        }
+    } catch(e){ /* RPC 未部署时忽略 */ }
     backToAdminHome();
     toast("✅ 已进入管理员后台");
 }
@@ -2713,9 +2723,7 @@ function saveQrImg(){
     html2canvas(card, { background: "#ffffff", scale: 2, useCORS: true }).then(canvas=>{
         const a = document.createElement("a");
         const safeName = (r && r.productName) ? r.productName.replace(/[\\\/:*?"<>|]/g,'_') : "白桦官方";
-        const safeBatch = (r && r.batchNo) ? r.batchNo.replace(/[\\\/:*?"<>|]/g,'_') : "";
-        const batchPart = safeBatch ? `_${safeBatch}` : "";
-        a.download = `白桦官方_${safeName}${batchPart}_${r.id}.jpg`;
+        a.download = safeName + '.jpg';
         a.href = canvas.toDataURL("image/jpeg", 0.92);
         a.click();
         logSession('exportImg', [r.id + '（' + (r.productName||'') + '）']);
@@ -2879,7 +2887,7 @@ function renderOrders(){
                     地址：${escapeHtml(o.address||'—')}${o.note?'<br>备注：'+escapeHtml(o.note):''}
                 </div>
                 ${!shipped ? `<div style="background:#fff;border:1px dashed var(--border-green);border-radius:10px;padding:10px;margin-bottom:10px;">
-                    <div style="font-size:12px;font-weight:700;color:var(--text-dark);margin-bottom:8px;">🧾 防伪码（导出图片时自动生成入库并完成订单）</div>
+                    <div style="font-size:12px;font-weight:700;color:var(--text-dark);margin-bottom:8px;">🧾 防伪码（「导出防伪码图片」仅导出图片，不会自动完成订单）</div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:8px;">
                         <input id="ordName_${o.id}" value="${escapeHtml(o.product_name)}" placeholder="产品名称" style="padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;">
                         <input id="ordBatch_${o.id}" value="${escapeHtml(o.order_no)}" placeholder="专属定制编号" style="padding:10px 12px;border:2px solid var(--border-green);border-radius:10px;font-size:13px;background:#f6fbf8;">
@@ -2980,7 +2988,8 @@ async function exportOrderCodeImg(id){
     if(!o) return;
     if(!currentAdminPwd) return toast("管理员密码已过期");
     let code = o.anti_code || '';
-    // 若尚未生成防伪码：先按表单内容生成并入数据库，再导出
+    // 仅导出：不自动完成订单（不标记发货）。
+    // 若订单还没有防伪码：先按表单内容生成并入官方码库并保存到订单（订单状态不变，仍为待处理）。
     if(!code){
         const name = (document.getElementById("ordName_"+id).value || '').trim();
         const batch = (document.getElementById("ordBatch_"+id).value || '').trim();
@@ -2988,7 +2997,7 @@ async function exportOrderCodeImg(id){
         const image = (document.getElementById("ordImg_"+id).value || '').trim();
         if(!name) return toast("请先填写产品名称");
         code = generateId();
-        showLoading('正在生成防伪码并完成订单...');
+        showLoading('正在生成防伪码并入官方码库...');
         try {
             const { data, error } = await supabaseClient.rpc('insert_record', {
                 p_pwd: currentAdminPwd, p_id: code, p_product_name: name, p_batch_no: batch,
@@ -2997,21 +3006,16 @@ async function exportOrderCodeImg(id){
                 p_image_url: image || null, p_export_name: true, p_export_batch: true
             });
             if(error || data === false){ toast("入库失败：" + (error ? error.message : "密码无效")); return; }
-            // 保存防伪码并自动完成订单
-            await supabaseClient.rpc('update_order', { p_id: id, p_status: 'shipped', p_anti_code: code, p_pwd: currentAdminPwd });
+            // 仅保存防伪码到订单（订单仍为待处理，不完成）
+            await supabaseClient.rpc('update_order', { p_id: id, p_anti_code: code, p_pwd: currentAdminPwd });
             await loadData();
             await loadOrders();
         } finally { hideLoading(); }
-    } else if(o.status !== 'shipped'){
-        // 已有防伪码但订单未完成：自动完成订单
-        showLoading('正在完成订单...');
-        try {
-            await supabaseClient.rpc('update_order', { p_id: id, p_status: 'shipped', p_pwd: currentAdminPwd });
-            await loadOrders();
-        } finally { hideLoading(); }
     }
-    // 用订单信息构建官方码卡片并导出 JPG
+    // 用订单信息构建官方码卡片并导出 JPG（仅导出，不改动订单状态）
     const rec = db.records.find(r => r.id === code) || { productName: o.product_name, batchNo: o.order_no, message: o.note || '' };
+    // 合并订单的备注「合并自：BHxxx」不出现在导出卡片上
+    const expMsg = (rec.message || '').replace(/^合并自：.*/, '').trim();
     const holder = document.createElement('div');
     holder.id = 'orderExportHolder';
     holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:320px;';
@@ -3019,9 +3023,9 @@ async function exportOrderCodeImg(id){
         '<div class="export-title">白 桦 定 制</div>' +
         '<div class="export-product">品名：' + escapeHtml(rec.productName || '') + '</div>' +
         '<div class="export-num">专属定制编号：' + escapeHtml(rec.batchNo || '') + '</div>' +
-        '<div class="export-code">官方码：<span>' + escapeHtml(code) + '</span></div>' +
+        '<div class="export-code">防伪码：<span>' + escapeHtml(code) + '</span></div>' +
         '<div class="export-qr" id="orderExpQr"></div>' +
-        (rec.message ? '<div class="export-msg"><div class="export-msg-label">💌 白桦寄语</div><div class="export-msg-text">' + escapeHtml(rec.message) + '</div></div>' : '') +
+        (expMsg ? '<div class="export-msg"><div class="export-msg-label">💌 白桦寄语</div><div class="export-msg-text">' + escapeHtml(expMsg) + '</div></div>' : '') +
         '<div class="export-tip">手机浏览器扫码查询正品</div>' +
     '</div>';
     document.body.appendChild(holder);
@@ -3039,12 +3043,12 @@ async function exportOrderCodeImg(id){
             }
         });
         const a = document.createElement('a');
-        const safeName = (rec.productName || '订单').replace(/[\\\/:*?"<>|]/g,'_');
-        a.download = '白桦官方_' + safeName + '_' + code + '.jpg';
+        const safeName = (rec.productName || o.product_name || '订单').replace(/[\\\/:*?"<>|]/g,'_');
+        a.download = safeName + '.jpg';
         a.href = canvas.toDataURL('image/jpeg', 0.92);
         a.click();
         logSession('exportCodeImg', ['订单 ' + o.order_no + ' → ' + code]);
-        toast('✅ 防伪码卡片已导出：' + code);
+        toast('✅ 防伪码卡片已导出：' + safeName + '.jpg');
     } catch(err){
         toast("导出失败：" + err.message);
     } finally {
@@ -4203,12 +4207,54 @@ function closePreviewModal(){
 
 function exportPreviewJpg(){
     if(!currentPreviewId) return toast("请先打开详情预览");
+    const r = db.records.find(item=>item.id === currentPreviewId);
+    // 若该记录从待处理订单生成（关联了订单，无论是否点击完成），
+    // 一律按「单个防伪码生成界面」样式导出，文件名为订单名.jpg
+    const linked = orderList.find(o => o.anti_code === currentPreviewId);
+    if(r && linked){
+        const code = currentPreviewId;
+        const holder = document.createElement('div');
+        holder.id = 'orderExportHolder';
+        holder.style.cssText = 'position:fixed;left:-99999px;top:0;width:320px;';
+        const expMsg = (r.message || '').replace(/^合并自：.*/, '').trim();
+        holder.innerHTML = '<div class="export-card">' +
+            '<div class="export-title">白 桦 定 制</div>' +
+            '<div class="export-product">品名：' + escapeHtml(r.productName || linked.product_name || '') + '</div>' +
+            '<div class="export-num">专属定制编号：' + escapeHtml(r.batchNo || linked.order_no || '') + '</div>' +
+            '<div class="export-code">防伪码：<span>' + escapeHtml(code) + '</span></div>' +
+            '<div class="export-qr" id="orderExpQr"></div>' +
+            (expMsg ? '<div class="export-msg"><div class="export-msg-label">💌 白桦寄语</div><div class="export-msg-text">' + escapeHtml(expMsg) + '</div></div>' : '') +
+            '<div class="export-tip">手机浏览器扫码查询正品</div>' +
+        '</div>';
+        document.body.appendChild(holder);
+        try {
+            new QRCode(holder.querySelector('#orderExpQr'), { text: getVerifyUrl(code), width: 150, height: 150, colorDark: '#274637', colorLight: '#ffffff' });
+        } catch(e){ document.body.removeChild(holder); return toast("二维码生成失败：" + e.message); }
+        html2canvas(holder.querySelector('.export-card'), {
+            backgroundColor: '#ffffff', scale: 2, useCORS: true,
+            onclone: (doc)=>{ const h = doc.getElementById('orderExportHolder'); if(h){ h.style.left='0'; h.style.top='0'; h.style.position='absolute'; } }
+        }).then(canvas=>{
+            const a = document.createElement("a");
+            const fname = (linked.product_name || r.productName || '订单').replace(/[\\\/:*?"<>|]/g,'_');
+            a.download = fname + '.jpg';
+            a.href = canvas.toDataURL("image/jpeg", 0.92);
+            a.click();
+            document.body.removeChild(holder);
+            logSession('exportImg', [code + '（订单 ' + linked.order_no + '）']);
+            toast("✅ 防伪码卡片已导出：" + fname + '.jpg');
+        }).catch(err=>{
+            document.body.removeChild(holder);
+            console.error(err);
+            toast("导出失败："+err.message);
+        });
+        return;
+    }
+    // 无关联订单：保持原「顾客预览」卡片导出
     const card = document.getElementById("custPreview");
     html2canvas(card, { background: "#ffffff", scale: 2, useCORS: true }).then(canvas=>{
         const a = document.createElement("a");
-        const r = db.records.find(item=>item.id === currentPreviewId);
         const safeTitle = (r && r.productName) ? r.productName.replace(/[\\\/:*?"<>|]/g,'_') : "白桦官方";
-        a.download = `白桦官方_${safeTitle}_${currentPreviewId}.jpg`;
+        a.download = safeTitle + '.jpg';
         a.href = canvas.toDataURL("image/jpeg", 0.92);
         a.click();
         toast("JPG 卡片已下载");
@@ -7010,7 +7056,7 @@ async function exportAllCardsZip(){
     hw.innerHTML=`<div id="batchCardTmpl" style="width:300px;background:#fff;border:1px solid #c8d9c8;border-radius:20px;padding:12px 9px;text-align:center;font-family:-apple-system,BlinkMacSystemFont,'PingFang SC','Microsoft YaHei',sans-serif;box-shadow:0 8px 24px rgba(62,114,89,0.10);">
       <div id="btProd" style="font-size:30px;font-weight:600;color:#3d3229;margin-bottom:2px;"></div>
       <div id="btNum" style="font-size:26px;color:#6b5d4d;margin-bottom:6px;"></div>
-<div style="font-size:24px;color:#6b5d4d;margin:3px auto 6px;word-break:break-all;">官方码：</div><div style="margin:2px auto 6px;"><span id="btCode" style="font-family:monospace;font-size:26px;color:#4a7c59;font-weight:600;background:#f6fbf8;padding:3px 10px;border-radius:6px;display:block;"></span></div>
+<div style="font-size:24px;color:#6b5d4d;margin:3px auto 6px;word-break:break-all;">防伪码：</div><div style="margin:2px auto 6px;"><span id="btCode" style="font-family:monospace;font-size:26px;color:#4a7c59;font-weight:600;padding:3px 10px;border-radius:6px;display:block;"></span></div>
       <div style="width:150px;height:150px;margin:0 auto 6px;background:#fff;border:1px solid #c8d9c8;border-radius:14px;padding:6px;display:flex;align-items:center;justify-content:center;"><img id="btQr" width="136" height="136" style="display:block;"></div>
       <div id="btMsg" style="display:none;margin:6px auto 0;padding:5px 6px;background:linear-gradient(135deg,#f6fbf8,#e8f5ef);border-radius:8px;text-align:left;">
         <div style="font-size:22px;font-weight:600;color:#4a7c59;margin-bottom:2px;text-align:center;;">💌 白桦寄语</div>
