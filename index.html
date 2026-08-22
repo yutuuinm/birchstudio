@@ -491,6 +491,14 @@ body::after{
 .admin-card-desc{font-size:11px;color:var(--text-light);line-height:1.4;}
 .admin-section-page{display:none;}
 .admin-section-page.show{display:block;animation:panelSlide 0.4s var(--spring);}
+/* 601–900px 中间态：后台卡片/文本过渡 */
+@media (min-width: 601px) and (max-width: 900px){
+    .admin-grid{grid-template-columns:repeat(auto-fill,minmax(100px,1fr));gap:9px;}
+    .admin-card-name{font-size:13.5px;}
+    .admin-card-desc{font-size:10.5px;}
+    .admin-section-page h3{font-size:17px;}
+    .admin-section-page > p{font-size:12.5px !important;}
+}
 /* ========== 首页（大牌风） ========== */
 .hero{position:relative;border-radius:20px;overflow:hidden;background:#eef6f1;box-shadow:0 10px 30px rgba(61,90,69,0.10);}
 .hero-track{position:relative;width:100%;height:300px;}
@@ -1089,25 +1097,58 @@ body::after{
     .home-funcs{gap:4px 8px;}
     .brand-story .bs-text{font-size:13.5px;}
     .gallery-item img,.gallery-item video{height:150px;}
-    /* —— 后台手机端布局优化 —— */
-    .admin-grid{grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;}
-    .admin-card-name{font-size:13.5px;}
+    /* ========== 后台手机端全面优化 ========== */
+    /* —— 一级功能卡片：3 列 + 图标放大，比例与文字协调 —— */
+    .admin-grid{grid-template-columns:repeat(3,1fr);gap:8px;}
+    .admin-card{border-radius:14px;}
+    .admin-card-cover{font-size:30px;padding-top:14px;}
+    .admin-chip{width:44px;height:44px;border-radius:13px;font-size:24px;}
+    .admin-card-info{padding:8px 6px 10px;}
+    .admin-card-name{font-size:13px;margin-bottom:3px;line-height:1.3;}
     .admin-card-desc{font-size:10.5px;line-height:1.35;}
+    /* —— 二级页面：标题/说明/返回按钮/表单/按钮 —— */
+    .gen-panel{padding:10px 0;}
+    .admin-section-page h3{font-size:17px;margin-bottom:10px !important;line-height:1.4;}
+    .admin-section-page > p{font-size:13px !important;line-height:1.7;margin-bottom:12px !important;}
+    .admin-section-page [style*="font-size:12px"]{font-size:13px !important;line-height:1.7;}
+    .admin-section-page [style*="font-size:11px"]{font-size:12px !important;line-height:1.6;}
+    .back-btn{padding:10px 15px;font-size:13px;margin-bottom:12px;border-radius:11px;}
+    .admin-section-page .form-item label{font-size:13.5px;}
+    .admin-section-page .form-item input,.admin-section-page .form-item textarea{padding:13px 14px;font-size:15px;border-radius:12px;}
+    .admin-section-page .btn,.admin-section-page .btn-light{padding:13px 14px;font-size:14px;border-radius:12px;}
+    .admin-section-page .btn-row{grid-template-columns:1fr !important;gap:8px;}
+    .admin-section-page .btn-row .btn,.admin-section-page .btn-row .btn-light{width:100%;}
+    /* —— 记录/订单卡片：内联 12px 文字提升、按钮换行 —— */
     .db-record-actions{flex-wrap:wrap;}
     .db-record-actions button{flex:1 1 46%;min-width:0;padding:9px 4px;font-size:11.5px;}
     .db-record-actions .btn-view,.db-record-actions .btn-del{white-space:normal;line-height:1.3;}
+    .db-record [style*="font-size:12px"]{font-size:12.5px !important;line-height:1.6;}
     .db-list-wrap{padding:12px;max-height:none;}
-    .gen-panel{padding:14px 0;}
-    .form-item input,.form-item textarea{font-size:14px;}
-    /* 订单选择弹窗列表项 */
+    /* —— 订单卡片内部两列输入区在手机上转单列 —— */
+    .db-record [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr !important;}
+    .db-record [style*="grid-template-columns:1fr 1fr"] input{width:100%;box-sizing:border-box;}
+    /* —— 订单选择/添加弹窗 —— */
     #orderPickList label{font-size:12.5px;}
     #orderPickList label span{line-height:1.5;}
-    /* 弹窗底部按钮两行不挤压 */
     .modal-box .form-item{margin-bottom:13px;}
+    .modal-box .form-item input,.modal-box .form-item textarea{padding:13px 14px;font-size:15px;border-radius:12px;}
+    .modal-box h3{font-size:17px;}
+    .modal-box > p{font-size:13px !important;line-height:1.7;}
+    /* —— 二级页面内联两列布局转单列（转盘/双栏表单） —— */
+    .admin-section-page [style*="grid-template-columns:1fr 1fr"]{grid-template-columns:1fr !important;gap:8px;}
+    .admin-section-page [style*="display:flex"] .btn-light,
+    .admin-section-page [style*="display:flex"] .btn{flex:1 1 100%;}
+    /* —— 订单卡片内联按钮区：手机端纵向排布 —— */
+    .db-record [style*="display:flex"]{flex-wrap:wrap;}
+    .db-record [style*="display:flex"] .btn,
+    .db-record [style*="display:flex"] .btn-light,
+    .db-record [style*="display:flex"] .btn-del{flex:1 1 100% !important;margin:0 0 6px;}
+    .db-record [style*="display:grid"][style*="1fr 1fr"]{grid-template-columns:1fr !important;}
 }
 @media (max-width: 380px){
     .admin-grid{grid-template-columns:repeat(2,1fr);}
     .db-record-actions button{flex:1 1 100%;}
+    .admin-card-name{font-size:12.5px;}
 }
 </style>
 </head>
