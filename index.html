@@ -276,6 +276,7 @@ body::after{
 .admin-home .admin-card:nth-child(12){animation-delay:0.57s;}
 .admin-home .admin-card:nth-child(13){animation-delay:0.62s;}
 .admin-home .admin-card:nth-child(14){animation-delay:0.67s;}
+.admin-home .admin-card:nth-child(n+15){animation-delay:0.72s;}
 /* 返回时重播：打开后台首页时动画由 backToAdminHome() 强制重放 */
 /* 二级页面内容逐条弹出（打开具体信息页） */
 .admin-section-page.show .form-item,
@@ -603,6 +604,57 @@ body::after{
 #homePanel .func-grid{animation-delay:0.14s;}
 #homePanel .lux-process{animation-delay:0.22s;}
 @keyframes homeIn{to{opacity:1;transform:none;}}
+/* 首页 6 宫格卡片逐条弹出 */
+#homePanel .func-card{animation:cardPop 0.4s cubic-bezier(0.22,1,0.36,1) backwards;}
+#homePanel .func-card:nth-child(1){animation-delay:0.08s;}
+#homePanel .func-card:nth-child(2){animation-delay:0.13s;}
+#homePanel .func-card:nth-child(3){animation-delay:0.18s;}
+#homePanel .func-card:nth-child(4){animation-delay:0.23s;}
+#homePanel .func-card:nth-child(5){animation-delay:0.28s;}
+#homePanel .func-card:nth-child(6){animation-delay:0.33s;}
+#homePanel .func-card:nth-child(7){animation-delay:0.38s;}
+#homePanel .func-card:nth-child(8){animation-delay:0.43s;}
+/* 臻选推荐商品逐条弹出 */
+#luxPicksGrid .lp-item{animation:cardPop 0.45s cubic-bezier(0.22,1,0.36,1) backwards;}
+#luxPicksGrid .lp-item:nth-child(1){animation-delay:0.05s;}
+#luxPicksGrid .lp-item:nth-child(2){animation-delay:0.12s;}
+#luxPicksGrid .lp-item:nth-child(3){animation-delay:0.19s;}
+#luxPicksGrid .lp-item:nth-child(4){animation-delay:0.26s;}
+#luxPicksGrid .lp-item:nth-child(5){animation-delay:0.33s;}
+/* 臻品橱窗商品逐条弹出 */
+#galleryGrid .gallery-item{animation:cardPop 0.45s cubic-bezier(0.22,1,0.36,1) backwards;}
+#galleryGrid .gallery-item:nth-child(1){animation-delay:0.03s;}
+#galleryGrid .gallery-item:nth-child(2){animation-delay:0.08s;}
+#galleryGrid .gallery-item:nth-child(3){animation-delay:0.13s;}
+#galleryGrid .gallery-item:nth-child(4){animation-delay:0.18s;}
+#galleryGrid .gallery-item:nth-child(5){animation-delay:0.23s;}
+#galleryGrid .gallery-item:nth-child(6){animation-delay:0.28s;}
+#galleryGrid .gallery-item:nth-child(7){animation-delay:0.33s;}
+#galleryGrid .gallery-item:nth-child(8){animation-delay:0.38s;}
+#galleryGrid .gallery-item:nth-child(9){animation-delay:0.43s;}
+#galleryGrid .gallery-item:nth-child(10){animation-delay:0.48s;}
+#galleryGrid .gallery-item:nth-child(n+11){animation-delay:0.53s;}
+/* 水晶常识逐条弹出 */
+#crystalKnowledge .ck-item{animation:cardPop 0.4s cubic-bezier(0.22,1,0.36,1) backwards;}
+#crystalKnowledge .ck-item:nth-child(1){animation-delay:0.04s;}
+#crystalKnowledge .ck-item:nth-child(2){animation-delay:0.09s;}
+#crystalKnowledge .ck-item:nth-child(3){animation-delay:0.14s;}
+#crystalKnowledge .ck-item:nth-child(4){animation-delay:0.19s;}
+#crystalKnowledge .ck-item:nth-child(5){animation-delay:0.24s;}
+#crystalKnowledge .ck-item:nth-child(n+6){animation-delay:0.29s;}
+/* 我的订单列表逐条弹出 */
+#myOrdersList .db-record{animation:cardPop 0.4s cubic-bezier(0.22,1,0.36,1) backwards;}
+#myOrdersList .db-record:nth-child(1){animation-delay:0.04s;}
+#myOrdersList .db-record:nth-child(2){animation-delay:0.10s;}
+#myOrdersList .db-record:nth-child(3){animation-delay:0.16s;}
+#myOrdersList .db-record:nth-child(4){animation-delay:0.22s;}
+#myOrdersList .db-record:nth-child(n+5){animation-delay:0.28s;}
+/* 购物车列表逐条弹出 */
+#cartList .db-record{animation:cardPop 0.4s cubic-bezier(0.22,1,0.36,1) backwards;}
+#cartList .db-record:nth-child(1){animation-delay:0.04s;}
+#cartList .db-record:nth-child(2){animation-delay:0.10s;}
+#cartList .db-record:nth-child(3){animation-delay:0.16s;}
+#cartList .db-record:nth-child(n+4){animation-delay:0.22s;}
 /* ② 动态板块（活动通知 / 臻选推荐）：数据加载完成后一起弹入 */
 #homePanel .lux-contact, #homePanel .lux-picks{opacity:0;transform:translateY(22px);transition:opacity 0.65s ease, transform 0.65s ease;}
 #homePanel.loaded .lux-contact{opacity:1;transform:none;transition-delay:0.1s;}
@@ -1472,6 +1524,7 @@ body::after{
                 <div class="admin-card" onclick="openAdminSection('secWheel')"><div class="admin-card-cover"><span class="admin-chip">🎁</span></div><div class="admin-card-info"><div class="admin-card-name">转盘优惠</div><div class="admin-card-desc">设置立减金额与概率</div></div></div>
                 <div class="admin-card" onclick="openAdminSection('secJoin')"><div class="admin-card-cover"><span class="admin-chip">🤝</span></div><div class="admin-card-info"><div class="admin-card-name">加入我们·分成</div><div class="admin-card-desc">配置经销商返佣政策</div></div></div>
                 <div class="admin-card" onclick="openAdminSection('secCrystal')"><div class="admin-card-cover"><span class="admin-chip">💎</span></div><div class="admin-card-info"><div class="admin-card-name">水晶知识库</div><div class="admin-card-desc">管理水晶五行与功效</div></div></div>
+                <div class="admin-card" onclick="openAdminSection('secQuotes')"><div class="admin-card-cover"><span class="admin-chip">📜</span></div><div class="admin-card-info"><div class="admin-card-name">加载语录</div><div class="admin-card-desc">首页加载时的轮流文字</div></div></div>
             </div>
         </div>
 
@@ -1732,6 +1785,14 @@ body::after{
         <div class="form-item"><label>新密码</label><input type="password" id="newPwd" placeholder="请输入新密码"></div>
         <div class="form-item"><label>确认新密码</label><input type="password" id="confirmPwd" placeholder="请再次输入新密码"></div>
         <button class="btn" onclick="changeAdminPassword()">修改密码</button>
+        </div>
+
+        <div class="admin-section-page" id="secQuotes">
+            <button class="back-btn" onclick="backToAdminHome()">← 返回</button>
+            <h3 style="margin-bottom:6px;color:var(--text-dark)">📜 首页加载语录</h3>
+            <p style="font-size:12px;color:var(--text-light);margin-bottom:12px;">首页/橱窗图片加载完成前轮流展示的文字；<b>每行一条</b>，换行即为新的一条，会自动循环播放。</p>
+            <div class="form-item"><label>加载语录（每行一条）</label><textarea id="quotesInput" rows="6" placeholder="白桦，是纯洁与坚强的象征。&#10;愿每一件水晶，传递善与希望。"></textarea></div>
+            <button class="btn" onclick="saveQuotes()">保存语录</button>
         </div>
 
         <div class="admin-section-page" id="archivePanel">
@@ -3952,6 +4013,7 @@ function getActionLabel(action){
         'delUser':'删除账号','resetPwd':'重置密码',
         'saveMail':'邮件设置','saveBrand':'品牌理念','saveContact':'联系方式',
         'saveNotice':'活动通知','saveWheel':'转盘优惠','saveJoin':'分成政策',
+        'saveQuotes':'加载语录',
         'chgAdminPwd':'修改管理员密码','saveGallery':'保存商品','delGallery':'删除商品',
         'toggleFeatured':'精选切换','toggleRecommended':'臻选切换','moveGallery':'商品排序',
         'saveCrystal':'保存水晶','delCrystal':'删除水晶','exportImg':'导出卡片图片'
@@ -4738,8 +4800,15 @@ window.onload = async function(){
         loadNotice(),
         loadWheel(),
         loadJoin(),
-        loadMailTo()
+        loadMailTo(),
+        loadQuotes()
     ]);
+    // 若加载语录来自后台且首页加载层还在显示，用新语录重启轮播
+    const hq = document.getElementById("hlQuote");
+    const heroLoading = document.getElementById("heroLoading");
+    if(hq && heroLoading && !heroLoading.classList.contains("hide")){
+        startQuoteRotation(hq);
+    }
     initHero();
     initHeroSwipe();
     renderLuxPicks();
@@ -4997,13 +5066,40 @@ async function loadGallery(){
     }
 }
 /* ================== 首页精选轮播 / 品牌理念 / 定制购买 ================== */
-// 品牌理念加载轮播（白桦 · 五行 · 天人合一）
-const BRAND_QUOTES = [
+// 首页加载语录轮播（后台「加载语录」可配置，每行一条，自动循环）
+const DEFAULT_QUOTES = [
     '白桦，是纯洁与坚强的象征。',
     '因其挺拔不屈，象征坚韧与希望。',
     '我们结合五行之道，追寻天人合一、阴阳平衡。',
     '愿每一件水晶，传递善与希望。'
 ];
+let BRAND_QUOTES = DEFAULT_QUOTES.slice();
+async function loadQuotes(){
+    try {
+        const { data } = await supabaseClient.rpc('get_app_text', { p_key: 'birch_quotes' });
+        if(data && String(data).trim()){
+            const arr = String(data).split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+            if(arr.length) BRAND_QUOTES = arr;
+        }
+        const ta = document.getElementById("quotesInput");
+        if(ta) ta.value = BRAND_QUOTES.join('\n');
+    } catch(e){}
+}
+async function saveQuotes(){
+    const ta = document.getElementById("quotesInput");
+    const text = ta ? ta.value.trim() : '';
+    const arr = text.split(/\r?\n/).map(s=>s.trim()).filter(Boolean);
+    if(!arr.length) return toast("请至少填写一条语录");
+    if(!currentAdminPwd) return toast("管理员密码已过期");
+    showLoading('正在保存语录...');
+    try {
+        const { data, error } = await supabaseClient.rpc('set_app_data', { p_key:'birch_quotes', p_data: JSON.stringify(arr.join('\n')), p_pwd: currentAdminPwd });
+        if(error || data === false){ toast("保存失败："+(error?.message||"密码无效")); return; }
+        BRAND_QUOTES = arr;
+        logSession('saveQuotes', [arr.length + ' 条语录']);
+        toast("✅ 加载语录已保存（" + arr.length + " 条）");
+    } finally { hideLoading(); }
+}
 let quoteTimer = null;
 // 轮流展示品牌文字，并在中间插入「正在加载」
 function startQuoteRotation(el){
